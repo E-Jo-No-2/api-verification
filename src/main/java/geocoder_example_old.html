@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Geocoder Example</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2"></script>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps-geocoder.js"></script> <!-- Geocoder 서브 모듈 로드 -->
+</head>
+<body>
+    <h3>주소를 입력하세요:</h3>
+    <input type="text" id="address" placeholder="예: 서울특별시 중구 명동">
+    <button onclick="searchAddress()">검색</button>
+    <p id="result"></p>
+    <div id="map" style="width:500px;height:400px;"></div> <!-- 지도 컨테이너 추가 -->
+
+    <script>
+        var map = new naver.maps.Map("map", {
+            center: new naver.maps.LatLng(37.5665, 126.9780),
+            zoom: 10
+        });
+
+        function searchAddress() {
+            var address = document.getElementById('address').value;
+            naver.maps.Service.geocode({
+                query: address
+            }, function(status, response) {
+                if (status !== naver.maps.Service.Status.OK) {
+                    return alert('Geocode Error: ' + status);
+                }
+                var result = response.v2.addresses[0];
+                var coords = new naver.maps.LatLng(result.y, result.x);
+                document.getElementById('result').innerText = `좌표: ${result.x}, ${result.y}`;
+
+                var marker = new naver.maps.Marker({
+                    position: coords,
+                    map: map
+                });
+
+                map.setCenter(coords);
+            });
+        }
+    </script>
+</body>
+</html>

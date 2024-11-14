@@ -1,0 +1,14 @@
+<div class="container">
+    <section class="section" id="section-3">
+        <h1>오시는 길</h1>
+        <div id="map" style="width: 70%; height: 300px; margin:auto"></div>
+        <code id="snippet" class="snippet"></code>
+    </section>
+</div>
+
+<!-- 발급받은 Client ID 값 넣기 -->
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2"></script>
+<script id="code">
+    var mapDiv = document.getElementById('map');
+    var map = new naver.maps.Map(mapDiv);
+</script>
