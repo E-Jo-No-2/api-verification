@@ -10,7 +10,7 @@ import java.net.URLEncoder;
 public class TourApiExample {
     public static void main(String[] args) {
         try {
-            // OpenAPI 요청 URL 설정
+            // OpenAPI 요청 URL 설정asdzxcasdqwexacasdv
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B551011/KorService1/locationBasedList1");
             urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=%2FYlxk9%2F2%2F4C1Wqj%2FelEWXBkPoVHK6lYc%2F5opKHIU8zlwNjkGmZHXX%2BW1m7fKGu57nb2T7eM%2FGzmjmNpiq1pyqg%3D%3D"); // 서비스키
             urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=50"); // 한 페이지 결과 수
