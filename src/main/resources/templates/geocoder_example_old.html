@@ -11,12 +11,12 @@
     <input type="text" id="address" placeholder="예: 서울특별시 중구 명동">
     <button onclick="searchAddress()">검색</button>
     <p id="result"></p>
-    <div id="map" style="width:500px;height:400px;"></div> <!-- 지도 컨테이너 추가 -->
+    <div id="map" style="width:1280px;height:720px;"></div> <!-- 지도 컨테이너 추가 -->
 
     <script>
         var map = new naver.maps.Map("map", {
             center: new naver.maps.LatLng(37.5665, 126.9780),
-            zoom: 10
+            zoom: 16 // 지도 확대 크기
         });
 
         function searchAddress() {
