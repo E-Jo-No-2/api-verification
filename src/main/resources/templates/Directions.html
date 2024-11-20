@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>최적 경로</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2"></script>
+</head>
+<body>
+<h1>최적 경로 찾기</h1>
+
+<form action="/map" method="get">
+    <label for="start">출발지 좌표:</label>
+    <input type="text" id="start" name="start" placeholder="예)127.1058342,37.359708" required>
+    <br>
+    <label for="goal">도착지 좌표:</label>
+    <input type="text" id="goal" name="goal" placeholder="예)129.075986,35.179470" required>
+    <br>
+    <label for="waypoints">경유지 좌표 (|로 장소 구분 최대 15까지):</label>
+    <input type="text" id="waypoints" name="waypoints" placeholder="예)128.12345,37.12345|128.23456,37.23456">
+    <br>0
+    <button type="submit">경로 찾기</button>
+</form>
+
+<hr>
+
+<!-- 지도 표시 -->
+<div id="map" style="width:100%; height:500px;"></div>
+
+<script th:inline="javascript">
+    // 네이버 지도 초기화
+    var map = new naver.maps.Map('map', {
+        center: new naver.maps.LatLng(37.3595704, 127.105399),
+        zoom: 10
+    });
+
+    var path = /*[[${path}]]*/ [];
+
+    // 경로 데이터를 LatLng 객체로 변환
+    var routePath = path.map(function(coord) {
+        return new naver.maps.LatLng(coord[0], coord[1]);
+    });
+
+    // 경로를 지도에 표시
+    var polyline = new naver.maps.Polyline({
+        map: map,
+        path: routePath,
+        strokeColor: '#ffdd00',
+        strokeWeight: 4
+    });
+
+    // 지도의 중심을 첫 번째 경로 지점으로 설정
+    if (routePath.length > 0) {
+        map.setCenter(routePath[0]);
+    }
+</script>
+</body>
+</html>
