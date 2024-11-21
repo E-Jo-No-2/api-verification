@@ -62,6 +62,26 @@ body {
     margin-top: 5px;
 }
 
+/* Weather Info Section */
+.weather-info {
+    display: flex;
+    align-items: center;
+}
+
+.weather-icon {
+    flex: 0 0 auto;
+    margin-right: 15px;
+}
+
+.weather-icon img {
+    width: 50px;
+    height: 50px;
+}
+
+.weather-details {
+    flex: 1 1 auto;
+}
+
 /* Cards Section */
 .cards {
     display: grid;
