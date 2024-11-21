@@ -2,6 +2,7 @@ package DTO;
 
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class ReviewDTO {
 
@@ -10,7 +11,7 @@ public class ReviewDTO {
     private int spot_id;
     private double rating;
     private String comment;
-    private Timestamp create_time;
+    private LocalDateTime create_time;
 
     public int getReview_id() {
         return review_id;
@@ -52,11 +53,11 @@ public class ReviewDTO {
         this.comment = comment;
     }
 
-    public Timestamp getCreate_time() {
+    public LocalDateTime getCreate_time() {
         return create_time;
     }
 
-    public void setCreate_time(Timestamp create_time) {
+    public void setCreate_time(LocalDateTime create_time) {
         this.create_time = create_time;
     }
 
