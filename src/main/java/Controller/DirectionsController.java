@@ -31,4 +31,16 @@ public class DirectionsController {
         model.addAttribute("path", path);
         return "map";
     }
+    public List<double[]> getOptimalPath(String start, String goal, List<String> waypoints) {
+        String apiUrl = "https://naveropenapi/map/directions/v5?start=" + start +
+                "&goal=" + goal +
+                (waypoints.isEmpty() ? "" : "&waypoints=" + String.join("|", waypoints));
+
+        System.out.println("API URL: " + apiUrl);
+
+        // 실제 API 호출 로직 추가 (예: RestTemplate)
+        // 네이버 API 응답 데이터를 경로로 변환하여 반환
+        return List.of(); // 테스트 시 빈 데이터 반환
+    }
+
 }
