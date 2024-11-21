@@ -1,6 +1,6 @@
 package DTO;
 
-import java.math.BigDecimal;
+
 import java.sql.Timestamp;
 
 public class ReviewDTO {
@@ -59,4 +59,5 @@ public class ReviewDTO {
     public void setCreate_time(Timestamp create_time) {
         this.create_time = create_time;
     }
+
 }

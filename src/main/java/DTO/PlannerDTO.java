@@ -41,8 +41,4 @@ public class PlannerDTO {
         this.start_date = start_date;
     }
 
-
-
-
-
 }

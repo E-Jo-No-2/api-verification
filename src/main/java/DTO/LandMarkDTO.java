@@ -1,6 +1,6 @@
 package DTO;
 
-import java.math.BigDecimal;
+
 
 public class LandMarkDTO {
     private int landmark_id;
@@ -8,7 +8,6 @@ public class LandMarkDTO {
     private String theme_name;
     private double longitude;
     private double latitude;
-
 
     public int getLandmark_id() {
         return landmark_id;

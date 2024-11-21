@@ -38,8 +38,4 @@ public class Planner_SpotDTO {
         this.visit_order = visit_order;
     }
 
-
-
-
-
 }

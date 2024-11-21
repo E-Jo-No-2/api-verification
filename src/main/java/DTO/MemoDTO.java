@@ -2,6 +2,8 @@ package DTO;
 
 public class MemoDTO {
     private int memo_id;
+    private int planner_id;
+    private String memo_content;
 
     public int getMemo_id() {
         return memo_id;
@@ -27,8 +29,6 @@ public class MemoDTO {
         this.memo_content = memo_content;
     }
 
-    private int planner_id;
-    private String memo_content;
 
 
 
