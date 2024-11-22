@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background: url('./images/4.jpg') no-repeat center center fixed; /* 배경 이미지 추가 */
+    background: url('../images/4.jpg') no-repeat center center fixed; /* 배경 이미지 추가 */
     background-size: cover; /* 이미지를 화면에 맞게 조정 */
     display: flex;
     justify-content: center;
@@ -60,6 +60,52 @@ body {
     display: block;
     font-size: 12px;
     margin-top: 5px;
+}
+
+/* Weather Info Section */
+.weather-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* 추가: 요소 사이 간격 */
+}
+
+.weather-icon {
+    flex: 0 0 auto;
+    margin-right: 15px; /* 추가: 아이콘과 텍스트 사이 간격 */
+}
+
+.weather-icon img {
+    width: 50px;
+    height: 50px;
+}
+
+.weather-details {
+    flex: 1 1 auto;
+}
+
+/* Weather Forecast Section */
+.weather-forecast {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.weather-forecast h3 {
+    flex: 0 0 100px;
+}
+
+.weather-icon {
+    flex: 0 0 auto;
+    margin-right: 15px;
+}
+
+.weather-icon img {
+    width: 50px;
+    height: 50px;
+}
+
+.weather-details {
+    flex: 1 1 auto;
 }
 
 /* Cards Section */
