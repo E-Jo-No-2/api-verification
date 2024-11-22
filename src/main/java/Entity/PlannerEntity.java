@@ -7,11 +7,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "Planner")
+@Data
 public class PlannerEntity {
 
     @Id
@@ -34,38 +36,6 @@ public class PlannerEntity {
         this.plannerId = plannerId;
         this.userId = userId;
         this.startDate = startDate;
-        this.themeName = themeName;
-    }
-
-    public int getPlannerId() {
-        return plannerId;
-    }
-
-    public void setPlannerId(int plannerId) {
-        this.plannerId = plannerId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getThemeName() {
-        return themeName;
-    }
-
-    public void setThemeName(String themeName) {
         this.themeName = themeName;
     }
 
