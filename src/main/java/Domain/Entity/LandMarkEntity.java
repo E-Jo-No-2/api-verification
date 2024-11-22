@@ -7,10 +7,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "LandMark")
 @Data
+@NoArgsConstructor
 public class LandMarkEntity {
 
     @Id
@@ -30,9 +32,7 @@ public class LandMarkEntity {
     @Column(name = "latitude", precision = 9, scale = 6, nullable = false)
     private double latitude;
 
-    // 기본 생성자 (required by JPA)
-    public LandMarkEntity() { //생성자 overloading
-    }
+
 
     // Constructor with parameters
     public LandMarkEntity(int landmark_id, String landmark_name, String theme_name, double longitude, double latitude) {
