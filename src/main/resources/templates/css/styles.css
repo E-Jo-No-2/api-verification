@@ -62,51 +62,6 @@ body {
     margin-top: 5px;
 }
 
-/* Weather Info Section */
-.weather-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px; /* 추가: 요소 사이 간격 */
-}
-
-.weather-icon {
-    flex: 0 0 auto;
-    margin-bottom: 2px; /* 수정: 아이콘과 텍스트 사이 간격 */
-}
-
-.weather-icon img {
-    width: 50px;
-    height: 50px;
-}
-
-.weather-details {
-    flex: 1 1 auto;
-    text-align: center; /* 텍스트 중앙 정렬 */
-}
-
-/* Weather Forecast Section */
-.weather-forecast {
-    display: flex;
-    flex-direction: column; /* 세로 정렬 */
-    align-items: center;
-    margin: 10px;
-    padding: 8px; /* 수정: 패딩 조절 */
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.weather-forecast h3 {
-    font-size: 12px; /* 월 일 텍스트 크기 조정 */
-    margin: 2px 0; /* 수정: 위아래 여백 조절 */
-}
-
-.weather-forecast p {
-    font-size: 12px; /* 온도 텍스트 크기 조정 */
-    margin: 2px 0; /* 수정: 위아래 여백 조절 */
-}
-
 /* Cards Section */
 .cards {
     display: grid;
@@ -157,12 +112,4 @@ body {
     font-weight: bold;
     color: #007bff;
     cursor: pointer;
-}
-
-/* New Weather Data Section */
-#weather-data {
-    display: flex;
-    justify-content: space-around; /* 균등 분배 */
-    width: 100%; /* 가로 크기 전체 */
-    padding: 10px; /* 패딩 추가 */
 }
