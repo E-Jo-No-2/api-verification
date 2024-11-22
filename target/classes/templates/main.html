@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
     <!-- Header Section -->
     <div class="header">
         <h1>즐겨찾기</h1>
-        <p class="date-time">Tuesday 12<sup>th</sup> November 2024 4:04</p>
+        <p class="date-time" id="date-time"></p>
     </div>
 
     <!-- Weather Section -->
@@ -29,5 +29,25 @@
 </div>
 
 <script src="/js/script.js"></script>
+<script>
+    function updateDateTime() {
+        const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+        const months = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+
+        const now = new Date();
+        const day = days[now.getDay()];
+        const date = now.getDate();
+        const month = months[now.getMonth()];
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        document.getElementById("date-time").innerText = `${year}년 ${month} ${date}일 (${day}) ${hours}:${minutes}`;
+    }
+
+    // 페이지 로드 시 및 매 분마다 날짜 및 시간 업데이트
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+</script>
 </body>
 </html>
