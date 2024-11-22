@@ -1,6 +1,3 @@
-package Controller;
-
-import Service.DirectionsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,24 +20,16 @@ public class DirectionsController {
                           @RequestParam String goal,
                           @RequestParam(required = false) String waypoints,
                           Model model) {
+        // 경유지 처리
         List<String> waypointList = (waypoints != null && !waypoints.isEmpty())
                 ? Arrays.asList(waypoints.split("\\|"))
                 : List.of();
 
+        // 서비스 호출
         List<double[]> path = directionsService.getOptimalPath(start, goal, waypointList);
+
+        // 경로 데이터를 모델에 추가
         model.addAttribute("path", path);
-        return "map";
+        return "map"; // map.html 반환
     }
-    public List<double[]> getOptimalPath(String start, String goal, List<String> waypoints) {
-        String apiUrl = "https://naveropenapi/map/directions/v5?start=" + start +
-                "&goal=" + goal +
-                (waypoints.isEmpty() ? "" : "&waypoints=" + String.join("|", waypoints));
-
-        System.out.println("API URL: " + apiUrl);
-
-        // 실제 API 호출 로직 추가 (예: RestTemplate)
-        // 네이버 API 응답 데이터를 경로로 변환하여 반환
-        return List.of(); // 테스트 시 빈 데이터 반환
-    }
-
 }

@@ -1,4 +1,4 @@
-package DTO;
+package com.locationbase.DTO;
 
 public class Planner_SpotDTO {
     private int planner_spot_id;
