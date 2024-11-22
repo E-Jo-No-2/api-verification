@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(data => {
             const iconCode = data.weather[0].icon;
-            const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+            const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`; // 기본 크기(1x) 아이콘 URL
 
             document.getElementById("weather-data").innerHTML = `
                 <div class="weather-icon">
