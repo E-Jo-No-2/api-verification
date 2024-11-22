@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Tourist Attractions Map</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2"></script>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps-geocoder.js"></script>
+</head>
+<body>
+    <h3>관광지 지도</h3>
+    <div id="map" style="width:1280px;height:720px;"></div>
+
+    <script>
+        // 기본 지도 설정
+        var map = new naver.maps.Map("map", {
+            center: new naver.maps.LatLng(37.5665, 126.9780), // 서울 중심 좌표
+            zoom: 13 // 지도 확대 크기
+        });
+
+        // 클릭된 마커의 좌표를 저장할 배열
+        var clickedMarkers = [];
+
+        // XML 데이터를 기반으로 마커를 추가하는 함수
+        function addMarkersFromXML(xmlData) {
+            var parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(xmlData, "application/xml");
+            var items = xmlDoc.getElementsByTagName("item");
+
+            for (var i = 0; i < items.length; i++) {
+                var title = items[i].getElementsByTagName("title")[0].textContent;
+                var mapx = items[i].getElementsByTagName("mapx")[0].textContent;
+                var mapy = items[i].getElementsByTagName("mapy")[0].textContent;
+
+                var marker = new naver.maps.Marker({
+                    position: new naver.maps.LatLng(parseFloat(mapy), parseFloat(mapx)),
+                    map: map,
+                    title: title
+                });
+
+                // 마커에 클릭 이벤트 추가 (팝업 정보 표시 및 직선 연결)
+                (function(marker, title) {
+                    naver.maps.Event.addListener(marker, "click", function(e) {
+                        alert(title + "의 위치입니다.");
+
+                        // 클릭된 마커의 좌표 저장
+                        clickedMarkers.push(marker.getPosition());
+
+                        // 클릭된 마커가 2개 이상일 경우 직선으로 연결
+                        if (clickedMarkers.length > 1) {
+                            var polyline = new naver.maps.Polyline({
+                                map: map,
+                                path: clickedMarkers,
+                                strokeColor: '#5347AA',
+                                strokeWeight: 3
+                            });
+                        }
+                    });
+                })(marker, title);
+            }
+        }
+
+        // XML 데이터 불러오기 및 마커 추가
+        fetch("tour_api_response.xml")
+            .then(response => response.text())
+            .then(data => addMarkersFromXML(data))
+            .catch(error => console.error("Error loading XML data:", error));
+    </script>
+</body>
+</html>
