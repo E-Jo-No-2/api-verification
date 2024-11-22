@@ -8,10 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Memo")
 @Data
+@NoArgsConstructor
 public class MemoEntity {
 
     @Id
@@ -25,8 +27,6 @@ public class MemoEntity {
     @Column(name = "memo_content",nullable = true)
     private String memo_content;
 
-    public MemoEntity() {
-    }
 
     public MemoEntity(int memo_id, int planner_id, String memo_content) {
         this.memo_id = memo_id;

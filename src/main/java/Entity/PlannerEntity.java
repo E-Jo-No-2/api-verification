@@ -8,12 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "Planner")
 @Data
+@NoArgsConstructor
 public class PlannerEntity {
 
     @Id
@@ -30,7 +32,6 @@ public class PlannerEntity {
     @Column(name = "theme_name", length = 50, nullable = false)
     private String themeName;
 
-    public PlannerEntity() {}
 
     public PlannerEntity(int plannerId, String userId, LocalDate startDate, String themeName) {
         this.plannerId = plannerId;

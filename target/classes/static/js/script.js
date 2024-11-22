@@ -24,7 +24,7 @@ newPlannerBtn.addEventListener("click", () => {
 
 // WeatherApp API 호출
 document.addEventListener("DOMContentLoaded", function() {
-    fetch('/getWeather?city=Seoul')
+    fetch('/getWeather')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
@@ -32,22 +32,36 @@ document.addEventListener("DOMContentLoaded", function() {
             return response.json();
         })
         .then(data => {
-            const iconCode = data.weather[0].icon;
-            const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`; // 기본 크기(1x) 아이콘 URL
+            if (data.error) {
+                throw new Error(data.error);
+            }
 
-            document.getElementById("weather-data").innerHTML = `
-                <div class="weather-icon">
-                    <img src="${iconUrl}" alt="Weather Icon">
-                </div>
-                <div class="weather-details">
-                    <h3>${data.name}의 날씨:</h3>
-                    <p>${data.weather[0].description}</p>
-                    <p>현재 온도: ${data.main.temp}°C</p>
-                </div>
-            `;
+            const forecasts = data.list; // 필터링된 5일간의 오전 12시 날씨 데이터
+
+            let weatherHtml = "";
+            forecasts.forEach(forecast => {
+                const date = new Date(forecast.dt * 1000).toLocaleString();
+                const iconCode = forecast.weather[0].icon;
+                const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+
+                weatherHtml += `
+                    <div class="weather-forecast">
+                        <h3>${date}</h3>
+                        <div class="weather-icon">
+                            <img src="${iconUrl}" alt="Weather Icon">
+                        </div>
+                        <div class="weather-details">
+                            <p>${forecast.weather[0].description}</p>
+                            <p>온도: ${forecast.main.temp}°C</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById("weather-data").innerHTML = weatherHtml;
         })
         .catch(error => {
             console.error('Error during fetch request:', error);
-            document.getElementById("weather-data").innerText = "날씨 정보를 불러오는 도중 오류가 발생했습니다.";
+            document.getElementById("weather-data").innerText = error.message;
         });
 });

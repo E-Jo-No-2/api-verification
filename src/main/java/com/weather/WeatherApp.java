@@ -8,18 +8,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class WeatherApp {
     private static final Logger logger = LoggerFactory.getLogger(WeatherApp.class);
 
-    public static JSONObject getWeatherData(String city, String apiKey, String lang) {
+    public static JSONObject get5DayForecast(String apiKey, String lang) {
         JSONObject data = null;
         try {
-            city = URLEncoder.encode(city, UTF_8);
-            String apiURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey + "&lang=" + lang + "&units=metric";
+            double lat = 37.5665; // 서울시의 위도
+            double lon = 126.9780; // 서울시의 경도
+            String apiURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey + "&lang=" + lang + "&units=metric";
             URL url = new URL(apiURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
