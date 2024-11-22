@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Review")
 @Data
+@NoArgsConstructor
 public class ReviewEntity {
 
     @Id
@@ -36,7 +38,6 @@ public class ReviewEntity {
     @Column(name = "creat_time", nullable = true )
     private LocalDateTime creat_time;
 
-    public ReviewEntity() {}
 
     public ReviewEntity(String user_id, int spot_id, double rating, String comment, LocalDateTime creat_time) {
         this.user_id = user_id;
