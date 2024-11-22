@@ -32,6 +32,8 @@ public class LandMarkEntity {
     @Column(name = "latitude", precision = 9, scale = 6, nullable = false)
     private double latitude;
 
+
+
     // Constructor with parameters
     public LandMarkEntity(int landmark_id, String landmark_name, String theme_name, double longitude, double latitude) {
         this.landmark_id = landmark_id;
