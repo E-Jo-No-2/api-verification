@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class WeatherController {
 
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/main.html";
+    }
+
     @GetMapping("/main.html")
     public String main() {
         return "main"; // main.html 파일 이름에서 확장자를 제외한 이름 반환
