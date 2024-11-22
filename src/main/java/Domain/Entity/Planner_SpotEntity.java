@@ -1,12 +1,14 @@
-package Entity;
+package Domain.Entity;
 
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Planner_Spot")
 @Data
+@NoArgsConstructor
 public class Planner_SpotEntity {
 
     @Id
@@ -22,8 +24,6 @@ public class Planner_SpotEntity {
 
     @Column(name = "visit_order", nullable = true)
     private int visit_order;
-
-    public Planner_SpotEntity() {}
 
     public Planner_SpotEntity(int planner_id, int spot_id, int visit_order) {
         this.planner_spot_id = planner_id;

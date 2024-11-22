@@ -1,4 +1,4 @@
-package Entity;
+package Domain.Entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +9,7 @@ import lombok.Data;
 @Entity
 @Table(name = "Theme")
 @Data
+
 public class ThemeEntity {
 
     @Id
