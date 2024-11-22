@@ -28,8 +28,8 @@ public class LandMarkEntity {
     @Column(name = "latitude", precision = 9, scale = 6, nullable = false)
     private double latitude;
 
-    // No-argument constructor (required by JPA)
-    public LandMarkEntity() {
+    // 기본 생성자 (required by JPA)
+    public LandMarkEntity() { //생성자 overloading
     }
 
     // Constructor with parameters
