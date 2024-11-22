@@ -1,4 +1,4 @@
-package DTO;
+package com.locationbase.DTO;
 
 public class MemoDTO {
     private int memo_id;

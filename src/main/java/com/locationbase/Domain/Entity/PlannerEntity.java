@@ -1,4 +1,4 @@
-package Domain.Entity;
+package com.locationbase.Domain.Entity;
 
 
 import jakarta.persistence.Column;
