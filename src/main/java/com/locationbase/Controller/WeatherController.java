@@ -1,5 +1,6 @@
-package com.weather;
+package com.locationbase.Controller;
 
+import com.locationbase.Service.WeatherApp;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
