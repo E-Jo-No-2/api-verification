@@ -1,55 +1,25 @@
 package com.locationbase.Domain.Repository.Entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDate;
 
+@Data
 @Entity
 @Table(name = "planner")
 public class PlannerEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // planner_id 자동 생성
-    private int plannerId;
+    private int planner_id;
 
     @Column(nullable = false, length = 36)
-    private String userId;
+    private String user_id;
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDate start_date;
 
     @Column(nullable = false, length = 50)
-    private String themeName;
-
-    // Getters and Setters
-    public int getPlannerId() {
-        return plannerId;
-    }
-
-    public void setPlannerId(int plannerId) {
-        this.plannerId = plannerId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getThemeName() {
-        return themeName;
-    }
-
-    public void setThemeName(String themeName) {
-        this.themeName = themeName;
-    }
+    private String theme_name;
 }
