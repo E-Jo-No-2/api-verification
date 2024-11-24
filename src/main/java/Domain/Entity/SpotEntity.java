@@ -15,8 +15,12 @@ public class SpotEntity{
     @Column(nullable = false,length = 50)
     private String spot_name;
 
-    @Column(nullable = false,
+
+    @Column(nullable = false, precision = 9, scale = 6)
     private double longitude;
+
+
+    @Column(nullable = false, precision = 9, scale = 6)
     private double latitude;
 
 
