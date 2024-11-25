@@ -1,4 +1,4 @@
-package Domain.Entity;
+package com.locationbase.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

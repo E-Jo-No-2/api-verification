@@ -1,7 +1,7 @@
 package com.locationbase.Service;
 
-import Domain.Entity.LandMarkEntity;
-import Domain.Entity.PlannerEntity;
+import com.locationbase.Entity.LandMarkEntity;
+import com.locationbase.Entity.PlannerEntity;
 import com.locationbase.Domain.Repository.LandMarkRepository;
 import com.locationbase.Domain.Repository.PlannerRepository;
 import org.springframework.stereotype.Service;
