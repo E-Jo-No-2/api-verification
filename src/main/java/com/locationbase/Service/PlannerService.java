@@ -34,11 +34,11 @@ public class PlannerService {
     }
 
     public PlannerEntity updatePlanner(Integer planner_id, Date newStart_date, String newTheme_name) {
-        // Retrieve the existing planner or throw an exception if it doesn't exist
+
         PlannerEntity existingPlanner = plannerRepository.findById(planner_id)
                 .orElseThrow(() -> new RuntimeException("Planner not found with ID: " + planner_id));
 
-        // Update the fields with new values
+
         existingPlanner.setStart_date(newStart_date.toLocalDate());
         existingPlanner.setTheme_name(newTheme_name);
 

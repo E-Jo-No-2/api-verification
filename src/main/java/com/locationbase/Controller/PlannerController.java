@@ -19,7 +19,7 @@ public class PlannerController {
         this.plannerService = plannerService;
     }
 
-    // Create a new planner
+
     @PostMapping("/create")
     public ResponseEntity<PlannerEntity> createPlanner(
             @RequestParam Date start_date,
@@ -28,25 +28,25 @@ public class PlannerController {
         return ResponseEntity.ok(planner);
     }
 
-    // Retrieve landmarks by theme
+
     @GetMapping("/landmarks")
     public ResponseEntity<List<LandMarkEntity>> getLandmarksByTheme(@RequestParam String theme_name) {
         List<LandMarkEntity> landmarks = plannerService.getLandmarksByTheme(theme_name);
         return ResponseEntity.ok(landmarks);
     }
 
-    // Update an existing planner
-    @PutMapping("/{plannerId}")
+
+    @PutMapping("/{planner_id}")
     public ResponseEntity<PlannerEntity> updatePlanner(
-            @PathVariable Integer plannerId,
+            @PathVariable Integer planner_id,
             @RequestParam Date newStart_date,
             @RequestParam String newTheme_name) {
-        PlannerEntity updatedPlanner = plannerService.updatePlanner(plannerId, newStart_date, newTheme_name);
+        PlannerEntity updatedPlanner = plannerService.updatePlanner(planner_id, newStart_date, newTheme_name);
         return ResponseEntity.ok(updatedPlanner);
     }
 
-    // Delete a planner
-    @DeleteMapping("/{plannerId}")
+
+    @DeleteMapping("/{planner_id}")
     public ResponseEntity<Void> deletePlanner(@PathVariable Integer planner_id) {
         plannerService.deletePlanner(planner_id);
         return ResponseEntity.noContent().build();
