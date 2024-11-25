@@ -47,8 +47,8 @@ public class PlannerController {
 
     // Delete a planner
     @DeleteMapping("/{plannerId}")
-    public ResponseEntity<Void> deletePlanner(@PathVariable Integer plannerId) {
-        plannerService.deletePlanner(plannerId);
+    public ResponseEntity<Void> deletePlanner(@PathVariable Integer planner_id) {
+        plannerService.deletePlanner(planner_id);
         return ResponseEntity.noContent().build();
     }
 }
