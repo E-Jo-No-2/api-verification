@@ -1,4 +1,4 @@
 package com.locationbase.Domain.Repository;
 
-public class RevierRepository {
+public class ReviewRepository {
 }
