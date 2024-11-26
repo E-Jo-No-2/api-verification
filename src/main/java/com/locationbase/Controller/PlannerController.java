@@ -1,3 +1,4 @@
+/*
 package com.locationbase.Controller;
 
 import com.locationbase.Entity.LandMarkEntity;
@@ -52,3 +53,4 @@ public class PlannerController {
         return ResponseEntity.noContent().build();
     }
 }
+*/
