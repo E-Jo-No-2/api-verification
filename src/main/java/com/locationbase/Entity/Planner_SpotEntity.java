@@ -1,7 +1,9 @@
 package com.locationbase.Entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "Planner_Spot")
 public class Planner_SpotEntity {
