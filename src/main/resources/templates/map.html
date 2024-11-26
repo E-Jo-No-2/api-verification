@@ -1,59 +1,176 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>최적 경로</title>
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Route Finder</title>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2" defer></script>
+    <style>
+        #routeInfo {
+            margin-top: 20px;
+        }
+
+        .option-box {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .option-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .options-buttons {
+            margin-top: 20px;
+        }
+
+        .options-buttons button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        #routeDisplay {
+            display: inline-block;
+            vertical-align: top;
+            margin-left: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1>최적 경로 찾기</h1>
+<h1>경로 찾기</h1>
 
-<!-- 사용자 입력 폼 -->
-<form action="/map" method="get">
-    <label for="start">출발지 좌표:</label>
-    <input type="text" id="start" name="start" placeholder="예)127.1058342,37.359708" required>
-    <br>
-    <label for="goal">도착지 좌표:</label>
-    <input type="text" id="goal" name="goal" placeholder="예)129.075986,35.179470" required>
-    <br>
-    <label for="waypoints">경유지 좌표 (선택, |로 구분):</label>
-    <input type="text" id="waypoints" name="waypoints" placeholder="예)128.12345,37.12345|128.23456,37.23456">
-    <br>
-    <button type="submit">경로 찾기</button>
-</form>
+<div id="form-container" style="display: inline-block; width: 50%;">
+    <form id="routeForm">
+        <label for="start">출발지:</label>
+        <input type="text" id="start" placeholder="출발지 (경도,위도)" required>
+        <br>
+        <label for="goal">목적지:</label>
+        <input type="text" id="goal" placeholder="목적지 (경도,위도)" required>
+        <br>
+        <button type="submit">경로 찾기</button>
+    </form>
+</div>
 
-<hr>
+<div id="routeDisplay" style="width: 45%;"></div>
+<div id="map" style="width: 100%; height: 500px; margin-top: 20px;"></div>
+<div id="routeInfo"></div>
 
-<!-- 지도 표시 -->
-<div id="map" style="width:100%; height:500px;"></div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const map = new naver.maps.Map('map', {
+            center: new naver.maps.LatLng(37.5665, 126.9780),
+            zoom: 10
+        });
 
-<script th:inline="javascript">
-    // 네이버 지도 초기화
-    var map = new naver.maps.Map('map', {
-        center: new naver.maps.LatLng(37.3595704, 127.105399), // 기본 중심 좌표
-        zoom: 10
+        function addMarkers(startCoords, goalCoords) {
+            new naver.maps.Marker({
+                position: new naver.maps.LatLng(startCoords[1], startCoords[0]),
+                map: map,
+                title: "출발지"
+            });
+
+            new naver.maps.Marker({
+                position: new naver.maps.LatLng(goalCoords[1], goalCoords[0]),
+                map: map,
+                title: "목적지"
+            });
+        }
+
+        function drawRoute(routeCoordinates, startCoords, goalCoords) {
+            const path = routeCoordinates.map(coord => new naver.maps.LatLng(coord[1], coord[0]));
+
+            // 메인 경로
+            new naver.maps.Polyline({
+                map: map,
+                path: path,
+                strokeColor: '#5347AA',
+                strokeWeight: 5
+            });
+
+            // 출발지와 첫 경로 점을 점선으로 연결
+            if (routeCoordinates.length > 0) {
+                new naver.maps.Polyline({
+                    map: map,
+                    path: [
+                        new naver.maps.LatLng(startCoords[1], startCoords[0]),
+                        new naver.maps.LatLng(routeCoordinates[0][1], routeCoordinates[0][0])
+                    ],
+                    strokeColor: '#FF0000',
+                    strokeWeight: 3,
+                    strokeLineDash: [10, 10], // 점선 스타일 적용
+                    strokeOpacity: 0.8
+                });
+            }
+
+            // 도착지와 마지막 경로 점을 점선으로 연결
+            if (routeCoordinates.length > 0) {
+                new naver.maps.Polyline({
+                    map: map,
+                    path: [
+                        new naver.maps.LatLng(routeCoordinates[routeCoordinates.length - 1][1], routeCoordinates[routeCoordinates.length - 1][0]),
+                        new naver.maps.LatLng(goalCoords[1], goalCoords[0])
+                    ],
+                    strokeColor: '#FF0000',
+                    strokeWeight: 3,
+                    strokeLineDash: [10, 10], // 점선 스타일 적용
+                    strokeOpacity: 0.8
+                });
+            }
+
+            focusOnRoute([startCoords, ...routeCoordinates, goalCoords]); // 경로에 포커스
+        }
+
+        function focusOnRoute(routeCoordinates) {
+            const bounds = new naver.maps.LatLngBounds();
+            routeCoordinates.forEach(coord => bounds.extend(new naver.maps.LatLng(coord[1], coord[0])));
+            map.fitBounds(bounds); // 경로 중심으로 지도 맞춤
+        }
+
+        function displayRouteInfo(routeData, selectedOption) {
+            const routeDisplayDiv = document.getElementById("routeDisplay");
+            routeDisplayDiv.innerHTML = ''; // Clear previous content
+
+            const summary = routeData[selectedOption]?.summary || {};
+
+            routeDisplayDiv.innerHTML = `
+                <div class="option-box">
+                    <h3>${selectedOption}</h3>
+                    <p><b>거리:</b> ${summary.distance || 'N/A'}m</p>
+                    <p><b>소요 시간:</b> ${Math.ceil((summary.duration || 0) / 60000)}분</p>
+                    <p><b>택시 요금:</b> ${summary.taxiFare || 'N/A'}원</p>
+                </div>
+            `;
+        }
+
+        document.getElementById("routeForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const start = document.getElementById("start").value.trim();
+            const goal = document.getElementById("goal").value.trim();
+            const startCoords = start.split(',').map(Number);
+            const goalCoords = goal.split(',').map(Number);
+
+            addMarkers(startCoords, goalCoords);
+
+            fetch('/calculate-route', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ start, goal })
+            })
+                .then(response => response.json())
+                .then(routeData => {
+                    const selectedOption = "trafast"; // 기본 옵션
+                    const routeCoordinates = routeData[selectedOption]?.path || [];
+                    drawRoute(routeCoordinates, startCoords, goalCoords); // 경로와 점선 표시
+                    displayRouteInfo(routeData, selectedOption); // 경로 정보를 표시
+                })
+                .catch(error => console.error('Error:', error));
+        });
     });
-
-    // 서버에서 전달된 경로 데이터
-    var path = /*[[${path}]]*/ []; // Spring 컨트롤러에서 전달받은 경로 데이터
-
-    // 경로 데이터를 LatLng 객체로 변환
-    var routePath = path.map(function(coord) {
-        return new naver.maps.LatLng(coord[0], coord[1]);
-    });
-
-    // 경로를 지도에 표시
-    var polyline = new naver.maps.Polyline({
-        map: map,
-        path: routePath,
-        strokeColor: '#ffdd00',
-        strokeWeight: 4
-    });
-
-    // 경로가 있는 경우 첫 번째 지점을 중심으로 설정
-    if (routePath.length > 0) {
-        map.setCenter(routePath[0]);
-    }
 </script>
 </body>
 </html>
