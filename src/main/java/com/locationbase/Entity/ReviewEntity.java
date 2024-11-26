@@ -12,21 +12,27 @@ public class ReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id")
     private int review_id;
 
-    @Column(nullable = false, length = 16)
-    private String user_id;
+    @Column(name = "user_id", nullable = false)
+    private int user_id;
 
-    @Column(nullable = false)
+    @Column(name = "spot_id", nullable = false)
     private int spot_id;
 
-    @Column(nullable = true, precision = 2, scale = 1)
-    private double rating;
+    @Column(name = "rating", nullable = true)
+    private Double rating;
 
-    @Column(nullable = true, columnDefinition = "TEXT")
+    @Column(name = "comment", columnDefinition = "TEXT", nullable = false)
     private String comment;
 
-    @Column(nullable = true)
+    @Column(name = "creat_time", nullable = true, updatable = false)
     private LocalDateTime creat_time;
 
+    @PrePersist
+    protected void onCreate() {
+        this.creat_time = LocalDateTime.now(); // Auto-set timestamp
+    }
 }
+

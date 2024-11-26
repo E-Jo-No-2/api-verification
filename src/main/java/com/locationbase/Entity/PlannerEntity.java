@@ -20,6 +20,6 @@ public class PlannerEntity {
     @Column(nullable = true)
     private LocalDate start_date;
 
-    @Column(nullable = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String theme_name;
 }
