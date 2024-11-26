@@ -1,6 +1,6 @@
 package com.locationbase.Controller;
 
-import com.locationbase.Service.WeatherApp;
+import com.locationbase.Service.WeatherService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -29,7 +29,7 @@ public class WeatherController {
         String lang = "kr";
         // OpenWeatherMap API 키를 여기에 입력했습니다.
         String apiKey = "d33209554507a1997686d8feab67ab6a";
-        JSONObject weatherData = WeatherApp.get5DayForecast(apiKey, lang);
+        JSONObject weatherData = WeatherService.get5DayForecast(apiKey, lang);
 
         if (weatherData == null) {
             return "{\"error\": \"날씨 정보를 불러오는 도중 오류가 발생했습니다.\"}";

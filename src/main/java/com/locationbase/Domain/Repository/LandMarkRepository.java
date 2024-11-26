@@ -1,3 +1,4 @@
+/*
 package com.locationbase.Domain.Repository;
 
 import com.locationbase.Entity.LandMarkEntity;
@@ -11,3 +12,4 @@ public interface LandMarkRepository extends JpaRepository<LandMarkEntity, Intege
 
     List<LandMarkEntity> findByTheme_name(String themeName);
 }
+*/

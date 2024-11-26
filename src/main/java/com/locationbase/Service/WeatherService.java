@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class WeatherApp {
-    private static final Logger logger = LoggerFactory.getLogger(WeatherApp.class);
+public class WeatherService {
+    private static final Logger logger = LoggerFactory.getLogger(WeatherService.class);
 
     public static JSONObject get5DayForecast(String apiKey, String lang) {
         JSONObject data = null;
