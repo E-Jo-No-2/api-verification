@@ -1,4 +1,4 @@
-package com.locationbase.Domain.Repository;
+/*package com.locationbase.Domain.Repository;
 
 import com.locationbase.Entity.LandMarkEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface LandMarkRepository extends JpaRepository<LandMarkEntity, Integer> {
 
-    List<LandMarkEntity> findByTheme_name(String themeName);
-}
+    // 메서드 이름 수정
+    List<LandMarkEntity> findByTheme_name(String theme_name);
+}*/

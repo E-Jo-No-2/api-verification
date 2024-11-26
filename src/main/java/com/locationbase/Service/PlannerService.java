@@ -1,4 +1,4 @@
-package com.locationbase.Service;
+/*package com.locationbase.Service;
 
 import com.locationbase.Entity.LandMarkEntity;
 import com.locationbase.Entity.PlannerEntity;
@@ -54,7 +54,7 @@ public class PlannerService {
 
 
     }
-}
+}*/
 
 
 

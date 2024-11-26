@@ -10,18 +10,18 @@ public class LandMarkEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "landmark_id") // Explicit mapping to match database column
+    @Column(name = "landmark_id")
     private int landmark_id;
 
-    @Column(name = "landmark_name", nullable = false, length = 100) // Explicit mapping
+    @Column(name = "landmark_name", nullable = false, length = 50)
     private String landmark_name;
 
-    @Column(name = "theme_name", nullable = false, length = 50) // Explicit mapping
+    @Column(name = "theme_name", nullable = false, length = 30)
     private String theme_name;
 
-    @Column(name = "longitude", nullable = false, columnDefinition = "DECIMAL(9,6)") // Precision for decimal
+    @Column(name = "longitude", nullable = false, columnDefinition = "DECIMAL(9,6)")
     private double longitude;
 
-    @Column(name = "latitude", nullable = false, columnDefinition = "DECIMAL(9,6)") // Precision for decimal
+    @Column(name = "latitude", nullable = false, columnDefinition = "DECIMAL(9,6)")
     private double latitude;
 }

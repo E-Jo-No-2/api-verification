@@ -10,7 +10,7 @@ public class ThemeEntity {
 
     @Id
     @Column(length = 50,nullable = false)
-    private String themeName;
+    private String theme_name;
 
     @Column(columnDefinition = "TEXT")
     private String description;

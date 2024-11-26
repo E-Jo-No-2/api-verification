@@ -1,4 +1,4 @@
-package com.locationbase.Controller;
+/*package com.locationbase.Controller;
 
 import com.locationbase.Entity.LandMarkEntity;
 import com.locationbase.Entity.PlannerEntity;
@@ -51,4 +51,4 @@ public class PlannerController {
         plannerService.deletePlanner(planner_id);
         return ResponseEntity.noContent().build();
     }
-}
+}*/
