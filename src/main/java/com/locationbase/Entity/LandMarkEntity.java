@@ -15,7 +15,7 @@ public class LandMarkEntity {
     @Column(name = "landmark_id")
     private int landmark_id;
 
-    @Column(name = "landmark_name", nullable = false, length = 50)
+    @Column(name = "landmark_name", nullable = false, length = 50, unique = true)
     private String landmark_name;
 
     @Column(name = "theme_name", nullable = false, length = 30)

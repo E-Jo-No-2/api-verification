@@ -25,15 +25,20 @@ public class PlannerEntity {
     @JoinColumn(name = "weather_date", referencedColumnName = "date", nullable = false)
     private WeatherEntity weather; // WeatherEntity와 관계 설정
 
+    @ManyToOne
+    @JoinColumn(name = "landmark_name", referencedColumnName = "landmark_name", nullable = false)
+    private LandMarkEntity landmark; // LandMarkEntity와 관계 설정
+
     @Column(name = "start_date", nullable = false)
     private LocalDate start_date;
 
     @Column(name = "theme_name", length = 50, nullable = false)
     private String theme_name;
 
-    public PlannerEntity(UserEntity user_id, WeatherEntity weather, LocalDate start_date, String theme_name) {
+    public PlannerEntity(UserEntity user_id, WeatherEntity weather, LandMarkEntity landmark, LocalDate start_date, String theme_name) {
         this.user_id = user_id;
         this.weather = weather;
+        this.landmark = landmark;
         this.start_date = start_date;
         this.theme_name = theme_name;
     }
