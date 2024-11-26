@@ -1,4 +1,4 @@
-/*package com.locationbase.Service;
+package com.locationbase.Service;
 
 import com.locationbase.Entity.LandMarkEntity;
 import com.locationbase.Entity.PlannerEntity;
@@ -28,7 +28,7 @@ public class PlannerService {
     }
 
     public List<LandMarkEntity> getLandmarksByTheme(String theme_name) {
-        return landmarkRepository.findByTheme_name(theme_name);
+        return landmarkRepository.findByThemeName(theme_name);
 
 
     }
@@ -54,7 +54,7 @@ public class PlannerService {
 
 
     }
-}*/
+}
 
 
 
