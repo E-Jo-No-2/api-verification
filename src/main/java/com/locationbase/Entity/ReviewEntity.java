@@ -17,16 +17,18 @@ public class ReviewEntity {
     @Column(name = "review_id")
     private int review_id;
 
-    @Column(name = "user_id", nullable = false)
-    private int user_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    private UserEntity user; // Assuming UserEntity has a user_id field
 
-    @Column(name = "spot_id", nullable = false)
-    private int spot_id;
+    @ManyToOne
+    @JoinColumn(name = "spot_id", referencedColumnName = "spot_id", nullable = false)
+    private SpotEntity spot; // Assuming SpotEntity has a spot_id field
 
-    @Column(name = "rating", nullable = true)
-    private Double rating;
+    @Column(name = "rating")
+    private Double rating; // Using Double without precision and scale
 
-    @Column(name = "comment", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
     @Column(name = "creat_time", nullable = true, updatable = false)
@@ -34,14 +36,8 @@ public class ReviewEntity {
 
     @PrePersist
     protected void onCreate() {
-        this.creat_time = LocalDateTime.now(); // Auto-set timestamp
-    }
-
-    public ReviewEntity(int user_id, int spot_id, Double rating, String comment) {
-        this.user_id = user_id;
-        this.spot_id = spot_id;
-        this.rating = rating;
-        this.comment = comment;
+        if (this.creat_time == null) {
+            this.creat_time = LocalDateTime.now(); // Auto-set timestamp if not provided
+        }
     }
 }
-

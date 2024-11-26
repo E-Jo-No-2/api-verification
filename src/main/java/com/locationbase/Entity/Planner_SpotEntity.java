@@ -12,20 +12,18 @@ public class Planner_SpotEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "planner_spot_id")
     private int planner_spot_id;
 
-    @Column(nullable = false)
-    private int planner_id;
+    @ManyToOne
+    @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
+    private PlannerEntity planner_id;
 
-    @Column(nullable = false)
-    private int spot_id;
+    @ManyToOne
+    @JoinColumn(name = "spot_id", referencedColumnName = "spot_id", nullable = true)
+    private SpotEntity spot_id;
 
-    @Column(nullable = true)
+    @Column(name = "visit_order")
     private int visit_order;
 
-    public Planner_SpotEntity(int planner_id, int spot_id, Integer visit_order) {
-        this.planner_id = planner_id;
-        this.spot_id = spot_id;
-        this.visit_order = visit_order;
-    }
 }
