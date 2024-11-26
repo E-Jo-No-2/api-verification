@@ -2,10 +2,12 @@ package com.locationbase.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "Landmark")
+@NoArgsConstructor
 public class LandMarkEntity {
 
     @Id
@@ -24,4 +26,11 @@ public class LandMarkEntity {
 
     @Column(name = "latitude", nullable = false, columnDefinition = "DECIMAL(9,6)")
     private double latitude;
+
+    public LandMarkEntity(String landmark_name, String theme_name, double longitude, double latitude) {
+        this.landmark_name = landmark_name;
+        this.theme_name = theme_name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 }

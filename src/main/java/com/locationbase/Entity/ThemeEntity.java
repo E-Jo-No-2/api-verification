@@ -2,10 +2,12 @@ package com.locationbase.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "Theme")
+@NoArgsConstructor
 public class ThemeEntity {
 
     @Id

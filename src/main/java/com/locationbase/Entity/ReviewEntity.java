@@ -2,12 +2,14 @@ package com.locationbase.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "Review")
+@NoArgsConstructor
 public class ReviewEntity {
 
     @Id
@@ -33,6 +35,13 @@ public class ReviewEntity {
     @PrePersist
     protected void onCreate() {
         this.creat_time = LocalDateTime.now(); // Auto-set timestamp
+    }
+
+    public ReviewEntity(int user_id, int spot_id, Double rating, String comment) {
+        this.user_id = user_id;
+        this.spot_id = spot_id;
+        this.rating = rating;
+        this.comment = comment;
     }
 }
 

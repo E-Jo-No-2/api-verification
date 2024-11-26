@@ -2,10 +2,12 @@ package com.locationbase.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "Spot")
+@NoArgsConstructor
 public class SpotEntity {
 
     @Id
@@ -21,6 +23,12 @@ public class SpotEntity {
 
     @Column(name = "latitude", nullable = false, columnDefinition = "DECIMAL(9,6)") // Matches SQL definition
     private double latitude;
+
+    public SpotEntity(String spot_name, double longitude, double latitude) {
+        this.spot_name = spot_name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 }
 
 
