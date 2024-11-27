@@ -12,17 +12,14 @@ public class MemoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "memo_id")
     private int memo_id;
 
-    @Column(nullable = false)
-    private int planner_id;
+    @ManyToOne
+    @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = false)
+    private PlannerEntity planner_id; // Assuming PlannerEntity has a `planner_id` field
 
-    @Column(nullable = false)
+    @Column(name = "memo_content", columnDefinition = "TEXT", nullable = true)
     private String memo_content;
-
-    public MemoEntity(int planner_id, String memo_content) {
-        this.planner_id = planner_id;
-        this.memo_content = memo_content;
-    }
 
 }

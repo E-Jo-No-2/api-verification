@@ -15,22 +15,17 @@ public class LandMarkEntity {
     @Column(name = "landmark_id")
     private int landmark_id;
 
-    @Column(name = "landmark_name", nullable = false, length = 50)
+    @Column(name = "landmark_name", nullable = false, length = 50, unique = true)
     private String landmark_name;
 
-    @Column(name = "theme_name", nullable = false, length = 30)
-    private String theme_name;
+    // Correct the @ManyToOne mapping here
+    @ManyToOne
+    @JoinColumn(name = "theme_name", referencedColumnName = "theme_name", nullable = true)
+    private ThemeEntity theme_name; // Referencing ThemeEntity here
 
     @Column(name = "longitude", nullable = false, columnDefinition = "DECIMAL(9,6)")
     private double longitude;
 
     @Column(name = "latitude", nullable = false, columnDefinition = "DECIMAL(9,6)")
     private double latitude;
-
-    public LandMarkEntity(String landmark_name, String theme_name, double longitude, double latitude) {
-        this.landmark_name = landmark_name;
-        this.theme_name = theme_name;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
 }
