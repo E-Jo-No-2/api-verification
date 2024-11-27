@@ -43,6 +43,14 @@
 <body>
 <h1>경로 찾기</h1>
 
+<div id="options-buttons" class="options-buttons">
+    <button data-option="trafast">실시간 빠른 길</button>
+    <button data-option="tracomfort">실시간 편한 길</button>
+    <button data-option="traoptimal">실시간 최적</button>
+    <button data-option="traavoidtoll">무료 우선</button>
+    <button data-option="traavoidcaronly">자동차 전용 도로 회피 우선</button>
+</div>
+
 <div id="form-container" style="display: inline-block; width: 50%;">
     <form id="routeForm">
         <label for="start">출발지:</label>
@@ -66,6 +74,17 @@
             zoom: 10
         });
 
+        let selectedOption = "trafast"; // 기본 옵션 설정
+
+        // 옵션 버튼 클릭 이벤트 추가
+        document.getElementById("options-buttons").addEventListener("click", (event) => {
+            if (event.target.tagName === "BUTTON") {
+                selectedOption = event.target.getAttribute("data-option");
+                document.querySelectorAll("#options-buttons button").forEach(btn => btn.style.backgroundColor = ""); // 버튼 색상 초기화
+                event.target.style.backgroundColor = "#d3d3d3"; // 선택된 버튼 강조
+            }
+        });
+
         function addMarkers(startCoords, goalCoords) {
             new naver.maps.Marker({
                 position: new naver.maps.LatLng(startCoords[1], startCoords[0]),
@@ -80,18 +99,68 @@
             });
         }
 
-        function drawRoute(routeCoordinates, startCoords, goalCoords) {
-            const path = routeCoordinates.map(coord => new naver.maps.LatLng(coord[1], coord[0]));
+        function drawRoute(routeCoordinates, startCoords, goalCoords, sections) {
+            const usedIndices = new Set();
 
-            // 메인 경로
-            new naver.maps.Polyline({
-                map: map,
-                path: path,
-                strokeColor: '#5347AA',
-                strokeWeight: 5
+            // 혼잡도 구간 그리기
+            sections.forEach(section => {
+                const sectionPath = routeCoordinates
+                    .slice(section.pointIndex, section.pointIndex + section.pointCount)
+                    .map(coord => new naver.maps.LatLng(coord[1], coord[0]));
+
+                let color = '#00FF00'; // 기본 색상 (원활)
+                if (section.congestion === 2) color = '#FFFF00'; // 보통
+                else if (section.congestion === 3) color = '#FF0000'; // 혼잡
+
+                new naver.maps.Polyline({
+                    map: map,
+                    path: sectionPath,
+                    strokeColor: color,
+                    strokeWeight: 5
+                });
+
+                // 사용된 인덱스 저장
+                for (let i = section.pointIndex; i < section.pointIndex + section.pointCount; i++) {
+                    usedIndices.add(i);
+                }
             });
 
-            // 출발지와 첫 경로 점을 점선으로 연결
+            // 정보가 없는 구간 그리기
+            let startIndex = null;
+            for (let i = 0; i < routeCoordinates.length; i++) {
+                if (!usedIndices.has(i)) {
+                    if (startIndex === null) startIndex = i;
+                } else if (startIndex !== null) {
+                    const unknownPath = routeCoordinates
+                        .slice(startIndex, i)
+                        .map(coord => new naver.maps.LatLng(coord[1], coord[0]));
+
+                    new naver.maps.Polyline({
+                        map: map,
+                        path: unknownPath,
+                        strokeColor: '#00FF00', // 기본 색상 (초록색)
+                        strokeWeight: 5
+                    });
+
+                    startIndex = null;
+                }
+            }
+
+            // 마지막 처리
+            if (startIndex !== null) {
+                const unknownPath = routeCoordinates
+                    .slice(startIndex)
+                    .map(coord => new naver.maps.LatLng(coord[1], coord[0]));
+
+                new naver.maps.Polyline({
+                    map: map,
+                    path: unknownPath,
+                    strokeColor: '#00FF00', // 기본 색상 (초록색)
+                    strokeWeight: 5
+                });
+            }
+
+            // 출발지와 도착지 점선 연결
             if (routeCoordinates.length > 0) {
                 new naver.maps.Polyline({
                     map: map,
@@ -101,13 +170,10 @@
                     ],
                     strokeColor: '#FF0000',
                     strokeWeight: 3,
-                    strokeLineDash: [10, 10], // 점선 스타일 적용
+                    strokeLineDash: [10, 10],
                     strokeOpacity: 0.8
                 });
-            }
 
-            // 도착지와 마지막 경로 점을 점선으로 연결
-            if (routeCoordinates.length > 0) {
                 new naver.maps.Polyline({
                     map: map,
                     path: [
@@ -116,12 +182,12 @@
                     ],
                     strokeColor: '#FF0000',
                     strokeWeight: 3,
-                    strokeLineDash: [10, 10], // 점선 스타일 적용
+                    strokeLineDash: [10, 10],
                     strokeOpacity: 0.8
                 });
             }
 
-            focusOnRoute([startCoords, ...routeCoordinates, goalCoords]); // 경로에 포커스
+            focusOnRoute([startCoords, ...routeCoordinates, goalCoords]);
         }
 
         function focusOnRoute(routeCoordinates) {
@@ -144,7 +210,8 @@
                     <p><b>택시 요금:</b> ${summary.taxiFare || 'N/A'}원</p>
                 </div>
             `;
-        }
+        }//이 부분은 작은 아이콘으로 출력
+
 
         document.getElementById("routeForm").addEventListener("submit", function (e) {
             e.preventDefault();
@@ -159,13 +226,13 @@
             fetch('/calculate-route', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ start, goal })
+                body: new URLSearchParams({ start, goal, option: selectedOption  })
             })
                 .then(response => response.json())
                 .then(routeData => {
-                    const selectedOption = "trafast"; // 기본 옵션
                     const routeCoordinates = routeData[selectedOption]?.path || [];
-                    drawRoute(routeCoordinates, startCoords, goalCoords); // 경로와 점선 표시
+                    const sections = routeData[selectedOption]?.section || [];
+                    drawRoute(routeCoordinates, startCoords, goalCoords, sections); // 경로와 점선 표시
                     displayRouteInfo(routeData, selectedOption); // 경로 정보를 표시
                 })
                 .catch(error => console.error('Error:', error));
