@@ -1,4 +1,4 @@
-package com.locationbase.Service;
+/*package com.locationbase.Service;
 
 import com.locationbase.DTO.PlannerDTO;
 import com.locationbase.Domain.Repository.*;
@@ -31,9 +31,9 @@ public class PlannerService {
     @Autowired
     private WeatherRepository weatherRepository;
 
-    /**
+
      * Create a new planner from the provided PlannerDTO.
-     */
+
     public PlannerEntity createPlanner(PlannerDTO plannerDTO) {
         // Find the user, weather, and theme by their IDs/names from the DTO
         UserEntity user = userRepository.findById(Integer.valueOf(plannerDTO.getUser_id()))
@@ -53,9 +53,9 @@ public class PlannerService {
         return plannerRepository.save(planner);
     }
 
-    /**
-     * Update an existing planner by its ID using the provided PlannerDTO.
-     */
+
+      Update an existing planner by its ID using the provided PlannerDTO.
+
     public PlannerEntity updatePlanner(int plannerId, PlannerDTO plannerDTO) {
         // Find the existing planner by ID
         PlannerEntity existingPlanner = plannerRepository.findById(plannerId)
@@ -78,25 +78,25 @@ public class PlannerService {
         return plannerRepository.save(existingPlanner);
     }
 
-    /**
-     * Delete an existing planner by its ID.
-     */
+
+      Delete an existing planner by its ID.
+
     public void deletePlanner(int planner_id) {
         PlannerEntity planner = plannerRepository.findById(planner_id)
                 .orElseThrow(() -> new RuntimeException("Planner not found"));
         plannerRepository.delete(planner);
     }
 
-    /**
-     * Get all planners for a specific user.
-     */
+
+      Get all planners for a specific user.
+
     public List<PlannerEntity> getPlannersByUser(String user_id) {
         return plannerRepository.findByUserId(user_id);
     }
 
-    /**
-     * Recommend landmarks based on weather conditions for a specific date.
-     */
+
+      Recommend landmarks based on weather conditions for a specific date.
+
     public List<LandMarkEntity> recommendByWeather(LocalDate date) {
         // Fetch weather data from an external service (this is mocked for now)
         String weatherCondition = fetchWeatherCondition(date);
@@ -115,9 +115,9 @@ public class PlannerService {
         return recommendedLandmarks;
     }
 
-    /**
-     * Simulate fetching weather data for the given date (this can be replaced with an actual weather API).
-     */
+
+      Simulate fetching weather data for the given date (this can be replaced with an actual weather API).
+
     private String fetchWeatherCondition(LocalDate date) {
         // Example: Hardcoded weather for demonstration purposes
         if (date.isBefore(LocalDate.now())) {
@@ -125,4 +125,4 @@ public class PlannerService {
         }
         return "Clear";  // Simulating clear weather for future dates
     }
-}
+}*/

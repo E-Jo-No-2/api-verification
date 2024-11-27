@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface MemoRepository extends JpaRepository<MemoEntity, Integer> {
 
-    // planner_id로 메모 찾기
+    // Find memos by the planner_id (instead of the entire PlannerEntity)
     List<MemoEntity> findByPlannerId(int planner_id);
 }*/
