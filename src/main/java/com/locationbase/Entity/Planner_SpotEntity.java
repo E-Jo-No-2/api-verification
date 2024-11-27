@@ -19,11 +19,13 @@ public class Planner_SpotEntity {
     @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
     private PlannerEntity planner_id;
 
-    @ManyToOne
-    @JoinColumn(name = "spot_id", referencedColumnName = "spot_id", nullable = true)
-    private SpotEntity spot_id;
+    @Column(name = "spot_name", nullable = true, length = 255)
+    private String spot_name;
 
-    @Column(name = "visit_order")
+    @Column(name = "visit_order", nullable = true)
     private int visit_order;
+
+    @Column(name = "route_id", nullable = true)
+    private int route_id;
 
 }

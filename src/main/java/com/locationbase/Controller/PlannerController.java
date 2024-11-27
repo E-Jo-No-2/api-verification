@@ -7,11 +7,14 @@ import com.locationbase.Entity.LandMarkEntity;
 import com.locationbase.Entity.PlannerEntity;
 import com.locationbase.Service.PlannerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -30,10 +33,23 @@ public class PlannerController {
 
 
     @GetMapping("/recommendations/{date}")
-    public ResponseEntity<List<LandMarkEntity>> recommend(@PathVariable String date) {
-        List<LandMarkEntity> recommendations = plannerService.recommendByWeather(LocalDate.parse(date));
-        return ResponseEntity.ok(recommendations);
+    public ResponseEntity<?> recommendByWeather(@PathVariable String date) {
+        try {
+            LocalDate parsedDate = LocalDate.parse(date);
+            List<LandMarkEntity> recommendations = plannerService.recommendByWeather(parsedDate);
+
+            if (recommendations.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(recommendations);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body("Invalid date format. Please use YYYY-MM-DD.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
     }
+
 
 
     @PutMapping("/update/{id}")
@@ -51,9 +67,9 @@ public class PlannerController {
 
 
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{user_id}")
     public ResponseEntity<List<PlannerEntity>> getPlannersByUser(@PathVariable String user_id) {
-        List<PlannerEntity> planners = plannerService.getPlannersByUser(user_id);
+        List<PlannerEntity> planners = plannerService.getPlannersByUser(String.valueOf(Integer.parseInt(user_id)));
         return ResponseEntity.ok(planners);
     }
 }*/
