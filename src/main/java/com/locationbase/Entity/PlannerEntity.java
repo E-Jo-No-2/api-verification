@@ -23,7 +23,7 @@ public class PlannerEntity {
 
     @ManyToOne
     @JoinColumn(name = "weather_date", referencedColumnName = "date", nullable = false)
-    private WeatherEntity weather; // WeatherEntity와 관계 설정
+    private WeatherEntity weather_date; // WeatherEntity와 관계 설정
 
     @Column(name = "start_date", nullable = false)
     private LocalDate start_date;
@@ -33,7 +33,7 @@ public class PlannerEntity {
 
     public PlannerEntity(UserEntity user_id, WeatherEntity weather, LocalDate start_date, String theme_name) {
         this.user_id = user_id;
-        this.weather = weather;
+        this.weather_date = weather_date;
         this.start_date = start_date;
         this.theme_name = theme_name;
     }
