@@ -1,4 +1,4 @@
-package com.locationbase.Domain.Repository;
+/*package com.locationbase.Domain.Repository;
 
 import com.locationbase.Entity.PlannerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +11,5 @@ public interface PlannerRepository extends JpaRepository<Planner, Integer> {
     List<Planner> findByUser(User user);
 
 
-}
+}*/
 

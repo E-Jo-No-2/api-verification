@@ -1,5 +1,5 @@
 
-package com.locationbase.Controller;
+/*package com.locationbase.Controller;
 
 
 import com.locationbase.DTO.PlannerDTO;
@@ -56,4 +56,4 @@ public class PlannerController {
         List<PlannerEntity> planners = plannerService.getPlannersByUser(user_id);
         return ResponseEntity.ok(planners);
     }
-}
+}*/
