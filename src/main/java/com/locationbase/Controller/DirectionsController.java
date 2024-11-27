@@ -41,6 +41,9 @@ public class DirectionsController {
             // DirectionsService 호출
             Map<String, Object> routeOptions = directionsService.getRouteWithAllOptions(start, goal, waypointsList);
 
+            // 경로 데이터를 로깅
+            System.out.println("Route Data: " + routeOptions); // 로그 추가
+
             // 혼잡도 정보 추가
             Map<String, Object> trafficCongestionData = directionsService.getTrafficCongestionData(routeOptions);
             routeOptions.put("trafficCongestion", trafficCongestionData);
