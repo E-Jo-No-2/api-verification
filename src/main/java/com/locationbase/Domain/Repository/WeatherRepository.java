@@ -12,5 +12,4 @@ import java.util.Optional;
 public interface WeatherRepository extends JpaRepository<WeatherEntity, LocalDate> {
 
 
-
 }

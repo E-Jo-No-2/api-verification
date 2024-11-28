@@ -29,7 +29,7 @@ public class PlannerEntity {
     private LocalDate date;
 
     public PlannerEntity(UserEntity user_id, WeatherEntity weather, LocalDate start_date, String theme_name) {
-        this.user_id = user_id;
+        this.user_id= user_id;
         this.theme_name = theme_name;
     }
 
