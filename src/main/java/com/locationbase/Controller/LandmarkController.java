@@ -1,4 +1,4 @@
-package com.locationbase.Controller;
+/*package com.locationbase.Controller;
 
 import com.locationbase.Service.LandmarkService;
 import com.locationbase.Service.PlannerService;
@@ -31,4 +31,4 @@ public class LandmarkController {
         System.out.println(info); // 디버깅용 로그
         return "SelectLandmark"; // templates/SelectLandmark.html 반환
     }
-}
+}*/
