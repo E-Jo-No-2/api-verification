@@ -5,8 +5,7 @@ import lombok.Data;
 @Data
 public class LandMarkDTO {
     private int landmark_id;
-    private String landmark_name;
-    private String theme_name;
+    private String landmarkName;
     private String longitude;
     private String latitude;
 }
