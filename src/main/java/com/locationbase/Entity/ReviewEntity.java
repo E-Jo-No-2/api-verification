@@ -8,36 +8,41 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "Review")
+@Table(name = "Review",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "spot_id"})})
 @NoArgsConstructor
 public class ReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    private int review_id;
+    private int review_id; // Primary Key
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    private UserEntity user; // Assuming UserEntity has a user_id field
+    @JoinColumn(name = "user_id", nullable = false) // Foreign Key to User
+    private UserEntity user_id; // Reference to UserEntity
 
     @ManyToOne
-    @JoinColumn(name = "spot_id", referencedColumnName = "spot_id", nullable = false)
-    private SpotEntity spot; // Assuming SpotEntity has a spot_id field
+    @JoinColumn(name = "spot_id", nullable = false) // Foreign Key to Spot
+    private SpotEntity spot_id; // Reference to SpotEntity
 
-    @Column(name = "rating")
-    private Double rating; // Using Double without precision and scale
+    @Column(name = "rating", length = 5)
+    private String rating; // Rating stored as String
 
     @Column(name = "comment", columnDefinition = "TEXT")
-    private String comment;
+    private String comment; // Review comment
 
-    @Column(name = "creat_time", nullable = true, updatable = false)
-    private LocalDateTime creat_time;
+    @Column(name = "creat_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime create_time; // Timestamp when the review was created
 
-    @PrePersist
-    protected void onCreate() {
-        if (this.creat_time == null) {
-            this.creat_time = LocalDateTime.now(); // Auto-set timestamp if not provided
-        }
-    }
+    @Column(name = "longitude", nullable = false, length = 20)
+    private String longitude; // Longitude of the review spot
+
+    @Column(name = "latitude", nullable = false, length = 20)
+    private String latitude; // Latitude of the review spot
+
+    @Column(name = "spot_name", nullable = false, length = 50)
+    private String spot_name; // Name of the reviewed spot
+
+
 }

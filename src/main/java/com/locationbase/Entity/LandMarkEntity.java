@@ -23,9 +23,9 @@ public class LandMarkEntity {
     @JoinColumn(name = "theme_name", referencedColumnName = "theme_name", nullable = true)
     private ThemeEntity theme_name; // Referencing ThemeEntity here
 
-    @Column(name = "longitude", nullable = false, columnDefinition = "DECIMAL(9,6)")
-    private double longitude;
+    @Column(name = "longitude", nullable = false, length = 20) // Now a String
+    private String longitude;
 
-    @Column(name = "latitude", nullable = false, columnDefinition = "DECIMAL(9,6)")
-    private double latitude;
+    @Column(name = "latitude", nullable = false, length = 20) // Now a String
+    private String latitude;
 }

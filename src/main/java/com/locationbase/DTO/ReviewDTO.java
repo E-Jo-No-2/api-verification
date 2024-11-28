@@ -12,6 +12,9 @@ public class ReviewDTO {
     private double rating;
     private String comment;
     private LocalDateTime create_time;
+    private String longitude;
+    private String latitude;
+    private String spot_name;
 
 
 }
