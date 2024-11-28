@@ -1,0 +1,168 @@
+/* Reset some default styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: url('../images/4.jpg') no-repeat center center fixed; /* 배경 이미지 추가 */
+    background-size: cover; /* 이미지를 화면에 맞게 조정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main Container */
+.dashboard-container {
+    background: rgba(255, 255, 255, 0.8); /* 반투명 효과 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    width: 80%;
+    max-width: 1200px;
+}
+
+/* Header Section */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.date-time {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Weather Section */
+.weather {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.weather-item {
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+}
+
+.weather-item span {
+    display: block;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Weather Info Section */
+.weather-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* 추가: 요소 사이 간격 */
+}
+
+.weather-icon {
+    flex: 0 0 auto;
+    margin-bottom: 2px; /* 수정: 아이콘과 텍스트 사이 간격 */
+}
+
+.weather-icon img {
+    width: 50px;
+    height: 50px;
+}
+
+.weather-details {
+    flex: 1 1 auto;
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+/* Weather Forecast Section */
+.weather-forecast {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center;
+    margin: 10px;
+    padding: 8px; /* 수정: 패딩 조절 */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.weather-forecast h3 {
+    font-size: 12px; /* 월 일 텍스트 크기 조정 */
+    margin: 2px 0; /* 수정: 위아래 여백 조절 */
+}
+
+.weather-forecast p {
+    font-size: 12px; /* 온도 텍스트 크기 조정 */
+    margin: 2px 0; /* 수정: 위아래 여백 조절 */
+}
+
+/* Cards Section */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 12px;
+    color: #555;
+}
+
+.new-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    cursor: pointer;
+}
+
+/* New Weather Data Section */
+#weather-data {
+    display: flex;
+    justify-content: space-around; /* 균등 분배 */
+    width: 100%; /* 가로 크기 전체 */
+    padding: 10px; /* 패딩 추가 */
+}

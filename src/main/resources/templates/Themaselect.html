@@ -1,0 +1,73 @@
+<!DOCTYPE html> 
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관광지 선택</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2"></script>
+</head>
+<body>
+    <h3>관광지 지도</h3>
+
+    <!-- 테마 선택 -->
+    <label for="themeSelect">테마 선택:</label>
+    <select id="themeSelect" onchange="filterByTheme()">
+        <option value="">모든 테마</option>
+        <option value="문화 관광">문화 관광</option>
+        <option value="실내">실내</option>
+        <option value="전통/문화 거리">전통/문화 거리</option>
+        <!-- 추가 테마 옵션을 여기에 추가 -->
+    </select>
+
+    <div id="map" style="width:1200px;height:900px;"></div>
+
+    <script>
+        var map = new naver.maps.Map("map", {
+            center: new naver.maps.LatLng(37.5665, 126.9780), // 서울 중심 좌표
+            zoom: 12
+        });
+
+        var locations = []; // 엑셀에서 가져온 데이터를 저장할 배열
+        var markers = [];   // 모든 마커를 저장할 배열
+
+        // JSON 데이터를 불러와 locations 배열을 채움
+        fetch('location_data.json')
+            .then(response => response.json())
+            .then(data => {
+                locations = data; // JSON 데이터를 locations 배열에 할당
+                addMarkers(locations); // 지도에 모든 마커 표시
+            })
+            .catch(error => console.error("Error loading JSON data:", error));
+
+        // 모든 마커를 지도에 추가하는 함수
+        function addMarkers(filteredLocations) {
+            // 기존 마커 제거
+            markers.forEach(function(marker) {
+                marker.setMap(null);
+            });
+            markers = [];
+
+            // 필터링된 위치마다 마커 추가
+            filteredLocations.forEach(function(location) {
+                var marker = new naver.maps.Marker({
+                    position: new naver.maps.LatLng(location.x, location.y),
+                    map: map,
+                    title: location.location
+                });
+                markers.push(marker);
+            });
+        }
+
+        // 테마에 따라 관광지를 필터링하는 함수
+        function filterByTheme() {
+            var selectedTheme = document.getElementById("themeSelect").value;
+
+            // 선택된 테마에 따라 필터링
+            var filteredLocations = locations.filter(function(location) {
+                return selectedTheme === "" || location.theme === selectedTheme;
+            });
+
+            addMarkers(filteredLocations);
+        }
+    </script>
+</body>
+</html>
