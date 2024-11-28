@@ -12,7 +12,7 @@ newPlannerBtn.addEventListener("click", () => {
     // 새로운 플래너 생성
     plannerCount++;
     const newCard = document.createElement("a");
-    newCard.href = `planner${plannerCount}.html`;
+    newCard.href = `/landmark?plannerId=${plannerCount}`;
     newCard.className = "card";
     newCard.innerHTML = `
         <h3>CATEGORY</h3>
