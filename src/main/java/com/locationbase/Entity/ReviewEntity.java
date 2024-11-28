@@ -22,10 +22,6 @@ public class ReviewEntity {
     @JoinColumn(name = "user_id", nullable = false) // Foreign Key to User
     private UserEntity user_id; // Reference to UserEntity
 
-    @ManyToOne
-    @JoinColumn(name = "spot_id", nullable = false) // Foreign Key to Spot
-    private SpotEntity spot_id; // Reference to SpotEntity
-
     @Column(name = "rating", length = 5)
     private String rating; // Rating stored as String
 
