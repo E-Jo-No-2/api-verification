@@ -25,10 +25,10 @@ public class TourApiService {
         }
 
         List<LandMarkDTO> spots = parseSpots(response);
-        return groupSpotsByTheme(spots); // 테마별로 그룹화하여 반환
+        return groupSpotsByTheme(spots);
     }
 
-    // JSON 응답 데이터를 LandMarkDTO 리스트로 변환
+    // JSON 응답 데이터를 LandMarkDTO 리스트로
     private List<LandMarkDTO> parseSpots(JSONObject response) {
         List<LandMarkDTO> spots = new ArrayList<>();
         JSONObject body = response.getJSONObject("response").getJSONObject("body");

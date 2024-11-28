@@ -25,6 +25,6 @@ public class TourApiController {
             @RequestParam String latitude,
             @RequestParam String longitude,
             @RequestParam(defaultValue = "3500") double radius) {
-        return tourApiService.getLandmarksGroupedByTheme(latitude, longitude, radius);
+        return tourApiService.getNearbySpotsByTheme(latitude, longitude, radius);
     }
 }
