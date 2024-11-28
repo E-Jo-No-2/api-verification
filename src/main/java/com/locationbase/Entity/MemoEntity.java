@@ -15,16 +15,17 @@ public class MemoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "memo_id")
-    private int memo_id;
+    private int memoId;
 
     @ManyToOne
     @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = false)
-    private PlannerEntity planner_id;
+    private PlannerEntity planner;
 
     @Column(name = "write_date", nullable = false)
     private LocalDate write_date;
 
     @Column(name = "memo_content", columnDefinition = "TEXT", nullable = true)
-    private String memo_content;
+    private String memoContent;
+
 
 }
