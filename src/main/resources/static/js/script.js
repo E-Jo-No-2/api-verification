@@ -8,7 +8,7 @@ const newPlannerBtn = document.getElementById("new-planner-btn");
 let plannerCount = 0;
 
 // userId를 설정
-const userId = "frodo1234"; // 실제 userId 값으로 설정
+const userId = "testuser"; // 실제 userId 값으로 설정
 
 // NEW 버튼 클릭 이벤트
 newPlannerBtn.addEventListener("click", () => {
