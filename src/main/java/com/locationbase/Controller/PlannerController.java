@@ -1,4 +1,4 @@
-/*package com.locationbase.Controller;
+package com.locationbase.Controller;
 
 import com.locationbase.Service.PlannerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,4 +31,3 @@ public class PlannerController {
         }
     }
 }
-*/
