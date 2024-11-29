@@ -144,6 +144,59 @@
         #completeBtn:hover {
             background-color: #0056b3;
         }
+        .dropdown-container {
+            position: relative;
+            width: 200px;
+        }
+
+        .dropdown-button {
+            width: 100%;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .dropdown-button i {
+            font-size: 18px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            width: 100%;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+            list-style: none;
+            padding: 0;
+            z-index: 1000;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -161,13 +214,27 @@
     <!-- 지도 섹션 -->
     <div class="map-container">
         <h3>관광지 지도</h3>
-        <label for="themeSelect">테마 선택:</label>
-        <select id="themeSelect" onchange="filterByTheme()">
-            <option value="">모든 테마</option>
-            <option value="문화 관광">문화 관광</option>
-            <option value="실내">실내</option>
-            <option value="전통/문화 거리">전통/문화 거리</option>
-        </select>
+        <div class="dropdown-container">
+            <button class="dropdown-button" onclick="toggleDropdown()">
+                <span id="selectedTheme">모든 테마</span>
+                <i class="bx bx-chevron-down"></i>
+            </button>
+            <ul class="dropdown-menu" id="dropdownMenu">
+                <li class="dropdown-item" onclick="selectTheme('', '모든 테마')">
+                    <img src="/static/images/all.png" alt="모든 테마" class="dropdown-icon"> 모든 테마
+                </li>
+                <li class="dropdown-item" onclick="selectTheme('문화 관광', '문화 관광')">
+                    <img src="/static/images/culture.png" alt="문화 관광" class="dropdown-icon"> 문화 관광
+                </li>
+                <li class="dropdown-item" onclick="selectTheme('실내', '실내')">
+                    <img src="/static/images/indoor.png" alt="실내" class="dropdown-icon"> 실내
+                </li>
+                <li class="dropdown-item" onclick="selectTheme('전통/문화 거리', '전통/문화 거리')">
+                    <img src="/static/images/traditional.png" alt="전통/문화 거리" class="dropdown-icon"> 전통/문화 거리
+                </li>
+            </ul>
+        </div>
+
         <div id="map"></div>
         <div class="button-container">
             <button id="backBtnBelow" onclick="goBack()">뒤로가기</button>
@@ -266,6 +333,31 @@
     function completeTour() {
         alert("플래너 작성 완료를 하시겠습니까?");
     }
+    function toggleDropdown() {
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    }
+
+    function selectTheme(value, label) {
+        const selectedTheme = document.getElementById("selectedTheme");
+        selectedTheme.textContent = label;
+
+        // 기존 테마 필터링 함수 호출
+        filterByTheme(value);
+
+        // 드롭다운 닫기
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        dropdownMenu.style.display = "none";
+    }
+
+    // 드롭다운 외부 클릭 시 닫기
+    window.addEventListener("click", function (event) {
+        if (!event.target.closest(".dropdown-container")) {
+            const dropdownMenu = document.getElementById("dropdownMenu");
+            dropdownMenu.style.display = "none";
+        }
+    });
+
 </script>
 </body>
 </html>
