@@ -1,0 +1,101 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    font-family: Arial, sans-serif;
+}
+.container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+.sidebar {
+    width: 25%;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #ddd;
+}
+.sidebar h3 {
+    margin: 0 0 10px 0;
+}
+#tourList {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    height: 200px;
+    overflow-y: auto;
+}
+#tourList li {
+    list-style: none;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+#memo {
+    width: 100%;
+    height: 100px;
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+}
+#backBtn {
+    margin-top: 20px;
+    padding: 10px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#backBtn:hover {
+    background: #0056b3;
+}
+.map-container {
+    flex: 1;
+    padding: 20px;
+}
+#map {
+    width: 99%; /* 너비를 부모 컨테이너의 80%로 */
+    height: 500px; /* 높이를 고정 값으로 설정 */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+textarea {
+    width: 100%; /* 너비를 부모 요소의 100%로 */
+    height: 100px; /* 높이를 100px로 조정 */
+    padding: 8px; /* 내부 여백 줄이기 */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none; /* 크기 조정 막기 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 박스 그림자 추가 */
+    background-color: #f8f9fa; /* 배경 색 설정 */
+}
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+#backBtnBelow, #completeBtn {
+    padding: 10px;
+    width: 48%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+#backBtnBelow {
+    background-color: #007bff;
+    color: #fff;
+}
+#backBtnBelow:hover {
+    background-color: #0056b3;
+}
+#completeBtn {
+    background-color: #007bff;
+    color: #fff;
+}
+#completeBtn:hover {
+    background-color: #0056b3;
+}

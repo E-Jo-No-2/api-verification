@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관광지 선택</title>
+    <link rel="stylesheet" href="../css/Themaselect.css">
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 25%;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #ddd;
+        }
+        .sidebar h3 {
+            margin: 0 0 10px 0;
+        }
+        #tourList {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+        }
+        #tourList li {
+            list-style: none;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        #memo {
+            width: 100%;
+            height: 100px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+        }
+        #backBtn {
+            margin-top: 20px;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #backBtn:hover {
+            background: #0056b3;
+        }
+        .map-container {
+            flex: 1;
+            padding: 20px;
+        }
+        #map {
+            width: 99%; /* 너비를 부모 컨테이너의 80%로 */
+            height: 500px; /* 높이를 고정 값으로 설정 */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        textarea {
+            width: 100%; /* 너비를 부모 요소의 100%로 */
+            height: 100px; /* 높이를 100px로 조정 */
+            padding: 8px; /* 내부 여백 줄이기 */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none; /* 크기 조정 막기 */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 박스 그림자 추가 */
+            background-color: #f8f9fa; /* 배경 색 설정 */
+        }
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        #backBtnBelow, #completeBtn {
+            padding: 10px;
+            width: 48%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #backBtnBelow {
+            background-color: #007bff;
+            color: #fff;
+        }
+        #backBtnBelow:hover {
+            background-color: #0056b3;
+        }
+        #completeBtn {
+            background-color: #007bff;
+            color: #fff;
+        }
+        #completeBtn:hover {
+            background-color: #0056b3;
+        }
+        /* 테마 선택 드롭다운 메뉴 스타일 */
+        #themeSelect {
+            width: 100%;
+            max-width: 200px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            appearance: none; /* 기본 화살표 제거 (브라우저별) */
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #themeSelect:hover {
+            background-color: #e9ecef;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #themeSelect:focus {
+            border-color: #007bff;
+            outline: none;
+            background-color: #fff;
+        }
+
+        #themeSelect option {
+            font-size: 14px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 왼쪽 메뉴 -->
+    <div class="sidebar">
+        <h3>MY TOUR LIST</h3>
+        <ul id="tourList">
+            <!-- 클릭된 관광지 이름이 여기에 추가됨 -->
+        </ul>
+        <h3>계획 메모</h3>
+        <textarea id="memo" placeholder="메모를 입력하세요..."></textarea>
+        <button id="backBtn">작성 완료</button>
+    </div>
+    <!-- 지도 섹션 -->
+    <div class="map-container">
+        <h3>관광지 지도</h3>
+        <!-- 테마 선택 -->
+        <label for="themeSelect">테마 선택:</label>
+        <select id="themeSelect" onchange="filterByTheme()">
+            <option value="">모든 테마</option>
+            <option value="문화 관광">문화 관광</option>
+            <option value="실내">실내</option>
+            <option value="전통/문화 거리">전통/문화 거리</option>
+        </select>
+        <div id="map"></div>
+
+        <!-- 지도 아래 버튼 -->
+        <div class="button-container">
+            <button id="backBtnBelow" onclick="goBack()">뒤로가기</button>
+            <button id="completeBtn" onclick="completeTour()">완료</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var map = new naver.maps.Map("map", {
+        center: new naver.maps.LatLng(37.5665, 126.9780), // 서울 중심 좌표
+        zoom: 12
+    });
+
+    var locations = []; // 엑셀에서 가져온 데이터를 저장할 배열
+    var markers = [];   // 모든 마커를 저장할 배열
+
+    // JSON 데이터를 불러와 locations 배열을 채움
+    fetch('location_data.json')
+        .then(response => response.json())
+        .then(data => {
+            locations = data; // JSON 데이터를 locations 배열에 할당
+            addMarkers(locations); // 지도에 모든 마커 표시
+        })
+        .catch(error => console.error("Error loading JSON data:", error));
+
+    // 모든 마커를 지도에 추가하는 함수
+    function addMarkers(filteredLocations) {
+        // 기존 마커 제거
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
+
+        // 필터링된 위치마다 마커 추가
+        filteredLocations.forEach(function(location) {
+            var marker = new naver.maps.Marker({
+                position: new naver.maps.LatLng(location.x, location.y),
+                map: map,
+                title: location.location
+            });
+
+            // 마커 클릭 시 MY TOUR LIST에 추가
+            naver.maps.Event.addListener(marker, 'click', function () {
+                addToTourList(location.location);
+            });
+
+            markers.push(marker);
+        });
+    }
+
+    // MY TOUR LIST에 관광지를 추가하는 함수
+    function addToTourList(locationName) {
+        var tourList = document.getElementById("tourList");
+        var listItem = document.createElement("li");
+        listItem.textContent = `${tourList.children.length + 1}. ${locationName}`;
+        tourList.appendChild(listItem);
+    }
+
+    // 테마에 따라 관광지를 필터링하는 함수
+    function filterByTheme() {
+        var selectedTheme = document.getElementById("themeSelect").value;
+
+        // 선택된 테마에 따라 필터링
+        var filteredLocations = locations.filter(function(location) {
+            return selectedTheme === "" || location.theme === selectedTheme;
+        });
+
+        addMarkers(filteredLocations);
+    }
+
+    // 뒤로가기 버튼 동작
+    function goBack() {
+        alert("뒤로가기 가시겠습니까?.");
+        // window.location.href = "이전 페이지 URL";
+    }
+
+    // 완료 버튼 동작
+    function completeTour() {
+        alert("모든 선택을 완료 하시겠습니까?.");
+        // window.location.href = "완료 페이지 URL";
+    }
+</script>
+</body>
+</html>
