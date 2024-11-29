@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface LandMarkRepository extends JpaRepository<LandMarkEntity, Integer> {
 
-    List<LandMarkEntity> findByLandmarkName(String landmarkName);
+    @Query("SELECT l FROM LandMarkEntity l WHERE l.landmark_name = :landmark_name")
+    List<LandMarkEntity> findByLandmarkName(@Param("landmark_name") String landmark_name);
 
     // Optionally, add queries for other criteria (e.g., based on coordinates)
     List<LandMarkEntity> findByLongitudeAndLatitude(String longitude, String latitude);
 }
-

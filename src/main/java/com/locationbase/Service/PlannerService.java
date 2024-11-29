@@ -1,4 +1,4 @@
-/*package com.locationbase.Service;
+package com.locationbase.Service;
 
 import com.locationbase.Entity.PlannerEntity;
 import com.locationbase.Domain.Repository.PlannerRepository;
@@ -40,4 +40,4 @@ public class PlannerService {
 
         plannerRepository.save(planner);
     }
-}*/
+}
