@@ -87,7 +87,7 @@ public class PlannerSpotService {
         return plannerSpotRepository.save(newSpot);
     }
 
-    // Update an existing spot
+
     public PlannerSpotEntity updateSpot(int plannerSpotId, String spotName, int visitOrder, int routeId) {
         PlannerSpotEntity existingSpot = getSpotById(plannerSpotId);
         existingSpot.setSpotName(spotName);
@@ -96,7 +96,7 @@ public class PlannerSpotService {
         return plannerSpotRepository.save(existingSpot);
     }
 
-    // Delete a spot
+
     public void deleteSpot(int plannerSpotId) {
         PlannerSpotEntity spot = getSpotById(plannerSpotId);
         plannerSpotRepository.delete(spot);

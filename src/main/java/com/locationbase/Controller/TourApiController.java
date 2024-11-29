@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/tour")
+@RequestMapping("/themaselect")
 public class TourApiController {
 
     private final TourApiService tourApiService;
