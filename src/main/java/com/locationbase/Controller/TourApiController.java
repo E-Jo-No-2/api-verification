@@ -1,4 +1,4 @@
-package com.locationbase.Controller;
+/*package com.locationbase.Controller;
 
 import com.locationbase.DTO.LandMarkDTO;
 import com.locationbase.Service.TourApiService;
@@ -28,3 +28,4 @@ public class TourApiController {
         return tourApiService.getNearbySpotsByTheme(latitude, longitude, radius);
     }
 }
+*/

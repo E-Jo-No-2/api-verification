@@ -1,4 +1,4 @@
-package com.locationbase.Service;
+/*package com.locationbase.Service;
 
 import com.locationbase.DTO.LandMarkDTO;
 import com.locationbase.client.TourApiClient;
@@ -77,4 +77,4 @@ public class TourApiService {
                 return "기타";
         }
     }
-}
+}*/
