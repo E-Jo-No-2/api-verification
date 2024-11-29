@@ -35,9 +35,35 @@
             overflow-y: auto;
         }
         #tourList li {
-            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 5px 0;
             border-bottom: 1px solid #eee;
+        }
+        .tour-item {
+            margin-right: 10px;
+        }
+        .edit-btn, .delete-btn {
+            margin-left: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+        }
+        .edit-btn:hover {
+            background-color: #e0a800;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
         }
         #memo {
             width: 100%;
@@ -65,20 +91,10 @@
             padding: 20px;
         }
         #map {
-            width: 99%; /* 너비를 부모 컨테이너의 80%로 */
-            height: 500px; /* 높이를 고정 값으로 설정 */
+            width: 99%;
+            height: 500px;
             border: 1px solid #ddd;
             border-radius: 5px;
-        }
-        textarea {
-            width: 100%; /* 너비를 부모 요소의 100%로 */
-            height: 100px; /* 높이를 100px로 조정 */
-            padding: 8px; /* 내부 여백 줄이기 */
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            resize: none; /* 크기 조정 막기 */
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 박스 그림자 추가 */
-            background-color: #f8f9fa; /* 배경 색 설정 */
         }
         .button-container {
             margin-top: 20px;
@@ -107,38 +123,6 @@
         #completeBtn:hover {
             background-color: #0056b3;
         }
-        /* 테마 선택 드롭다운 메뉴 스타일 */
-        #themeSelect {
-            width: 100%;
-            max-width: 200px;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f8f9fa;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            appearance: none; /* 기본 화살표 제거 (브라우저별) */
-            -moz-appearance: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        #themeSelect:hover {
-            background-color: #e9ecef;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #themeSelect:focus {
-            border-color: #007bff;
-            outline: none;
-            background-color: #fff;
-        }
-
-        #themeSelect option {
-            font-size: 14px;
-            padding: 10px;
-        }
     </style>
 </head>
 <body>
@@ -156,7 +140,6 @@
     <!-- 지도 섹션 -->
     <div class="map-container">
         <h3>관광지 지도</h3>
-        <!-- 테마 선택 -->
         <label for="themeSelect">테마 선택:</label>
         <select id="themeSelect" onchange="filterByTheme()">
             <option value="">모든 테마</option>
@@ -165,8 +148,6 @@
             <option value="전통/문화 거리">전통/문화 거리</option>
         </select>
         <div id="map"></div>
-
-        <!-- 지도 아래 버튼 -->
         <div class="button-container">
             <button id="backBtnBelow" onclick="goBack()">뒤로가기</button>
             <button id="completeBtn" onclick="completeTour()">완료</button>
@@ -176,75 +157,93 @@
 
 <script>
     var map = new naver.maps.Map("map", {
-        center: new naver.maps.LatLng(37.5665, 126.9780), // 서울 중심 좌표
+        center: new naver.maps.LatLng(37.5665, 126.9780),
         zoom: 12
     });
 
-    var locations = []; // 엑셀에서 가져온 데이터를 저장할 배열
-    var markers = [];   // 모든 마커를 저장할 배열
+    var locations = [];
+    var markers = [];
 
-    // JSON 데이터를 불러와 locations 배열을 채움
+    // JSON 데이터 로드
     fetch('location_data.json')
         .then(response => response.json())
         .then(data => {
-            locations = data; // JSON 데이터를 locations 배열에 할당
-            addMarkers(locations); // 지도에 모든 마커 표시
+            locations = data;
+            addMarkers(locations);
         })
         .catch(error => console.error("Error loading JSON data:", error));
 
-    // 모든 마커를 지도에 추가하는 함수
     function addMarkers(filteredLocations) {
-        // 기존 마커 제거
         markers.forEach(marker => marker.setMap(null));
         markers = [];
-
-        // 필터링된 위치마다 마커 추가
         filteredLocations.forEach(function(location) {
             var marker = new naver.maps.Marker({
                 position: new naver.maps.LatLng(location.x, location.y),
                 map: map,
                 title: location.location
             });
-
-            // 마커 클릭 시 MY TOUR LIST에 추가
             naver.maps.Event.addListener(marker, 'click', function () {
                 addToTourList(location.location);
             });
-
             markers.push(marker);
         });
     }
 
-    // MY TOUR LIST에 관광지를 추가하는 함수
     function addToTourList(locationName) {
         var tourList = document.getElementById("tourList");
         var listItem = document.createElement("li");
-        listItem.textContent = `${tourList.children.length + 1}. ${locationName}`;
+        var textSpan = document.createElement("span");
+        textSpan.textContent = `${tourList.children.length + 1}. ${locationName}`;
+        textSpan.className = "tour-item";
+
+        var editBtn = document.createElement("button");
+        editBtn.textContent = "수정";
+        editBtn.className = "edit-btn";
+        editBtn.onclick = function () {
+            var newName = prompt("새로운 이름을 입력하세요:", locationName);
+            if (newName) {
+                textSpan.textContent = `${tourList.children.length}. ${newName}`;
+            }
+        };
+
+        var deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "삭제";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = function () {
+            tourList.removeChild(listItem);
+            updateTourListNumbers();
+        };
+
+        listItem.appendChild(textSpan);
+        listItem.appendChild(editBtn);
+        listItem.appendChild(deleteBtn);
         tourList.appendChild(listItem);
     }
 
-    // 테마에 따라 관광지를 필터링하는 함수
+    function updateTourListNumbers() {
+        var tourList = document.getElementById("tourList");
+        var items = tourList.getElementsByTagName("li");
+        for (var i = 0; i < items.length; i++) {
+            var textSpan = items[i].getElementsByClassName("tour-item")[0];
+            var itemText = textSpan.textContent.split(". ")[1];
+            textSpan.textContent = `${i + 1}. ${itemText}`;
+        }
+    }
+
     function filterByTheme() {
         var selectedTheme = document.getElementById("themeSelect").value;
-
-        // 선택된 테마에 따라 필터링
         var filteredLocations = locations.filter(function(location) {
             return selectedTheme === "" || location.theme === selectedTheme;
         });
-
         addMarkers(filteredLocations);
     }
 
-    // 뒤로가기 버튼 동작
     function goBack() {
-        alert("뒤로가기 가시겠습니까?.");
-        // window.location.href = "이전 페이지 URL";
+        alert("뒤로가기 버튼 클릭!");
     }
 
-    // 완료 버튼 동작
     function completeTour() {
-        alert("모든 선택을 완료 하시겠습니까?.");
-        // window.location.href = "완료 페이지 URL";
+        alert("완료 버튼 클릭!");
     }
 </script>
 </body>
