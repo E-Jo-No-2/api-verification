@@ -8,7 +8,6 @@ public class ReviewDTO {
 
     private int review_id;
     private String user_id;
-    private int spot_id;
     private double rating;
     private String comment;
     private LocalDateTime create_time;

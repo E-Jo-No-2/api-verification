@@ -1,4 +1,4 @@
-/*package com.locationbase.Domain.Repository;
+package com.locationbase.Domain.Repository;
 
 import com.locationbase.Entity.ReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +10,4 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 
 
-    List<ReviewEntity> findByUser_id(String user_id);
-}*/
+}

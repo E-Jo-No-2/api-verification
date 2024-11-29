@@ -1,4 +1,4 @@
-/*package com.locationbase.Domain.Repository;
+package com.locationbase.Domain.Repository;
 
 import com.locationbase.Entity.MemoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +10,5 @@ import java.util.List;
 public interface MemoRepository extends JpaRepository<MemoEntity, Integer> {
 
     // Find memos by the planner_id (instead of the entire PlannerEntity)
-    List<MemoEntity> findByPlannerId(int planner_id);
-}*/
+    List<MemoEntity> findByPlanner_PlannerId(int plannerId);
+}

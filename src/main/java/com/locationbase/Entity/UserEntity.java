@@ -13,9 +13,8 @@ import java.util.Date;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private int userId;
+    private String userId;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -27,16 +26,17 @@ public class UserEntity {
     private String email;
 
     @Column(name = "birth_date")
-    private Date birth_date;
+    private Date birthDate;
 
     @Column(name = "phone_number", length = 15)
-    private String phone_number;
+    private String phoneNumber;
 
-    public UserEntity(String password, String name, String email, Date birth_date, String phone_number) {
+    public UserEntity(String userId, String password, String name, String email, Date birthDate, String phoneNumber) {
+        this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
-        this.birth_date = birth_date;
-        this.phone_number = phone_number;
+        this.birthDate = birthDate;
+        this.phoneNumber = phoneNumber;
     }
 }

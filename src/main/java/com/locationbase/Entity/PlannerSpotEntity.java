@@ -8,22 +8,22 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "Planner_Spot")
 @NoArgsConstructor
-public class Planner_SpotEntity {
+public class PlannerSpotEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "planner_spot_id")
-    private int planner_spot_id;
+    private int plannerSpotId;
 
     @ManyToOne
     @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
-    private PlannerEntity planner_id;
+    private PlannerEntity planner;
 
     @Column(name = "spot_name", nullable = true, length = 255)
     private String spot_name;
 
     @Column(name = "visit_order", nullable = true)
-    private int visit_order;
+    private int visitOrder;
 
     @Column(name = "route_id", nullable = true)
     private int route_id;
