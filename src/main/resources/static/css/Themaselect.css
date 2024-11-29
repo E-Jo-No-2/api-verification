@@ -3,6 +3,12 @@ body {
     padding: 0;
     display: flex;
     font-family: Arial, sans-serif;
+    background: url('../images/4.jpg') no-repeat center center fixed;
+    background-size: cover; /* 이미지를 화면에 맞게 조정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 .container {
     display: flex;
@@ -12,8 +18,9 @@ body {
 .sidebar {
     width: 25%;
     padding: 20px;
-    background-color: #f8f9fa;
+    background-color: rgba(248, 249, 250, 0.5); /* 투명도 추가 */
     border-right: 1px solid #ddd;
+    backdrop-filter: blur(5px); /* 배경 흐림 효과 (선택 사항) */
 }
 .sidebar h3 {
     margin: 0 0 10px 0;
@@ -27,28 +34,74 @@ body {
     overflow-y: auto;
 }
 #tourList li {
-    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 5px 0;
     border-bottom: 1px solid #eee;
 }
+
+.tour-item {
+    flex-grow: 1; /* 텍스트 영역이 가변적으로 늘어나도록 설정 */
+    margin-right: 10px; /* 버튼과 간격을 유지 */
+    text-align: left; /* 텍스트 정렬 */
+}
+
+.edit-btn, .delete-btn {
+    width: 50px; /* 버튼 크기를 고정 */
+    padding: 5px 10px;
+    font-size: 12px;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    text-align: center; /* 버튼 텍스트 가운데 정렬 */
+}
+
+.edit-btn {
+    background-color: #ffc107; /* 수정 버튼 색상 */
+}
+
+.edit-btn:hover {
+    background-color: #e0a800;
+}
+
+.delete-btn {
+    background-color: #dc3545; /* 삭제 버튼 색상 */
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+#tourList li button {
+    margin-left: 5px;
+}
 #memo {
-    width: 100%;
+    width: 100%; /* 너비를 그대로 유지 */
     height: 100px;
     margin-top: 20px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     resize: none;
+    margin-left: -10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
 }
 #backBtn {
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-left: 0; /* 버튼을 왼쪽 정렬 */
     padding: 10px;
     background: #007bff;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    text-align: center;
+    width: 100px; /* 고정된 너비 설정 */
 }
+
 #backBtn:hover {
     background: #0056b3;
 }
@@ -57,20 +110,11 @@ body {
     padding: 20px;
 }
 #map {
-    width: 99%; /* 너비를 부모 컨테이너의 80%로 */
-    height: 500px; /* 높이를 고정 값으로 설정 */
+    width: 99%;
+    height: 500px;
     border: 1px solid #ddd;
     border-radius: 5px;
-}
-textarea {
-    width: 100%; /* 너비를 부모 요소의 100%로 */
-    height: 100px; /* 높이를 100px로 조정 */
-    padding: 8px; /* 내부 여백 줄이기 */
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    resize: none; /* 크기 조정 막기 */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 박스 그림자 추가 */
-    background-color: #f8f9fa; /* 배경 색 설정 */
+    margin-top: 20px;
 }
 .button-container {
     margin-top: 20px;
@@ -98,4 +142,56 @@ textarea {
 }
 #completeBtn:hover {
     background-color: #0056b3;
+}
+.dropdown-container {
+    position: relative;
+    width: 200px;
+}
+
+.dropdown-button {
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dropdown-button i {
+    font-size: 18px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
+    list-style: none;
+    padding: 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
 }

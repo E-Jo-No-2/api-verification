@@ -13,8 +13,8 @@ import java.util.Date;
 public class UserEntity {
 
     @Id
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "user_id", nullable = false, length = 50)
+    private String userId; // 필드명이 userId로 정의
 
     @Column(name = "password", nullable = false)
     private String password;
