@@ -79,23 +79,30 @@
             margin-left: 5px;
         }
         #memo {
-            width: 100%;
+            width: 100%; /* 너비를 그대로 유지 */
             height: 100px;
             margin-top: 20px;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             resize: none;
+            margin-left: -10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background-color: #f8f9fa;
         }
         #backBtn {
-            margin-top: 20px;
+            margin-top: 10px;
+            margin-left: 0; /* 버튼을 왼쪽 정렬 */
             padding: 10px;
             background: #007bff;
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            text-align: center;
+            width: 100px; /* 고정된 너비 설정 */
         }
+
         #backBtn:hover {
             background: #0056b3;
         }
