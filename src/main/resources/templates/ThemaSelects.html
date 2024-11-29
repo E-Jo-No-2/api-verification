@@ -41,29 +41,42 @@
             padding: 5px 0;
             border-bottom: 1px solid #eee;
         }
+
         .tour-item {
-            margin-right: 10px;
+            flex-grow: 1; /* 텍스트 영역이 가변적으로 늘어나도록 설정 */
+            margin-right: 10px; /* 버튼과 간격을 유지 */
+            text-align: left; /* 텍스트 정렬 */
         }
+
         .edit-btn, .delete-btn {
-            margin-left: 5px;
+            width: 50px; /* 버튼 크기를 고정 */
             padding: 5px 10px;
             font-size: 12px;
             color: white;
             border: none;
             border-radius: 3px;
             cursor: pointer;
+            text-align: center; /* 버튼 텍스트 가운데 정렬 */
         }
+
         .edit-btn {
-            background-color: #ffc107;
+            background-color: #ffc107; /* 수정 버튼 색상 */
         }
+
         .edit-btn:hover {
             background-color: #e0a800;
         }
+
         .delete-btn {
-            background-color: #dc3545;
+            background-color: #dc3545; /* 삭제 버튼 색상 */
         }
+
         .delete-btn:hover {
             background-color: #c82333;
+        }
+
+        #tourList li button {
+            margin-left: 5px;
         }
         #memo {
             width: 100%;
@@ -95,6 +108,7 @@
             height: 500px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            margin-top: 20px;
         }
         .button-container {
             margin-top: 20px;
@@ -239,11 +253,11 @@
     }
 
     function goBack() {
-        alert("뒤로가기 버튼 클릭!");
+        alert("뒤로 가시겠습니까?");
     }
 
     function completeTour() {
-        alert("완료 버튼 클릭!");
+        alert("플래너 작성 완료를 하시겠습니까?");
     }
 </script>
 </body>
