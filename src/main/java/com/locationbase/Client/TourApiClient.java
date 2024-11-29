@@ -1,4 +1,4 @@
-package com.locationbase.Client;
+package com.locationbase.client;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
