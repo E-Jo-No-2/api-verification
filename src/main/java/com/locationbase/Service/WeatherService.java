@@ -54,6 +54,7 @@ public class WeatherService {
                 in.close();
                 data = new JSONObject(response.toString());
                 logger.debug("Weather data fetched: {}", data);
+                logger.debug("Full API response: {}", response);
             } else {
                 logger.error("GET 요청에 실패. 응답 코드: " + responseCode);
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
@@ -64,7 +65,7 @@ public class WeatherService {
                     response.append(inputLine);
                 }
                 in.close();
-                logger.error("API error response: {}", response.toString());
+                logger.error("API error response: {}", response);
             }
         } catch (Exception e) {
             logger.error("날씨 정보를 가져오는 도중 오류가 발생했습니다.", e);
@@ -88,6 +89,8 @@ public class WeatherService {
         for (int i = 0; i < weatherList.length(); i++) {
             JSONObject item = weatherList.getJSONObject(i);
             String dateTime = item.getString("dt_txt");
+            logger.debug("Processing item with dateTime: {}", dateTime);
+
             if (dateTime.endsWith("00:00:00")) {
                 LocalDate date = LocalDate.parse(dateTime.substring(0, 10), formatter);
                 String weather = item.getJSONArray("weather").getJSONObject(0).getString("main");

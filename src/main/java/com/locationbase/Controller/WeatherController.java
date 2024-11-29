@@ -33,7 +33,7 @@ public class WeatherController {
     @GetMapping("/main")
     public String main() {
         logger.debug("Navigating to main page and saving weather data.");
-        saveWeatherData(); // main 페이지로 이동할 때 날씨 정보를 저장
+        updateWeatherData(); // main 페이지로 이동할 때 날씨 정보를 저장
         return "main"; // main.html 파일 이름에서 확장자를 제외한 이름 반환
     }
 
@@ -49,6 +49,9 @@ public class WeatherController {
             return "{\"error\": \"날씨 정보를 불러오는 도중 오류가 발생했습니다.\"}";
         }
 
+        // 날씨 데이터를 데이터베이스에 저장
+        weatherService.saveWeatherData(weatherData);
+
         // 필요한 데이터만 추출
         JSONObject filteredData = filterWeatherData(weatherData);
         logger.debug("Filtered weather data: {}", filteredData);
@@ -56,7 +59,7 @@ public class WeatherController {
         return filteredData.toString();
     }
 
-    private void saveWeatherData() {
+    private void updateWeatherData() {
         String lang = "kr";
         // OpenWeatherMap API 키를 여기에 입력했습니다.
         String apiKey = "d33209554507a1997686d8feab67ab6a";
