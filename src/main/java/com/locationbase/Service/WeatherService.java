@@ -41,6 +41,8 @@ public class WeatherService {
             connection.setRequestMethod("GET");
 
             int responseCode = connection.getResponseCode();
+            logger.debug("API response code: {}", responseCode);
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
@@ -54,6 +56,15 @@ public class WeatherService {
                 logger.debug("Weather data fetched: {}", data);
             } else {
                 logger.error("GET 요청에 실패. 응답 코드: " + responseCode);
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                logger.error("API error response: {}", response.toString());
             }
         } catch (Exception e) {
             logger.error("날씨 정보를 가져오는 도중 오류가 발생했습니다.", e);
