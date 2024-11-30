@@ -44,9 +44,10 @@ document.addEventListener("DOMContentLoaded", function() {
             let weatherHtml = "";
             forecasts.forEach(forecast => {
                 const date = new Date(forecast.dt * 1000);
-                const monthDay = `${date.getMonth() + 1}월 ${date.getDate()}일}`;
+                const monthDay = `${date.getMonth() + 1}월 ${date.getDate()}일`;
                 const iconCode = forecast.weather[0].icon;
                 const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+                const description = forecast.weather[0].description;
                 const temp = `${Math.round(forecast.main.temp)}°C`; // 온도 반올림
 
                 weatherHtml += `
@@ -55,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <img src="${iconUrl}" alt="Weather Icon">
                         </div>
                         <h3>${monthDay}</h3>
+                        <p>${description}</p>
                         <p>${temp}</p>
                     </div>
                 `;

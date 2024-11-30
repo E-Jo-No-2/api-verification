@@ -14,15 +14,15 @@ public class UserEntity {
 
     @Id
     @Column(name = "user_id", nullable = false, length = 50)
-    private String userId; // 필드명이 userId로 정의
+    private String userId;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 16)
     private String password;
 
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name", nullable = true, length = 50)
     private String name;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
 
     @Column(name = "birth_date")
