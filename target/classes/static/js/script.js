@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.error) {
                 throw new Error(data.error);
             }
-
             const forecasts = data.list; // 필터링된 5일간의 오전 12시 날씨 데이터
 
             let weatherHtml = "";
@@ -57,7 +56,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 `;
             });
 
-            document.getElementById("weather-data").innerHTML = weatherHtml;
+            document.getElementById("weather-data").innerHTML = we
+atherHtml;
         })
         .catch(error => {
             console.error('Error during fetch request:', error);

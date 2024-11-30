@@ -9,4 +9,5 @@ public class LandMarkDTO {
     private String longitude;
     private String latitude;
     private String Cat1;
+    private String Distance;
 }

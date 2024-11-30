@@ -4,6 +4,8 @@ import com.locationbase.DTO.LandMarkDTO;
 import com.locationbase.client.TourApiClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,45 +13,114 @@ import java.util.*;
 @Service
 public class TourApiService {
 
+    // 로깅을 위한 Logger 설정
+    private static final Logger logger = LoggerFactory.getLogger(TourApiService.class);
+
     private final TourApiClient tourApiClient;
 
     public TourApiService(TourApiClient tourApiClient) {
         this.tourApiClient = tourApiClient;
     }
 
-    // 반경 내의 관광지 데이터 가져오기 및 테마별 필터링
-    public Map<String, List<LandMarkDTO>> getNearbySpotsByTheme(String latitude, String longitude, double radius) {
-        JSONObject response = tourApiClient.fetchNearbyTourSpots(latitude, longitude, radius);
+    /**
+     * 사용자 주변 관광지를 테마별로 그룹화하여 반환
+     * @param latitude 위도
+     * @param longitude 경도
+     * @return 테마별로 그룹화된 관광지 목록
+     */
+    public Map<String, List<LandMarkDTO>> getNearbySpotsByTheme(String longitude, String latitude) {
+        logger.info("주변 관광지 조회 시작:  경도={},위도={}", longitude, latitude);
+
+        JSONObject response = tourApiClient.NearbyTourSpots(longitude, latitude);
+
         if (response == null) {
-            throw new RuntimeException("Failed to fetch data from Tour API");
+            logger.error("Tour API 데이터 요청 실패");
+            throw new RuntimeException("Tour API로부터 데이터를 가져오지 못했습니다.");
+        }
+        // JSON 구조 디버깅 출력
+        System.out.println("API 응답 데이터: " + response.toString(2));
+        if (!response.has("response")) {
+            logger.error("API 응답에 'response' 키가 없습니다: {}", response.toString());
+            throw new RuntimeException("Invalid API response structure.");
         }
 
+        // 응답 성공 여부 확인
+        if (!response.getJSONObject("response").getJSONObject("header").getString("resultCode").equals("0000")) {
+            logger.error("API 응답 실패: {}", response.toString(2));
+            throw new RuntimeException("Tour API 호출 실패");
+        }
+
+        logger.info("Tour API 응답 수신 성공");
         List<LandMarkDTO> spots = parseSpots(response);
-        return groupSpotsByTheme(spots);
+        logger.info("응답 데이터에서 {}개의 관광지를 파싱 완료", spots.size());
+
+        Map<String, List<LandMarkDTO>> groupedSpots = groupSpotsByTheme(spots);
+        logger.info("관광지를 {}개의 테마로 그룹화 완료", groupedSpots.size());
+
+        return groupedSpots;
     }
 
-    // JSON 응답 데이터를 LandMarkDTO 리스트로
+    /**
+     * API 응답에서 관광지 데이터를 파싱
+     * @param response Tour API 응답 JSON 객체
+     * @return 파싱된 관광지 목록
+     */
     private List<LandMarkDTO> parseSpots(JSONObject response) {
         List<LandMarkDTO> spots = new ArrayList<>();
-        JSONObject body = response.getJSONObject("response").getJSONObject("body");
-        JSONArray items = body.optJSONObject("items").optJSONArray("item");
+        try {
+            // "response" 키 검증
+            if (!response.has("response")) {
+                logger.error("JSON 응답에 'response' 키가 없습니다.");
+                throw new RuntimeException("Invalid JSON 응답 구조: 'response' 키가 없습니다.");
+            }
 
-        if (items != null) {
+            JSONObject responseObj = response.getJSONObject("response");
+
+            // "body" 키 검증
+            if (!responseObj.has("body")) {
+                logger.error("JSON 응답에 'body' 키가 없습니다.");
+                throw new RuntimeException("Invalid JSON 응답 구조: 'body' 키가 없습니다.");
+            }
+
+            JSONObject body = responseObj.getJSONObject("body");
+
+            // "items.item" 검증
+            JSONObject itemsObj = body.optJSONObject("items");
+            if (itemsObj == null || !itemsObj.has("item")) {
+                logger.error("JSON 응답에 'items.item' 키가 없습니다.");
+                throw new RuntimeException("Invalid JSON 응답 구조: 'items.item' 키가 없습니다.");
+            }
+
+            JSONArray items = itemsObj.getJSONArray("item");
+
+            // 아이템 파싱
             for (int i = 0; i < items.length(); i++) {
                 JSONObject item = items.getJSONObject(i);
+                System.out.println("파싱된 아이템: " + item.toString(2));
+
+                // 관광지 데이터 파싱
                 LandMarkDTO spot = new LandMarkDTO();
                 spot.setLandmark_name(item.optString("title"));
-                spot.setLatitude(item.optString("mapy"));
-                spot.setLongitude(item.optString("mapx"));
-                spot.setCat1(item.optString("cat1")); // 테마 분류 정보 추가
+                spot.setLatitude(item.optString("mapY"));
+                spot.setLongitude(item.optString("mapX"));
+                spot.setCat1(item.optString("cat1"));
+                spot.setDistance(item.optString("dist"));
+
                 spots.add(spot);
             }
+        } catch (Exception e) {
+            logger.error("Tour API 응답 파싱 중 오류 발생: {}", e.getMessage());
         }
 
         return spots;
     }
 
-    // 테마별로 관광지를 그룹화
+
+    /**
+     * 관광지를 테마별로 그룹화
+     * @param spots 파싱된 관광지 목록
+     * @return 테마별 그룹화된 관광지 맵
+     */
     private Map<String, List<LandMarkDTO>> groupSpotsByTheme(List<LandMarkDTO> spots) {
         Map<String, List<LandMarkDTO>> groupedSpots = new HashMap<>();
 
@@ -58,11 +129,17 @@ public class TourApiService {
             groupedSpots.computeIfAbsent(theme, k -> new ArrayList<>()).add(spot);
         }
 
+        logger.info("테마별로 관광지를 그룹화 완료");
         return groupedSpots;
     }
 
-    // cat1 값을 기반으로 테마 결정
+    /**
+     * 관광지의 대분류(cat1)를 기반으로 테마 결정
+     * @param cat1 대분류 코드
+     * @return 테마 이름
+     */
     private String determineTheme(String cat1) {
+        logger.debug("테마 결정 중: cat1={} ", cat1);
         switch (cat1) {
             case "A01":
             case "A02":
@@ -76,5 +153,18 @@ public class TourApiService {
             default:
                 return "기타";
         }
+    }
+
+    /**
+     * 오류 응답을 처리하기 위한 헬퍼 메서드
+     * @param errorMessage 오류 메시지
+     * @return 클라이언트가 처리 가능한 오류 데이터
+     */
+    public Map<String, Object> handleErrorResponse(String errorMessage) {
+        logger.error("오류 처리 중: {}", errorMessage);
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("theme", "error");
+        errorResponse.put("message", errorMessage);
+        return errorResponse;
     }
 }
