@@ -34,6 +34,8 @@ public class PlannerService {
         logger.debug("Starting savePlanner for userId: {}", userId);
 
         Optional<UserEntity> userOptional = userRepository.findById(userId);
+        logger.debug("User query executed, result: {}", userOptional);
+
         if (!userOptional.isPresent()) {
             logger.error("User not found with userId: {}", userId);
             throw new RuntimeException("User not found with userId: " + userId);
@@ -43,7 +45,8 @@ public class PlannerService {
         logger.debug("User found: {}", user);
 
         LocalDate currentDate = LocalDate.now();
-        WeatherEntity weather = weatherRepository.findById(currentDate).orElseThrow(() -> new RuntimeException("Weather not found for today"));
+        WeatherEntity weather = weatherRepository.findById(currentDate)
+                .orElseThrow(() -> new RuntimeException("Weather not found for today"));
 
         PlannerEntity planner = new PlannerEntity();
         planner.setPlannerId(plannerId);

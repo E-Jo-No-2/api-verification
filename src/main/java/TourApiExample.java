@@ -51,7 +51,7 @@ public class TourApiExample {
             conn.disconnect();
 
             // 파일 객체 생성 및 경로 확인
-            File file = new File("src/main/java/tour_api_response.xml");
+            File file = new File("src/main/java/com/locationbase/tour_api_response.xml");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(sb.toString());
                 System.out.println("XML 응답이 '" + file.getAbsolutePath() + "' 경로에 저장되었습니다.");
@@ -59,13 +59,13 @@ public class TourApiExample {
                 e.printStackTrace();
             }
 
-            // 5초 지연 추가
-            Thread.sleep(5000);
-
-            // 콘솔 명령어 실행
-            String command = "cmd.exe /c start cmd.exe /k \"cd C:\\Spring_Study\\Team_project\\src\\main\\java && live-server --port=5501 --open=/geocoder_example.html\"";
-            ProcessBuilder pb = new ProcessBuilder(command.split(" "));
-            pb.start();
+//            // 5초 지연 추가
+//            Thread.sleep(5000);
+//
+//            // 콘솔 명령어 실행
+//            String command = "cmd.exe /c start cmd.exe /k \"cd C:\\Spring_Study\\Team_project\\src\\main\\java && live-server --port=5501 --open=/geocoder_example.html\"";
+//            ProcessBuilder pb = new ProcessBuilder(command.split(" "));
+//            pb.start();
 
         } catch (Exception e) {
             e.printStackTrace();

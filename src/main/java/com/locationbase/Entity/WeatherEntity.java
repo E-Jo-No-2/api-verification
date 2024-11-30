@@ -17,7 +17,7 @@ public class WeatherEntity {
     private LocalDate date; // Primary Key (date)
 
     @Column(name = "weather", length = 50)
-    private String weather; // Weather description (nullable)
+    private String weather; // Weather main field (nullable)
 
     @Column(name = "icon_code", length = 10)
     private String iconCode; // Weather icon code (nullable)

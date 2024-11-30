@@ -19,7 +19,7 @@ public class UserEntity {
     @Column(name = "password", nullable = false, length = 16)
     private String password;
 
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "name", nullable = true, length = 50)
     private String name;
 
     @Column(name = "email", nullable = false, unique = true, length = 50)
