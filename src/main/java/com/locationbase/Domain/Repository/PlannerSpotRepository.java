@@ -1,6 +1,6 @@
 package com.locationbase.Domain.Repository;
 
-import com.locationbase.Entity.PlannerSpotEntity; // Ensure this imports the correct entity class
+import com.locationbase.entity.PlannerSpotEntity; // Ensure this imports the correct entity class
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

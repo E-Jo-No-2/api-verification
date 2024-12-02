@@ -1,6 +1,6 @@
 package com.locationbase.Domain.Repository;
 
-import com.locationbase.Entity.LandMarkEntity;
+import com.locationbase.entity.LandMarkEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

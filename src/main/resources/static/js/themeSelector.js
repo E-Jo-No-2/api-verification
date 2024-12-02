@@ -87,6 +87,27 @@ function addToTourList(locationName) {
         return;
     }
 
+    //새로 추가>>>>>>>>>>>>>>>>>>>
+
+    const plannerId = 1; // You need to get the planner ID dynamically, if necessary
+    const spotData = {
+        plannerId: plannerId,
+        spotName: locationName,
+        visitOrder: tourList.children.length + 1,
+        routeId: 1 // Set a default route ID or dynamically generate it
+    };
+
+    fetch("/plannerSpot/addSpot", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(spotData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Spot added to backend:", data);
+
     const listItem = document.createElement("li");
     const textSpan = document.createElement("span");
     textSpan.textContent = `${tourList.children.length + 1}. ${locationName}`;
@@ -118,7 +139,7 @@ function addToTourList(locationName) {
     listItem.appendChild(editBtn);
     listItem.appendChild(deleteBtn);
     tourList.appendChild(listItem);
-}
+})//수정//
 
 // 관광지 리스트 번호 업데이트
 function updateTourListNumbers() {
