@@ -1,7 +1,7 @@
 package com.locationbase.Service;
 
 import com.locationbase.DTO.LandMarkDTO;
-import com.locationbase.Client.TourApiClient;
+import com.locationbase.client.TourApiClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.locationbase.Client;
+package com.locationbase.client;
 
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;

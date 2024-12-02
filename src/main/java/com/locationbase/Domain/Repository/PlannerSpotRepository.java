@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface PlannerSpotRepository extends JpaRepository<PlannerSpotEntity, Integer> {
 
-    // Correct the query method by using the correct field name
+
     List<PlannerSpotEntity> findByPlanner_PlannerId(int plannerId);
 }
