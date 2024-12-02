@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/themaselect")
+@RequestMapping("/api/tour")
 public class TourApiController {
 
     // 로거 생성

@@ -1,62 +1,44 @@
 package com.locationbase.Controller;
 
-import com.locationbase.Entity.PlannerSpotEntity;
 import com.locationbase.Service.PlannerSpotService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.locationbase.Entity.PlannerSpotEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/plannerSpot")
+@RequestMapping("/mytourlists")
 public class PlannerSpotController {
 
     private final PlannerSpotService plannerSpotService;
 
-    @Autowired
     public PlannerSpotController(PlannerSpotService plannerSpotService) {
         this.plannerSpotService = plannerSpotService;
     }
 
-    @GetMapping("/getSpots/{plannerId}")
-    public ResponseEntity<List<PlannerSpotEntity>> getSpotsByPlanner(@PathVariable int plannerId) {
-        List<PlannerSpotEntity> spots = plannerSpotService.getSpotsByPlanner(plannerId);
-        return ResponseEntity.ok(spots);
+
+    @GetMapping("/planner/{plannerId}")
+    public ResponseEntity<List<PlannerSpotEntity>> getSpotsForPlanner(@PathVariable Integer plannerId) {
+        List<PlannerSpotEntity> spots = plannerSpotService.getSpotsForPlanner(plannerId);
+        if (spots.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(spots, HttpStatus.OK);
     }
 
 
-    @GetMapping("/getSpot/{plannerSpotId}")
-    public ResponseEntity<PlannerSpotEntity> getSpotById(@PathVariable int plannerSpotId) {
-        PlannerSpotEntity spot = plannerSpotService.getSpotById(plannerSpotId);
-        return ResponseEntity.ok(spot);
-    }
-
-    @PostMapping("/addSpot")
-    public ResponseEntity<PlannerSpotEntity> addSpot(@RequestParam int plannerId,
-                                                     @RequestParam String spotName,
-                                                     @RequestParam int visitOrder,
-                                                     @RequestParam int routeId) {
-        PlannerSpotEntity newSpot = plannerSpotService.addSpot(plannerId, spotName, visitOrder, routeId);
-        return ResponseEntity.ok(newSpot);
+    @PostMapping
+    public ResponseEntity<PlannerSpotEntity> addSpot(@RequestBody PlannerSpotEntity plannerSpotEntity) {
+        PlannerSpotEntity newSpot = plannerSpotService.addSpot(plannerSpotEntity);
+        return new ResponseEntity<>(newSpot, HttpStatus.CREATED);
     }
 
 
-    @PutMapping("/updateSpot/{plannerSpotId}")
-    public ResponseEntity<PlannerSpotEntity> updateSpot(@PathVariable int plannerSpotId,
-                                                        @RequestParam String spotName,
-                                                        @RequestParam int visitOrder,
-                                                        @RequestParam int routeId) {
-        PlannerSpotEntity updatedSpot = plannerSpotService.updateSpot(plannerSpotId, spotName, visitOrder, routeId);
-        return ResponseEntity.ok(updatedSpot);
-    }
-
-
-    @DeleteMapping("/deleteSpot/{plannerSpotId}")
-    public ResponseEntity<String> deleteSpot(@PathVariable int plannerSpotId) {
-        plannerSpotService.deleteSpot(plannerSpotId);
-        return ResponseEntity.ok("Spot deleted successfully");
+    @DeleteMapping("/{plannerSpotId}")
+    public ResponseEntity<Void> removeSpot(@PathVariable Integer plannerSpotId) {
+        plannerSpotService.removeSpot(plannerSpotId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
-
-
