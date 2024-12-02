@@ -1,34 +1,64 @@
-package com.locationbase.client;
+package com.locationbase.Client;
 
+import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.json.JSONObject;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
 
 @Component
 public class TourApiClient {
 
-    private static final String TOUR_API_KEY = "VTV36ioiwVsBQXHNheZAGl7tUbPcXXJmkzE2t9yAP5K%2BmEUhqRKNe%2BX4EGswNt7mHbEQ9wd8N9zX2%2FiFQi95gg%3D%3D";
-    private static final String BASE_URL = "http://api.visitkorea.or.kr/openapi/service/rest/KorService";
+    private static final String BASE_URL = "https://apis.data.go.kr/B551011/KorService1/locationBasedList1";
+    private static final String TOUR_API_KEY = "1ik805mS4HuYvSTPwW755cequ4ZyXbHNaeWO27BLFA6qvgF43027M07miclVbWa%2BK%2FyMVqe1jW2w7IVlpkNRow%3D%3D";
 
-    public JSONObject fetchNearbyTourSpots(String latitude, String longitude, double radius) {
+    public JSONObject NearbyTourSpots(String longitude, String latitude) {
         try {
-            String encodedApiKey = URLEncoder.encode(TOUR_API_KEY, StandardCharsets.UTF_8);
-            String queryParams = String.format(
-                    "&mapX=%s&mapY=%s&radius=%.1f&listYN=Y&arrange=E&numOfRows=50&pageNo=1&_type=json",
-                    longitude, latitude, radius
-            );
+            // URI 생성 (자동 인코딩 비활성화)
+            URI uri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
+                    .queryParam("serviceKey", TOUR_API_KEY) // 이미 인코딩된 키
+                    .queryParam("mapX", longitude)
+                    .queryParam("mapY", latitude)
+                    .queryParam("radius", 3500)
+                    .queryParam("numOfRows", "40")
+                    .queryParam("MobileOS", "ETC")
+                    .queryParam("MobileApp", "AppTest")
+                    .queryParam("_type", "json")
+                    .build(true) // 자동 인코딩 비활성화
+                    .toUri();//이게 요청 1줄이에요 찾기 힘들어요.
 
-            String url = String.format("%s/locationBasedList?ServiceKey=%s%s", BASE_URL, encodedApiKey, queryParams);
+            // URI 디버깅
+            System.out.println("생성된 URI: " + uri);
 
+            // HTTP 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Accept", "application/json");
+            System.out.println("요청 헤더: " + headers);
+
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            // RestTemplate API 호출
             RestTemplate restTemplate = new RestTemplate();
-            String response = restTemplate.getForObject(url, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
 
-            return new JSONObject(response).getJSONObject("response");
+            // 응답 처리
+            String response = responseEntity.getBody();
+            if (response == null || response.isEmpty()) {
+                throw new RuntimeException("빈 응답을 받았습니다.");
+            }
+
+            // 응답 디버깅
+            System.out.println("API 응답: " + response);
+            return new JSONObject(response);
+
         } catch (Exception e) {
-            System.err.println("Error calling Tour API: " + e.getMessage());
+            System.err.println("API 호출 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
