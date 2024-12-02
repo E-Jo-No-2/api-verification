@@ -23,7 +23,7 @@ public class PlannerSpotService {
 
 
     public List<PlannerSpotEntity> getSpotsByPlanner(int plannerId) {
-        // Fetch the PlannerEntity by its ID
+
         PlannerEntity planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new RuntimeException("Planner not found with id: " + plannerId));
 
