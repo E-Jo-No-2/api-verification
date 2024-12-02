@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour API Test</title>
+    <script>
+        async function fetchTourApi() {
+            const url = `http://apis.data.go.kr/B551011/KorService1/locationBasedList1?serviceKey=%2FYlxk9%2F2%2F4C1Wqj%2FelEWXBkPoVHK6lYc%2F5opKHIU8zlwNjkGmZHXX%2BW1m7fKGu57nb2T7eM%2FGzmjmNpiq1pyqg%3D%3D&numOfRows=50&pageNo=1&MobileOS=ETC&MobileApp=AppTest&arrange=A&mapX=126.988251&mapY=37.551242&radius=3500&_type=xml`;
+            // html에서 api를 호출하면 호출이 아주 잘됩니다. 그런데 html에서 api를 호출하면 문제가 있어요. api에서 제공한 데이터 ( 좌표, 타이틀 등등 )를 가공해서 저장 밑 다른 곳으로 보내는게 제한적입니다.
+            //그래서 api 호출할 때 Client 코드를 만들어서 서비스를 보내주는걸 진행합니다. 여기서 문제가 발생합니다. 스프링 부트는 uri를 자동으로 인코딩해주는 라이브러리가 "기본"제공됩니다.
+            // 이 라이브러리는 uri가 인코딩 되었다 판단되면 인코딩을 안하고 안됬다 판단하면 인코딩을 해주는 라이브러리 입니다.
+            // 그런데 이 친구가 사람이 만든거라 인코딩 된 uri와 안된 uri를 구분을 못할 수 있어요. 이 부분에서 어제 12시간을 날린거에요.
+            // 자바에서 uri를 생성할 때 api가 인코딩 된건지 안된거지 보고 인코딩이 된거만 쓰세요.
+            // 디코딩 된 uri를 보고도 이게 디코딩된거진 판단을 못해. 디코딩 인코딩하면 -> 인코딩된 uri. 이게 안되 사람이 만든거라 오류가 발생할 수 있다.
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.text();
+                document.getElementById("response").textContent = data;
+            } catch (error) {
+                console.error("Error fetching API:", error);
+                document.getElementById("response").textContent = "Error: " + error.message;
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Tour API Test</h1>
+<button onclick="fetchTourApi()">Fetch Tour API Data</button>
+<pre id="response" style="white-space: pre-wrap; background: #f4f4f4; padding: 10px; border: 1px solid #ccc;"></pre>
+</body>
+</html>

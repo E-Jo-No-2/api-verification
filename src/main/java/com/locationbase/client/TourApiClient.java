@@ -1,4 +1,4 @@
-package com.locationbase.client;
+package com.locationbase.Client;
 
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -30,7 +30,7 @@ public class TourApiClient {
                     .queryParam("MobileApp", "AppTest")
                     .queryParam("_type", "json")
                     .build(true) // 자동 인코딩 비활성화
-                    .toUri();
+                    .toUri();//이게 요청 1줄이에요 찾기 힘들어요.
 
             // URI 디버깅
             System.out.println("생성된 URI: " + uri);
@@ -54,7 +54,6 @@ public class TourApiClient {
 
             // 응답 디버깅
             System.out.println("API 응답: " + response);
-
             return new JSONObject(response);
 
         } catch (Exception e) {

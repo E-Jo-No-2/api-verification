@@ -1,7 +1,7 @@
 package com.locationbase.Service;
 
 import com.locationbase.DTO.LandMarkDTO;
-import com.locationbase.client.TourApiClient;
+import com.locationbase.Client.TourApiClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -101,11 +101,15 @@ public class TourApiService {
                 // 관광지 데이터 파싱
                 LandMarkDTO spot = new LandMarkDTO();
                 spot.setLandmark_name(item.optString("title"));
-                spot.setLatitude(item.optString("mapY"));
-                spot.setLongitude(item.optString("mapX"));
+                spot.setLongitude(item.optString("mapx"));
+                spot.setLatitude(item.optString("mapy"));
                 spot.setCat1(item.optString("cat1"));
                 spot.setDistance(item.optString("dist"));
-
+                //이 로직은 클라이언트 ( 사용자, 여기서는 ThemaSelects.html)가 이 정보가 필요해요! 라고 요청하는 파라미터를 저장하는 역할입니다.
+                //여기서 만약 우리가 실수로 오타를 해서                 spot.setLongitude(item.optString("mapX"));
+                // mapy, mapx 이렇게 되있으면 -> 순서대로 들어가  X-> y가 들어가고 Y->x가 들어가요. 이래서 오류가 없어 실행은 돼
+                // 그래서 uri를 생성하면 Y -> 127 (경도) 가들어가고 X에 위도가 들어가버려요.
+                System.out.println("Parsed DTO: " + spot);
                 spots.add(spot);
             }
         } catch (Exception e) {
