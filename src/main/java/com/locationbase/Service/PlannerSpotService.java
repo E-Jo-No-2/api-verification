@@ -13,17 +13,17 @@ import java.util.List;
 public class PlannerSpotService {
 
     private final PlannerSpotRepository plannerSpotRepository;
-    private final PlannerRepository plannerRepository;  // Inject PlannerRepository
+    private final PlannerRepository plannerRepository;
 
     @Autowired
     public PlannerSpotService(PlannerSpotRepository plannerSpotRepository, PlannerRepository plannerRepository) {
         this.plannerSpotRepository = plannerSpotRepository;
-        this.plannerRepository = plannerRepository;  // Initialize PlannerRepository
+        this.plannerRepository = plannerRepository;
     }
 
     // Get all spots for a planner
     public List<PlannerSpotEntity> getSpotsByPlanner(int plannerId) {
-        return plannerSpotRepository.findByPlannerId(plannerId);
+        return plannerSpotRepository.findByPlanner_PlannerId(plannerId);
     }
 
     // Get a specific spot by its ID

@@ -6,8 +6,8 @@ import lombok.Data;
 public class Planner_SpotDTO {
     private int plannerSpotId;
     private int planner;
-    private String spot_name;
-    private int visit_order;
-    private int route_id;
+    private String spotName;
+    private int visitOrder;
+    private int routeId;
 
 }
