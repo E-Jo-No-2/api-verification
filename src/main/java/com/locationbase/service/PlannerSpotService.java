@@ -1,4 +1,4 @@
-package com.locationbase.service;
+/*package com.locationbase.service;
 
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.PlannerSpotEntity;
@@ -34,7 +34,7 @@ public class PlannerSpotService {
 
     // Add a new spot to the planner
     public PlannerSpotEntity addSpot(int plannerId, String spotName, int visitOrder, int routeId) {
-        // Use PlannerRepository to find the Planner entity
+
         PlannerEntity planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new RuntimeException("Planner not found with id: " + plannerId));
 
@@ -61,4 +61,4 @@ public class PlannerSpotService {
         PlannerSpotEntity spot = getSpotById(plannerSpotId);
         plannerSpotRepository.delete(spot);
     }
-}
+}*/

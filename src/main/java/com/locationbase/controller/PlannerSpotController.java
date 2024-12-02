@@ -1,4 +1,4 @@
-package com.locationbase.controller;
+/*package com.locationbase.controller;
 
 import com.locationbase.entity.PlannerSpotEntity;
 import com.locationbase.service.PlannerSpotService;
@@ -57,4 +57,4 @@ public class PlannerSpotController {
         plannerSpotService.deleteSpot(plannerSpotId);
         return ResponseEntity.ok("Spot deleted successfully");
     }
-}
+}*/
