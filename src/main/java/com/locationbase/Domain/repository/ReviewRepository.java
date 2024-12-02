@@ -1,4 +1,4 @@
-package com.locationbase.Domain.Repository;
+package com.locationbase.Domain.repository;
 
 import com.locationbase.entity.ReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

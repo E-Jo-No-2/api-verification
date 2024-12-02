@@ -1,6 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.Repository.MemoRepository;
+import com.locationbase.Domain.repository.MemoRepository;
 import com.locationbase.entity.MemoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

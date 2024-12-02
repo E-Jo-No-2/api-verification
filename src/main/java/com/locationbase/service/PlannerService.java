@@ -58,9 +58,9 @@ public class PlannerService {
     }
 }*/
 package com.locationbase.service;
-import com.locationbase.Domain.Repository.PlannerRepository;
-import com.locationbase.Domain.Repository.UserRepository;
-import com.locationbase.Domain.Repository.WeatherRepository;
+import com.locationbase.Domain.repository.PlannerRepository;
+import com.locationbase.Domain.repository.UserRepository;
+import com.locationbase.Domain.repository.WeatherRepository;
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.UserEntity;
 import com.locationbase.entity.WeatherEntity;

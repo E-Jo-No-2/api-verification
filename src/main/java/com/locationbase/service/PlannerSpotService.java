@@ -2,8 +2,8 @@ package com.locationbase.service;
 
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.PlannerSpotEntity;
-import com.locationbase.Domain.Repository.PlannerSpotRepository;
-import com.locationbase.Domain.Repository.PlannerRepository;  // Import PlannerRepository
+import com.locationbase.Domain.repository.PlannerSpotRepository;
+import com.locationbase.Domain.repository.PlannerRepository;  // Import PlannerRepository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
