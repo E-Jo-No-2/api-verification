@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface PlannerSpotRepository extends JpaRepository<PlannerSpotEntity, Integer> {
     List<PlannerSpotEntity> findByPlanner_PlannerIdOrderByVisitOrder(Integer plannerId);
+
+    List<PlannerSpotEntity> findByPlannerId(int plannerId);
 }
 
 

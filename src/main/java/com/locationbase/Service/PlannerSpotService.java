@@ -3,7 +3,7 @@ package com.locationbase.Service;
 import com.locationbase.Entity.PlannerEntity;
 import com.locationbase.Entity.PlannerSpotEntity;
 import com.locationbase.Domain.Repository.PlannerSpotRepository;
-import com.locationbase.Domain.Repository.PlannerRepository;
+import com.locationbase.Domain.Repository.PlannerRepository;  // Import PlannerRepository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,38 +13,33 @@ import java.util.List;
 public class PlannerSpotService {
 
     private final PlannerSpotRepository plannerSpotRepository;
-    private final PlannerRepository plannerRepository;
+    private final PlannerRepository plannerRepository;  // Inject PlannerRepository
 
     @Autowired
     public PlannerSpotService(PlannerSpotRepository plannerSpotRepository, PlannerRepository plannerRepository) {
         this.plannerSpotRepository = plannerSpotRepository;
-        this.plannerRepository = plannerRepository;
+        this.plannerRepository = plannerRepository;  // Initialize PlannerRepository
     }
 
-
+    // Get all spots for a planner
     public List<PlannerSpotEntity> getSpotsByPlanner(int plannerId) {
-
-        PlannerEntity planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new RuntimeException("Planner not found with id: " + plannerId));
-
-
-        return plannerSpotRepository.findByPlanner(planner);
+        return plannerSpotRepository.findByPlannerId(plannerId);
     }
 
-
+    // Get a specific spot by its ID
     public PlannerSpotEntity getSpotById(int plannerSpotId) {
         return plannerSpotRepository.findById(plannerSpotId)
                 .orElseThrow(() -> new RuntimeException("Spot not found with id: " + plannerSpotId));
     }
 
-
+    // Add a new spot to the planner
     public PlannerSpotEntity addSpot(int plannerId, String spotName, int visitOrder, int routeId) {
-        // Find the planner by plannerId
+        // Use PlannerRepository to find the Planner entity
         PlannerEntity planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new RuntimeException("Planner not found with id: " + plannerId));
 
         PlannerSpotEntity newSpot = new PlannerSpotEntity();
-        newSpot.setPlanner(planner);
+        newSpot.setPlanner(planner);  // Set the Planner entity
         newSpot.setSpotName(spotName);
         newSpot.setVisitOrder(visitOrder);
         newSpot.setRouteId(routeId);
@@ -52,7 +47,7 @@ public class PlannerSpotService {
         return plannerSpotRepository.save(newSpot);
     }
 
-
+    // Update an existing spot
     public PlannerSpotEntity updateSpot(int plannerSpotId, String spotName, int visitOrder, int routeId) {
         PlannerSpotEntity existingSpot = getSpotById(plannerSpotId);
         existingSpot.setSpotName(spotName);
@@ -61,7 +56,7 @@ public class PlannerSpotService {
         return plannerSpotRepository.save(existingSpot);
     }
 
-
+    // Delete a spot
     public void deleteSpot(int plannerSpotId) {
         PlannerSpotEntity spot = getSpotById(plannerSpotId);
         plannerSpotRepository.delete(spot);
