@@ -21,15 +21,14 @@ public class PlannerEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userId;  // UserEntity와 관계 설정
 
-    @Column(name = "theme_name", length = 50, nullable = true)
-    private String themeName;
+
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    public PlannerEntity(UserEntity userId, LocalDate date, String themeName) {
+    public PlannerEntity(UserEntity userId, LocalDate date) {
         this.userId = userId;
         this.date = date;
-        this.themeName = themeName;
+
     }
 }
