@@ -17,16 +17,56 @@ newPlannerBtn.addEventListener("click", () => {
     const newCard = document.createElement("a");
     newCard.href = `/landmark?plannerId=${plannerCount}&userId=${userId}`;
     newCard.className = "card";
-    newCard.innerHTML = `
-        <h3>CATEGORY</h3>
-        <h2>TOUR${plannerCount}</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    newCard.setAttribute("data-id", plannerCount); // Add this line to set data-id
+        newCard.innerHTML = `
+        <button class="delete-btn" title="Delete this planner">X</button>
+        <a href="/landmark?plannerId=${plannerCount}&userId=${userId}">
+             <h3>CATEGORY</h3>
+           <h2>TOUR${plannerCount}</h2>
+           
+        </a>
     `;
+
+    // NEW 카드 버튼 바로 앞에 새 카드 추가
     cardsContainer.insertBefore(newCard, newPlannerBtn);
+
+    // 카드 삭제 버튼 이벤트
+    const deleteBtn = newCard.querySelector(".delete-btn");
+    deleteBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Show confirmation alert
+        const confirmDelete = confirm("Are you sure you want to delete this planner?");
+        if (confirmDelete) {
+            const plannerId = newCard.getAttribute("data-id");
+
+
+            // 서버에 delete 요청
+            fetch(`/api/planner/delete?plannerId=${plannerId}`,  {
+                method: "DELETE"
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to delete planner");
+                    }
+                    return response.text();
+                })
+                .then(message => {
+                    alert(message);
+                    // Remove the card from the DOM
+                    cardsContainer.removeChild(newCard);
+                })
+                .catch(error => {
+                    console.error("Error during deletion:", error);
+                    alert("Planner 삭제 실패: " + error.message);
+                });
+        }
+    });
 });
 
 // WeatherApp API 호출
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     fetch('/getWeather')
         .then(response => {
             if (!response.ok) {
@@ -68,4 +108,4 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Error during fetch request:', error);
             document.getElementById("weather-data").innerText = error.message;
         });
-});
+}); // Missing closing brace fixed

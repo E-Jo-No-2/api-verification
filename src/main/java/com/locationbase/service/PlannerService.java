@@ -64,10 +64,11 @@ import com.locationbase.Domain.repository.WeatherRepository;
 
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.UserEntity;
-import com.locationbase.entity.WeatherEntity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -80,13 +81,15 @@ public class PlannerService {
 
     private final PlannerRepository plannerRepository;
     private final UserRepository userRepository;
-    private final WeatherRepository weatherRepository;
+    private final JdbcTemplate jdbcTemplate;
+
 
     @Autowired
-    public PlannerService(PlannerRepository plannerRepository, UserRepository userRepository, WeatherRepository weatherRepository) {
+    public PlannerService(PlannerRepository plannerRepository, UserRepository userRepository, JdbcTemplate jdbcTemplate) {
         this.plannerRepository = plannerRepository;
         this.userRepository = userRepository;
-        this.weatherRepository = weatherRepository;
+        this.jdbcTemplate = jdbcTemplate;
+
     }
 
     // planner 저장
@@ -103,8 +106,7 @@ public class PlannerService {
         logger.debug("사용자 확인 완료: {}", user);
 
         LocalDate currentDate = LocalDate.now();
-        WeatherEntity weather = weatherRepository.findById(currentDate)//planner에 weather 필드가 필요
-                .orElseThrow(() -> new RuntimeException("오늘 날짜의 날씨 데이터를 찾을 수 없습니다."));
+
 
         PlannerEntity planner = new PlannerEntity();
         planner.setPlannerId(plannerId);
@@ -118,7 +120,7 @@ public class PlannerService {
     }
 
     //planner 업데이트
-    public void updatePlanner(int plannerId, String userId, LocalDate newDate, WeatherEntity newWeather) {
+    public void updatePlanner(int plannerId, String userId, LocalDate newDate) {
         logger.debug("Planner 업데이트 시작. Planner ID: {}, 사용자 ID: {}", plannerId, userId);
 
         PlannerEntity planner = plannerRepository.findById(plannerId)
@@ -139,7 +141,7 @@ public class PlannerService {
         logger.debug("Planner 업데이트 성공. Planner ID: {}, 새로운 날짜: {}", plannerId, newDate);
     }
 
-    //planner 삭제
+    //planner 삭제c
     public void deletePlanner(int plannerId) {
         logger.debug("Planner 삭제 시작. Planner ID: {}", plannerId);
 
@@ -159,5 +161,41 @@ public class PlannerService {
 
             logger.debug("Planner 삭제 성공. Planner ID: {}", plannerId);
         }
+
+    public void deletePlannerAndResetAutoIncrement(int plannerId) {
+        logger.debug("Planner 삭제 시작. Planner ID: {}", plannerId);
+
+        if (!plannerRepository.existsById(plannerId)) {
+            logger.error("Planner를 찾을 수 없습니다. Planner ID: {}", plannerId);
+            throw new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId);
+        }
+
+        plannerRepository.deleteById(plannerId);
+        logger.debug("Planner 삭제 성공. Planner ID: {}", plannerId);
+
+        // Planner 테이블이 비어 있는 경우만 AUTO_INCREMENT 초기화
+        resetAutoIncrement();
     }
+
+    private void resetAutoIncrement() {
+        String truncateCheckSql = "SELECT COUNT(*) FROM planner";
+        Integer count = jdbcTemplate.queryForObject(truncateCheckSql, Integer.class);
+
+        if (count != null && count > 0) {
+            logger.error("Planner 테이블이 비어 있지 않으므로 AUTO_INCREMENT를 초기화할 수 없습니다.");
+            throw new RuntimeException("Planner 테이블이 비어 있지 않습니다. 초기화하려면 모든 데이터를 삭제해야 합니다.");
+        }
+
+        String resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
+        try {
+            jdbcTemplate.execute(resetSql);
+            logger.debug("Planner 테이블 AUTO_INCREMENT 초기화 성공");
+        } catch (Exception e) {
+            logger.error("Planner 테이블 AUTO_INCREMENT 초기화 실패", e);
+            throw new RuntimeException("AUTO_INCREMENT 초기화 중 오류 발생", e);
+        }
+    }
+
+
+}
 
