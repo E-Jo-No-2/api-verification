@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Planner")
+@Table(name = "planner") // 'planner' 테이블과 매핑
 @Data
 @NoArgsConstructor
 public class PlannerEntity {
@@ -19,16 +19,13 @@ public class PlannerEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity userId;  // UserEntity와 관계 설정
-
-
+    private UserEntity user;  // 'user_id' 컬럼과 UserEntity와 관계 설정
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    public PlannerEntity(UserEntity userId, LocalDate date) {
-        this.userId = userId;
+    public PlannerEntity(UserEntity user, LocalDate date) {
+        this.user = user;
         this.date = date;
-
     }
 }

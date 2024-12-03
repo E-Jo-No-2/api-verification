@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,13 +29,15 @@ public class LandmarkController {
 
     // /landmark 요청이 들어오면 SelectLandmark.html 반환
     @GetMapping("/landmark")
-    public String showSelectLandmark(@RequestParam("plannerId") int plannerId, @RequestParam("userId") String userId) {
+    public String showSelectLandmark(@RequestParam("userId") String userId, @RequestParam("date") String date) {
         // Planner 테이블 업데이트
-        plannerService.savePlanner(plannerId, userId);
+        LocalDate parsedDate = LocalDate.parse(date);
+        plannerService.savePlanner(userId, parsedDate);
 
         // Service를 호출하여 비즈니스 로직 수행 (필요 시)
         String info = landmarkService.getLandmarkInfo();
-        System.out.println("Planner ID: " + plannerId); // 디버깅용 로그
+        System.out.println("User ID: " + userId); // 디버깅용 로그
+        System.out.println("Date: " + date); // 디버깅용 로그
         System.out.println(info); // 디버깅용 로그
         return "SelectLandmark"; // templates/SelectLandmark.html 반환
     }

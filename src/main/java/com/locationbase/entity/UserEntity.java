@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
-@Table(name = "User")
+@Table(name = "user") // 'user' 테이블과 매핑
 @Data
 @NoArgsConstructor
 public class UserEntity {
@@ -19,7 +19,7 @@ public class UserEntity {
     @Column(name = "password", nullable = false, length = 16)
     private String password;
 
-    @Column(name = "name", nullable = true, length = 50)
+    @Column(name = "name", length = 50)
     private String name;
 
     @Column(name = "email", nullable = false, unique = true, length = 50)

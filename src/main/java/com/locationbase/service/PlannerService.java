@@ -1,63 +1,5 @@
-/*package com.locationbase.Service;
-
-import com.locationbase.Domain.Repository.PlannerRepository;
-import com.locationbase.Domain.Repository.UserRepository;
-import com.locationbase.Domain.Repository.WeatherRepository;
-import com.locationbase.Entity.PlannerEntity;
-import com.locationbase.Entity.UserEntity;
-import com.locationbase.Entity.WeatherEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
-@Service
-public class PlannerService {
-
-    private static final Logger logger = LoggerFactory.getLogger(PlannerService.class);
-
-    private final PlannerRepository plannerRepository;
-    private final UserRepository userRepository;
-    private final WeatherRepository weatherRepository;
-
-    @Autowired
-    public PlannerService(PlannerRepository plannerRepository, UserRepository userRepository, WeatherRepository weatherRepository) {
-        this.plannerRepository = plannerRepository;
-        this.userRepository = userRepository;
-        this.weatherRepository = weatherRepository;
-    }
-
-    public void savePlanner(int plannerId, String userId) {
-        logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
-
-        Optional<UserEntity> userOptional = userRepository.findById(userId);
-        if (!userOptional.isPresent()) {
-            logger.error("사용자를 찾을 수 없습니다. 사용자 ID: {}", userId);
-            throw new RuntimeException("사용자를 찾을 수 없습니다. 사용자 ID: " + userId);
-        }
-
-        UserEntity user = userOptional.get();
-        logger.debug("사용자 확인 완료: {}", user);
-
-        LocalDate currentDate = LocalDate.now();
-        WeatherEntity weather = weatherRepository.findById(currentDate)
-                .orElseThrow(() -> new RuntimeException("오늘 날짜의 날씨 데이터를 찾을 수 없습니다."));
-
-        PlannerEntity planner = new PlannerEntity();
-        planner.setPlannerId(plannerId);
-        planner.setUserId(user);
-        planner.setDate(currentDate);
-
-        plannerRepository.save(planner);
-
-        logger.debug("Planner 저장 성공. 사용자 ID: {}", userId);
-
-    }
-}*/
 package com.locationbase.service;
+
 import com.locationbase.Domain.repository.PlannerRepository;
 import com.locationbase.Domain.repository.UserRepository;
 import com.locationbase.Domain.repository.WeatherRepository;
@@ -89,8 +31,8 @@ public class PlannerService {
     }
 
     // planner 저장
-    public void savePlanner(int plannerId, String userId) {
-        logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
+    public void savePlanner(String userId, LocalDate date) {
+        logger.debug("Planner 저장 시작. 사용자 ID: {}, 날짜: {}", userId, date);
 
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (!userOptional.isPresent()) {
@@ -101,29 +43,21 @@ public class PlannerService {
         UserEntity user = userOptional.get();
         logger.debug("사용자 확인 완료: {}", user);
 
-        LocalDate currentDate = LocalDate.now();
-        WeatherEntity weather = weatherRepository.findById(currentDate)
-                .orElseThrow(() -> new RuntimeException("오늘 날짜의 날씨 데이터를 찾을 수 없습니다."));
-
-        PlannerEntity planner = new PlannerEntity();
-        planner.setPlannerId(plannerId);
-        planner.setUserId(user);
-        planner.setDate(currentDate);
-
+        PlannerEntity planner = new PlannerEntity(user, date);
         plannerRepository.save(planner);
 
-        logger.debug("Planner 저장 성공. 사용자 ID: {}", userId);
+        logger.debug("Planner 저장 성공. 사용자 ID: {}, 날짜: {}", userId, date);
     }
 
-    //planner 업데이트
+    // planner 업데이트
     public void updatePlanner(int plannerId, String userId, LocalDate newDate) {
-        logger.debug("Planner 업데이트 시작. Planner ID: {}, 사용자 ID: {}", plannerId, userId);
+        logger.debug("Planner 업데이트 시작. Planner ID: {}, 사용자 ID: {}, 새로운 날짜: {}", plannerId, userId, newDate);
 
         PlannerEntity planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId));
 
-        // Verify user ownership
-        if (!planner.getUserId().getUserId().equals(userId)) {
+        // 사용자 소유 확인
+        if (!planner.getUser().getUserId().equals(userId)) {
             logger.error("사용자 ID가 Planner와 일치하지 않습니다. 사용자 ID: {}, Planner ID: {}", userId, plannerId);
             throw new RuntimeException("사용자 ID가 Planner와 일치하지 않습니다.");
         }
@@ -136,7 +70,7 @@ public class PlannerService {
         logger.debug("Planner 업데이트 성공. Planner ID: {}, 새로운 날짜: {}", plannerId, newDate);
     }
 
-    //planner 삭제
+    // planner 삭제
     public void deletePlanner(int plannerId) {
         logger.debug("Planner 삭제 시작. Planner ID: {}", plannerId);
 
@@ -150,4 +84,3 @@ public class PlannerService {
         logger.debug("Planner 삭제 성공. Planner ID: {}", plannerId);
     }
 }
-
