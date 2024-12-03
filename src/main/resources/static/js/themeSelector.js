@@ -36,6 +36,8 @@ function transformLocations(data) {
                         x: parseFloat(location.longitude), // 경도
                         y: parseFloat(location.latitude), // 위도
                         location: location.landmark_name || location.title,
+                        distance: location.Distance,
+                        image: location.image,
                         theme: theme
                     });
                 } else {
@@ -49,6 +51,7 @@ function transformLocations(data) {
     console.log("Transformed data:", transformed);
     return transformed;
 }
+
 // 지도에 마커 추가
 function addMarkers(filteredLocations) {
     console.log("Adding markers to the map...");
@@ -63,14 +66,52 @@ function addMarkers(filteredLocations) {
             title: location.location
         });
 
+        // InfoWindow 생성
+        const infoWindow = new naver.maps.InfoWindow({
+            content: `
+                <div style="padding:10px;min-width:250px;line-height:1.5;">
+                    <h4 style="margin:0;">${location.location}</h4>
+                    <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
+                    <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
+                    <hr style="margin:10px 0;">
+                    <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})" 
+                            style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
+                    <button onclick="findRoute(${location.x}, ${location.y})" 
+                            style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
+                </div>
+            `,
+            borderWidth: 1,
+            disableAnchor: false
+        });
+
         // 마커 클릭 이벤트
         naver.maps.Event.addListener(marker, 'click', () => {
             console.log("Marker clicked:", location.location);
-            addToTourList(location.location);
+
+            // InfoWindow가 열려 있다면 닫고, 아니면 열기
+            if (infoWindow.getMap()) {
+                infoWindow.close();
+            } else {
+                infoWindow.open(map, marker);
+            }
         });
+
         markers.push(marker);
     });
+
     console.log("Markers added:", markers);
+}
+
+// 장소 선택 처리
+function selectLocation(name, lng, lat) {
+    console.log("Location selected:", name);
+    addToTourList(name);
+}
+
+// 길찾기 처리
+function findRoute(lng, lat) {
+    console.log("Finding route to:", lng, lat);
+    alert(`길찾기를 위한 경도: ${lng}, 위도: ${lat}를 호출합니다.`);
 }
 
 // 관광지 리스트에 추가
@@ -86,27 +127,6 @@ function addToTourList(locationName) {
         console.warn(`Location already added to tour list: ${locationName}`);
         return;
     }
-
-    //새로 추가>>>>>>>>>>>>>>>>>>>
-
-    const plannerId = 1; // You need to get the planner ID dynamically, if necessary
-    const spotData = {
-        plannerId: plannerId,
-        spotName: locationName,
-        visitOrder: tourList.children.length + 1,
-        routeId: 1 // Set a default route ID or dynamically generate it
-    };
-
-    fetch("/plannerSpot/addSpot", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(spotData)
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Spot added to backend:", data);
 
     const listItem = document.createElement("li");
     const textSpan = document.createElement("span");
@@ -139,7 +159,7 @@ function addToTourList(locationName) {
     listItem.appendChild(editBtn);
     listItem.appendChild(deleteBtn);
     tourList.appendChild(listItem);
-})//수정//
+}
 
 // 관광지 리스트 번호 업데이트
 function updateTourListNumbers() {
