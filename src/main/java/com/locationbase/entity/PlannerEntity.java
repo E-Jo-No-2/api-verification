@@ -26,9 +26,5 @@ public class PlannerEntity {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    public PlannerEntity(UserEntity userId, LocalDate date) {
-        this.userId = userId;
-        this.date = date;
-
     }
-}
+

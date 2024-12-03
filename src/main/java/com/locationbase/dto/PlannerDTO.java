@@ -9,4 +9,5 @@ public class PlannerDTO {
     private String user_id;
     private Date date;
 
+
 }

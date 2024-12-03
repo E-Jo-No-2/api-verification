@@ -1,6 +1,7 @@
 package com.locationbase.service;
 
 import com.locationbase.Domain.repository.MemoRepository;
+import com.locationbase.Domain.repository.PlannerRepository;
 import com.locationbase.entity.MemoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,19 @@ import java.util.Optional;
 public class MemoService {
 
     private final MemoRepository memoRepository;
+    private final PlannerRepository plannerRepository;
 
     @Autowired
-    public MemoService(MemoRepository memoRepository) {
+    public MemoService(MemoRepository memoRepository, PlannerRepository plannerRepository) {
         this.memoRepository = memoRepository;
+        this.plannerRepository = plannerRepository;
+
     }
 
     // 새로운 메모 추가
     @Transactional
     public MemoEntity addMemo(MemoEntity memoEntity) {
+
         return memoRepository.save(memoEntity);
     }
 
@@ -39,6 +44,11 @@ public class MemoService {
     // 메모 삭제
     @Transactional
     public void deleteMemo(int memoId) {
+
         memoRepository.deleteById(memoId);
     }
 }
+
+
+
+
