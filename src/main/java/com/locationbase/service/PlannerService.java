@@ -141,7 +141,7 @@ public class PlannerService {
         logger.debug("Planner 업데이트 성공. Planner ID: {}, 새로운 날짜: {}", plannerId, newDate);
     }
 
-    //planner 삭제c
+    //planner 삭제
     public void deletePlanner(int plannerId) {
         logger.debug("Planner 삭제 시작. Planner ID: {}", plannerId);
 

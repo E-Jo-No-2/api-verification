@@ -27,7 +27,7 @@ public class MemoEntity {
     private PlannerEntity planner;
 
     @Column(name = "write_date", nullable = false)
-    private LocalDate write_date;
+    private LocalDate writeDate;
 
     @Column(name = "memo_content", columnDefinition = "TEXT", nullable = true)
     private String memoContent;

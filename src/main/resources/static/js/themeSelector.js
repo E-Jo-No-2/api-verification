@@ -285,7 +285,7 @@ document.getElementById("backBtn").addEventListener("click", () => {
         };
 
 
-        fetch('/memos', {
+        fetch('/memo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
