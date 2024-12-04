@@ -224,8 +224,11 @@ document.getElementById("backBtn").addEventListener("click", () => {
 
     if (memoContent) {
         const memoData = {
-            memoContent: memoContent
+            memoContent: memoContent,
+            planner: { planner_id: 1 },
+            writeDate: new Date().toISOString().split('T')[0]
         };
+
 
         fetch('/memos', {
             method: 'POST',

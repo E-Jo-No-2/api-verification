@@ -159,40 +159,31 @@ public class PlannerService {
 
             plannerRepository.deleteById(plannerId);
 
+        String reSeqSql = "UPDATE planner SET planner_id = planner_id - 1 WHERE planner_id > ?";
+        jdbcTemplate.update(reSeqSql, plannerId);
+
+        // AUTO_INCREMENT 값을 재설정
+        resetAutoIncrement();
+
             logger.debug("Planner 삭제 성공. Planner ID: {}", plannerId);
         }
 
-    public void deletePlannerAndResetAutoIncrement(int plannerId) {
-        logger.debug("Planner 삭제 시작. Planner ID: {}", plannerId);
-
-        if (!plannerRepository.existsById(plannerId)) {
-            logger.error("Planner를 찾을 수 없습니다. Planner ID: {}", plannerId);
-            throw new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId);
-        }
-
-        plannerRepository.deleteById(plannerId);
-        logger.debug("Planner 삭제 성공. Planner ID: {}", plannerId);
-
-        // Planner 테이블이 비어 있는 경우만 AUTO_INCREMENT 초기화
-        resetAutoIncrement();
-    }
-
     private void resetAutoIncrement() {
-        String truncateCheckSql = "SELECT COUNT(*) FROM planner";
-        Integer count = jdbcTemplate.queryForObject(truncateCheckSql, Integer.class);
 
-        if (count != null && count > 0) {
-            logger.error("Planner 테이블이 비어 있지 않으므로 AUTO_INCREMENT를 초기화할 수 없습니다.");
-            throw new RuntimeException("Planner 테이블이 비어 있지 않습니다. 초기화하려면 모든 데이터를 삭제해야 합니다.");
-        }
+        // 최신 planner_id를 가져오기
+        String maxIdSql = "SELECT MAX(planner_id) FROM planner";
+        Integer maxId = jdbcTemplate.queryForObject(maxIdSql, Integer.class);
 
-        String resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
-        try {
-            jdbcTemplate.execute(resetSql);
-            logger.debug("Planner 테이블 AUTO_INCREMENT 초기화 성공");
-        } catch (Exception e) {
-            logger.error("Planner 테이블 AUTO_INCREMENT 초기화 실패", e);
-            throw new RuntimeException("AUTO_INCREMENT 초기화 중 오류 발생", e);
+        if (maxId != null) {
+            // AUTO_INCREMENT를 다음 ID로 설정
+            String resetSql = "ALTER TABLE planner AUTO_INCREMENT = ?";
+            jdbcTemplate.update(resetSql, maxId + 1);  // 다음 값으로 설정
+            logger.debug("AUTO_INCREMENT 값을 {}로 재설정", maxId + 1);
+        } else {
+            // 테이블이 비어 있으면 1로 설정
+            String resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
+            jdbcTemplate.update(resetSql);
+            logger.debug("테이블이 비어 있으므로 AUTO_INCREMENT를 1로 재설정");
         }
     }
 

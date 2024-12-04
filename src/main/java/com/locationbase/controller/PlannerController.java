@@ -67,19 +67,7 @@ public class PlannerController {
             return "Planner 삭제 실패: " + e.getMessage();
         }
     }
-    @DeleteMapping("/delete-and-reset")
-    public ResponseEntity<String> deletePlannerAndResetAutoIncrement(@RequestParam int plannerId) {
-        logger.debug("Planner 삭제 및 AUTO_INCREMENT 초기화 요청. Planner ID: {}", plannerId);
 
-        try {
-            plannerService.deletePlannerAndResetAutoIncrement(plannerId);
-            logger.debug("Planner 삭제 및 AUTO_INCREMENT 초기화 성공. Planner ID: {}", plannerId);
-            return ResponseEntity.ok("Planner 삭제 및 AUTO_INCREMENT 초기화 성공");
-        } catch (RuntimeException e) {
-            logger.error("Planner 삭제 및 AUTO_INCREMENT 초기화 실패", e);
-            return ResponseEntity.badRequest().body("Planner 삭제 및 AUTO_INCREMENT 초기화 실패: " + e.getMessage());
-        }
     }
 
 
-}

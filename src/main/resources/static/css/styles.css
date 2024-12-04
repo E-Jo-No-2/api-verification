@@ -179,10 +179,13 @@ body {
     background: transparent;
     border: none;
     outline: none;
+    display: block;
 }
 
 /* Style to hide the delete button on the image */
-.image-delete-btn {
+.weather-info .delete-btn,
+.weather-forecast .delete-btn {
+
     display: none;
 }
 

@@ -26,7 +26,14 @@ public class MemoService {
     @Transactional
     public MemoEntity addMemo(MemoEntity memoEntity) {
 
-        return memoRepository.save(memoEntity);
+        try {
+            // Additional checks or logs can go here
+            return memoRepository.save(memoEntity);
+        } catch (Exception e) {
+            // Log the error for more details
+            System.err.println("Error saving MemoEntity: " + e.getMessage());
+            throw new RuntimeException("Error saving memo", e);
+        }
     }
 
     // 메모 수정

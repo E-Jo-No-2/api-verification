@@ -37,7 +37,7 @@ newPlannerBtn.addEventListener("click", () => {
         event.stopPropagation();
 
         // Show confirmation alert
-        const confirmDelete = confirm("Are you sure you want to delete this planner?");
+        const confirmDelete = confirm("planner를 정말 삭제하시겠습니까?");
         if (confirmDelete) {
             const plannerId = newCard.getAttribute("data-id");
 
@@ -64,6 +64,22 @@ newPlannerBtn.addEventListener("click", () => {
         }
     });
 });
+// 관광지 리스트 번호 업데이트
+function updateTourListNumbers() {
+    console.log("Updating tour list numbers...");
+    const cards = Array.from(cardsContainer.querySelectorAll('.card')); // 모든 카드 가져오기
+    cards.forEach((card, index) => {
+       // const cardId = card.getAttribute('data-id');
+        const newTourNumber = index + 1; // 새로운 번호 계산
+        card.querySelector('h2').textContent = `TOUR${newTourNumber}`;
+        card.setAttribute('data-id', newTourNumber); // 데이터 속성도 업데이트
+    });
+
+    // 다음 생성될 플래너의 ID를 업데이트
+    plannerCount = cards.length; // 마지막 카드 번호로 업데이트
+    console.log("Tour list numbers updated, next planner count is:", plannerCount);
+}
+
 
 // WeatherApp API 호출
 document.addEventListener("DOMContentLoaded", function () {

@@ -3,6 +3,7 @@ package com.locationbase.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
 
@@ -22,7 +23,7 @@ public class PlannerEntity {
     private UserEntity userId;  // UserEntity와 관계 설정
 
 
-
+    @NotNull
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
