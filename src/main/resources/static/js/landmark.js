@@ -1,6 +1,7 @@
 // 모든 카드 요소 가져오기
 const cards = document.querySelectorAll('.landmark-card');
 const nextButton = document.getElementById('next-btn');
+const backButton = document.getElementById('back-btn');
 let selectedLatitude = null;
 let selectedLongitude = null;
 
@@ -45,4 +46,9 @@ nextButton.addEventListener('click', () => {
     } else {
         alert('먼저 랜드마크를 선택해주세요.');
     }
+});
+
+// 뒤로가기 버튼 클릭 이벤트 추가
+backButton.addEventListener('click', () => {
+    window.location.href = '/';
 });

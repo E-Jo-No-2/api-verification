@@ -14,7 +14,7 @@ function initializeMap(latitude, longitude) {
     } else {
         map = new naver.maps.Map("map", {
             center: new naver.maps.LatLng(latitude, longitude),
-            zoom: 12
+            zoom: 15 // 줌 레벨을 더 높게 설정
         });
     }
     // 좌표값을 콘솔에 출력
@@ -260,11 +260,13 @@ window.addEventListener("click", event => {
     }
 });
 
-// 뒤로가기
-function goBack() {
-    console.log("Go back button clicked.");
-    alert("뒤로 가시겠습니까?");
-}
+// 뒤로가기 버튼 클릭 이벤트 추가
+const backButton = document.getElementById('backBtnBelow');
+backButton.addEventListener('click', function() {
+    if (confirm("처음으로 돌아가시겠습니까?")) {
+        window.location.href = '/';
+    }
+});
 
 // 완료 버튼
 function completeTour() {
