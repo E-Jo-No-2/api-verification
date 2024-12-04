@@ -14,7 +14,7 @@ function initializeMap(latitude, longitude) {
     } else {
         map = new naver.maps.Map("map", {
             center: new naver.maps.LatLng(latitude, longitude),
-            zoom: 15 // 줌 레벨을 더 높게 설정
+            zoom: 18 // 줌 레벨을 더 높게 설정
         });
     }
     // 좌표값을 콘솔에 출력
@@ -124,6 +124,7 @@ function addMarkers(filteredLocations) {
             title: location.location
         });
 
+        // InfoWindow 생성
         const infoWindow = new naver.maps.InfoWindow({
             content: `
                 <div style="padding:10px;min-width:250px;line-height:1.5;">
@@ -141,9 +142,11 @@ function addMarkers(filteredLocations) {
             disableAnchor: false
         });
 
+        // 마커 클릭 이벤트
         naver.maps.Event.addListener(marker, 'click', () => {
             console.log("Marker clicked:", location.location);
 
+            // InfoWindow가 열려 있다면 닫고, 아니면 열기
             if (infoWindow.getMap()) {
                 infoWindow.close();
             } else {
@@ -273,3 +276,37 @@ function completeTour() {
     console.log("Complete button clicked.");
     alert("플래너 작성 완료를 하시겠습니까?");
 }
+
+// 추가한 부분
+
+function selectLocation(name, x, y) {
+    const dataToSend = {
+        spot_name: name, // location.location 값을 spot_name으로 전달
+        longitude: x,
+        latitude: y,
+    };
+
+    console.log("Sending data to save spot:", dataToSend);
+
+    fetch('/api/tour/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+    })
+        .then(response => {
+            if (response.ok) {
+                console.log("Spot saved successfully:", name);
+                alert(`장소가 저장되었습니다: ${name}`);
+            } else {
+                console.error("Failed to save spot");
+                alert(`장소 저장 실패: ${name}`);
+            }
+        })
+        .catch(error => {
+            console.error("Error while saving spot:", error);
+            alert("저장 중 오류가 발생했습니다.");
+        });
+}
+
