@@ -56,15 +56,15 @@ public class PlannerController {
 
 
     @DeleteMapping("/delete")
-    public String deletePlanner(@RequestParam  int plannerId) {
+    public ResponseEntity<?> deletePlanner(@RequestParam  int plannerId) {
         logger.info("Planner 삭제 요청. Planner ID: {}", plannerId);
 
         try {
             plannerService.deletePlanner(plannerId);
-            return "Planner 삭제 성공";
+            return ResponseEntity.ok("Planner 삭제 성공");
         } catch (RuntimeException e) {
             logger.error("Planner 삭제 중 오류 발생: {}", e.getMessage());
-            return "Planner 삭제 실패: " + e.getMessage();
+            return ResponseEntity.status(500).body("Planner 삭제 실패: " + e.getMessage());
         }
     }
 
