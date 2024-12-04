@@ -130,11 +130,11 @@ body {
     font-size: 14px;
 }
 #backBtnBelow {
-    background-color: #007bff;
+    background-color: #ff0000; /* 빨간색 */
     color: #fff;
 }
 #backBtnBelow:hover {
-    background-color: #0056b3;
+    background-color: #cc0000; /* 어두운 빨간색 */
 }
 #completeBtn {
     background-color: #007bff;

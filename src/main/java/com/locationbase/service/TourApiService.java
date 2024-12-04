@@ -2,11 +2,15 @@ package com.locationbase.service;
 
 import com.locationbase.dto.LandMarkDTO;
 import com.locationbase.client.TourApiClient;
+import com.locationbase.Domain.repository.PlannerSpotRepository;
+import com.locationbase.entity.PlannerEntity;
+import com.locationbase.entity.PlannerSpotEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -17,9 +21,11 @@ public class TourApiService {
     private static final Logger logger = LoggerFactory.getLogger(TourApiService.class);
 
     private final TourApiClient tourApiClient;
+    private final PlannerSpotRepository plannerSpotRepository;
 
-    public TourApiService(TourApiClient tourApiClient) {
+    public TourApiService(TourApiClient tourApiClient, PlannerSpotRepository plannerSpotRepository) {
         this.tourApiClient = tourApiClient;
+        this.plannerSpotRepository = plannerSpotRepository;
     }
 
     /**
@@ -170,5 +176,16 @@ public class TourApiService {
         errorResponse.put("theme", "error");
         errorResponse.put("message", errorMessage);
         return errorResponse;
+    }
+
+    // 추가 부분
+    @Transactional
+    public void savePlannerSpot(String spotName, double longitude, double latitude) {
+        PlannerSpotEntity spotEntity = new PlannerSpotEntity();
+        spotEntity.setSpot_name(spotName);
+        // 필요한 경우, longitude와 latitude 저장 로직 추가 가능
+
+        plannerSpotRepository.save(spotEntity);
+        System.out.println("Spot saved: " + spotName);
     }
 }
