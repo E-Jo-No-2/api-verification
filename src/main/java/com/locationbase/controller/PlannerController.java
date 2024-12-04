@@ -1,7 +1,7 @@
 package com.locationbase.controller;
 
 
-import com.locationbase.entity.WeatherEntity;
+
 import com.locationbase.service.PlannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

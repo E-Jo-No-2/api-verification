@@ -57,6 +57,11 @@ newPlannerBtn.addEventListener("click", () => {
                     alert(message);
                     // Remove the card from the DOM
                     cardsContainer.removeChild(newCard);
+
+                    updateTourListNumbers();
+
+                    plannerCount = cardsContainer.querySelectorAll('.card').length; // Update plannerCount based on the remaining cards
+                    console.log("Updated plannerCount after deletion:", plannerCount);
                 })
                 .catch(error => {
                     console.error("Error during deletion:", error);
