@@ -1,28 +1,86 @@
-// 지도 초기화
-var map = new naver.maps.Map("map", {
-    center: new naver.maps.LatLng(37.5796, 126.9769),
-    zoom: 12
-});
-
+var map;
 var locations = [];
 var markers = [];
 
-// 관광지 데이터를 서버에서 로드
-console.log("Fetching nearby tour spots...");
-fetch('/api/tour/nearby?longitude=126.9780&latitude=37.5665')
-    .then(response => {
-        console.log("Fetch response received:", response);
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data received from server:", data);
-        locations = transformLocations(data); // 데이터 변환
-        console.log("Transformed locations:", locations);
-        addMarkers(locations); // 지도에 마커 추가
-    })
-    .catch(error => console.error("Error loading JSON data:", error));
+// URL 파라미터에서 latitude와 longitude 값을 가져옴
+const urlParams = new URLSearchParams(window.location.search);
+const latitude = parseFloat(urlParams.get('latitude')) || 37.5665; // 기본값: 서울
+const longitude = parseFloat(urlParams.get('longitude')) || 126.9780; // 기본값: 서울
 
-// 데이터 형식 변환
+// 지도 초기화 함수
+function initializeMap(latitude, longitude) {
+    if (map) {
+        map.setCenter(new naver.maps.LatLng(latitude, longitude));
+    } else {
+        map = new naver.maps.Map("map", {
+            center: new naver.maps.LatLng(latitude, longitude),
+            zoom: 12
+        });
+    }
+    // 좌표값을 콘솔에 출력
+    console.log(`Map initialized with center at Latitude: ${latitude}, Longitude: ${longitude}`);
+}
+
+// 관광지 데이터를 서버에서 로드하는 함수
+function loadTourSpots(longitude, latitude) {
+    console.log(`Fetching nearby tour spots for Latitude: ${latitude}, Longitude: ${longitude}`);
+    fetch(`/api/tour/nearby?longitude=${longitude}&latitude=${latitude}`)
+        .then(response => {
+            console.log("Fetch response received:", response);
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data received from server:", data);
+            locations = transformLocations(data); // 데이터 변환
+            console.log("Transformed locations:", locations);
+            addMarkers(locations); // 지도에 마커 추가
+        })
+        .catch(error => console.error("Error loading JSON data:", error));
+}
+
+// 모든 카드 요소 가져오기
+const cards = document.querySelectorAll('.landmark-card');
+
+// 클릭 이벤트 추가
+cards.forEach(card => {
+    card.addEventListener('click', () => {
+        // 모든 카드에서 선택 상태 제거
+        cards.forEach(c => c.classList.remove('selected'));
+
+        // 클릭한 카드에 선택 상태 추가
+        card.classList.add('selected');
+
+        // 선택된 랜드마크 데이터 확인
+        const selectedLandmarkName = card.dataset.landmark;
+        console.log('Selected Landmark:', selectedLandmarkName);
+
+        // 서버에서 좌표값 가져오기
+        fetch(`/api/landmark/coordinates?landmarkName=${selectedLandmarkName}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(coordinates => {
+                const { latitude, longitude } = coordinates;
+                console.log(`Coordinates received for ${selectedLandmarkName} - Latitude: ${latitude}, Longitude: ${longitude}`);
+
+                // 지도 초기화
+                initializeMap(latitude, longitude);
+
+                // 관광지 데이터 로드
+                loadTourSpots(longitude, latitude);
+            })
+            .catch(error => console.error("Error fetching coordinates:", error));
+    });
+});
+
+// 초기 지도 설정
+initializeMap(latitude, longitude); // URL 파라미터에서 가져온 좌표값 사용
+loadTourSpots(longitude, latitude); // URL 파라미터에서 가져온 좌표값 사용
+
+// 데이터 형식 변환 함수
 function transformLocations(data) {
     console.log("Transforming locations...");
     let transformed = [];
@@ -52,7 +110,7 @@ function transformLocations(data) {
     return transformed;
 }
 
-// 지도에 마커 추가
+// 지도에 마커 추가 함수
 function addMarkers(filteredLocations) {
     console.log("Adding markers to the map...");
     markers.forEach(marker => marker.setMap(null)); // 기존 마커 제거
@@ -66,7 +124,6 @@ function addMarkers(filteredLocations) {
             title: location.location
         });
 
-        // InfoWindow 생성
         const infoWindow = new naver.maps.InfoWindow({
             content: `
                 <div style="padding:10px;min-width:250px;line-height:1.5;">
@@ -84,11 +141,9 @@ function addMarkers(filteredLocations) {
             disableAnchor: false
         });
 
-        // 마커 클릭 이벤트
         naver.maps.Event.addListener(marker, 'click', () => {
             console.log("Marker clicked:", location.location);
 
-            // InfoWindow가 열려 있다면 닫고, 아니면 열기
             if (infoWindow.getMap()) {
                 infoWindow.close();
             } else {
@@ -102,19 +157,19 @@ function addMarkers(filteredLocations) {
     console.log("Markers added:", markers);
 }
 
-// 장소 선택 처리
+// 장소 선택 처리 함수
 function selectLocation(name, lng, lat) {
     console.log("Location selected:", name);
     addToTourList(name);
 }
 
-// 길찾기 처리
+// 길찾기 처리 함수
 function findRoute(lng, lat) {
     console.log("Finding route to:", lng, lat);
     alert(`길찾기를 위한 경도: ${lng}, 위도: ${lat}를 호출합니다.`);
 }
 
-// 관광지 리스트에 추가
+// 관광지 리스트에 추가 함수
 function addToTourList(locationName) {
     console.log("Adding location to tour list:", locationName);
     const tourList = document.getElementById("tourList");
@@ -161,7 +216,7 @@ function addToTourList(locationName) {
     tourList.appendChild(listItem);
 }
 
-// 관광지 리스트 번호 업데이트
+// 관광지 리스트 번호 업데이트 함수
 function updateTourListNumbers() {
     console.log("Updating tour list numbers...");
     const tourList = document.getElementById("tourList");
@@ -173,7 +228,7 @@ function updateTourListNumbers() {
     console.log("Tour list numbers updated.");
 }
 
-// 테마 필터링
+// 테마 필터링 함수
 function filterByTheme(theme) {
     console.log("Filtering locations by theme:", theme);
     const filteredLocations = locations.filter(location => !theme || location.theme === theme);
@@ -181,7 +236,7 @@ function filterByTheme(theme) {
     addMarkers(filteredLocations);
 }
 
-// 드롭다운 토글
+// 드롭다운 토글 함수
 function toggleDropdown() {
     console.log("Toggling dropdown menu...");
     const dropdownMenu = document.getElementById("dropdownMenu");
@@ -189,7 +244,7 @@ function toggleDropdown() {
     console.log("Dropdown menu state:", dropdownMenu.style.display);
 }
 
-// 테마 선택
+// 테마 선택 함수
 function selectTheme(value, label) {
     console.log("Theme selected:", label, "Value:", value);
     document.getElementById("selectedTheme").textContent = label;

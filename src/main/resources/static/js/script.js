@@ -14,8 +14,9 @@ const userId = "testuser"; // 실제 userId 값으로 설정
 newPlannerBtn.addEventListener("click", () => {
     // 새로운 플래너 생성
     plannerCount++;
+    const date = new Date().toISOString().split('T')[0]; // 현재 날짜를 'YYYY-MM-DD' 형식으로 가져오기
     const newCard = document.createElement("a");
-    newCard.href = `/landmark?plannerId=${plannerCount}&userId=${userId}`;
+    newCard.href = `/landmark?userId=${userId}&date=${date}`;
     newCard.className = "card";
     newCard.setAttribute("data-id", plannerCount); // Add this line to set data-id
         newCard.innerHTML = `
