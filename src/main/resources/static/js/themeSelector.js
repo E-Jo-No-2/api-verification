@@ -274,7 +274,7 @@ function completeTour() {
 // 추가한 부분
 function selectLocation(name) {
     const dataToSend = {
-        spot_name: name
+        spot_name: name // location.location 값을 spot_name으로 전달
     };
 
     console.log("Sending data to save spot:", dataToSend);
@@ -300,4 +300,3 @@ function selectLocation(name) {
             alert("저장 중 오류가 발생했습니다.");
         });
 }
-
