@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "Planner_Spot")
+@Table(name = "planner_spot")
 @NoArgsConstructor
 public class PlannerSpotEntity {
 
@@ -27,5 +27,4 @@ public class PlannerSpotEntity {
 
     @Column(name = "route_id", nullable = true)
     private int route_id;
-
 }

@@ -132,7 +132,7 @@ function addMarkers(filteredLocations) {
                     <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
                     <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
                     <hr style="margin:10px 0;">
-                    <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})" 
+                    <button onclick="selectLocation('${location.location}')" 
                             style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
                     <button onclick="findRoute(${location.x}, ${location.y})" 
                             style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
@@ -158,12 +158,6 @@ function addMarkers(filteredLocations) {
     });
 
     console.log("Markers added:", markers);
-}
-
-// 장소 선택 처리 함수
-function selectLocation(name, lng, lat) {
-    console.log("Location selected:", name);
-    addToTourList(name);
 }
 
 // 길찾기 처리 함수
@@ -278,12 +272,9 @@ function completeTour() {
 }
 
 // 추가한 부분
-
-function selectLocation(name, x, y) {
+function selectLocation(name) {
     const dataToSend = {
-        spot_name: name, // location.location 값을 spot_name으로 전달
-        longitude: x,
-        latitude: y,
+        spot_name: name
     };
 
     console.log("Sending data to save spot:", dataToSend);

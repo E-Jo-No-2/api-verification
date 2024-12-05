@@ -180,10 +180,9 @@ public class TourApiService {
 
     // 추가 부분
     @Transactional
-    public void savePlannerSpot(String spotName, double longitude, double latitude) {
+    public void savePlannerSpot(String spotName) {
         PlannerSpotEntity spotEntity = new PlannerSpotEntity();
         spotEntity.setSpot_name(spotName);
-        // 필요한 경우, longitude와 latitude 저장 로직 추가 가능
 
         plannerSpotRepository.save(spotEntity);
         System.out.println("Spot saved: " + spotName);
