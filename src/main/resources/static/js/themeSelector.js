@@ -169,7 +169,7 @@ function selectLocation(name, lng, lat) {
     const routeData = {
         start_point: `${lat},${lng}`, // 위도, 경도를 start_point로 저장
         end_point: null, // or some default value
-        thema_name: name // 장소 이름을 thema_name으로 저장
+        theme_name: name // 장소 이름을 theme_name으로 저장
     };
     console.log("[INPUT] Marker clicked: Name =", name, "Longitude =", lng, "Latitude =", lat);
     console.log("[OUTPUT] Sending data to server:", routeData);
