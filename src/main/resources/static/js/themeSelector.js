@@ -162,8 +162,31 @@ function addMarkers(filteredLocations) {
 
 // 장소 선택 처리 함수
 function selectLocation(name, lng, lat) {
-    console.log("Location selected:", name);
+    console.log("[INPUT] Marker clicked: Name =", name, "Longitude =", lng, "Latitude =", lat);
     addToTourList(name);
+
+    // 서버로 데이터 전송
+    const routeData = {
+        start_point: `${lat},${lng}`, // 위도, 경도를 start_point로 저장
+        end_point: null, // or some default value
+        thema_name: name // 장소 이름을 thema_name으로 저장
+    };
+    console.log("[INPUT] Marker clicked: Name =", name, "Longitude =", lng, "Latitude =", lat);
+    console.log("[OUTPUT] Sending data to server:", routeData);
+
+    fetch('/api/route/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(routeData),
+    })
+        .then(response => {
+            console.log("[RESPONSE] Received from server:", response);
+            return response.json();
+        })
+        .then(data => console.log("[SERVER RESPONSE BODY]:", data))
+        .catch(error => console.error("[ERROR] Server call failed:", error));
 }
 
 // 길찾기 처리 함수
@@ -277,36 +300,5 @@ function completeTour() {
     alert("플래너 작성 완료를 하시겠습니까?");
 }
 
-// 추가한 부분
 
-function selectLocation(name, x, y) {
-    const dataToSend = {
-        spot_name: name, // location.location 값을 spot_name으로 전달
-        longitude: x,
-        latitude: y,
-    };
-
-    console.log("Sending data to save spot:", dataToSend);
-
-    fetch('/api/tour/save', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-    })
-        .then(response => {
-            if (response.ok) {
-                console.log("Spot saved successfully:", name);
-                alert(`장소가 저장되었습니다: ${name}`);
-            } else {
-                console.error("Failed to save spot");
-                alert(`장소 저장 실패: ${name}`);
-            }
-        })
-        .catch(error => {
-            console.error("Error while saving spot:", error);
-            alert("저장 중 오류가 발생했습니다.");
-        });
-}
 
