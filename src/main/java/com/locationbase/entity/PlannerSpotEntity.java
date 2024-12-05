@@ -27,4 +27,6 @@ public class PlannerSpotEntity {
 
     @Column(name = "route_id", nullable = true)
     private int route_id;
+
+    // `latitude`와 `longitude` 필드를 제거합니다.
 }
