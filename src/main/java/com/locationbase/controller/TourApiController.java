@@ -61,11 +61,9 @@ public class TourApiController {
     public ResponseEntity<String> saveSelectedSpot(@RequestBody Map<String, Object> requestData) {
         try {
             String spotName = (String) requestData.get("spot_name");
-            double longitude = Double.parseDouble(requestData.get("longitude").toString());
-            double latitude = Double.parseDouble(requestData.get("latitude").toString());
 
             // PlannerSpot 저장
-            tourApiService.savePlannerSpot(spotName, longitude, latitude);
+            tourApiService.savePlannerSpot(spotName);
 
             return ResponseEntity.ok("Spot saved successfully");
         } catch (Exception e) {
