@@ -4,7 +4,6 @@ import com.locationbase.dto.LandMarkDTO;
 import com.locationbase.service.TourApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,14 +34,13 @@ public class TourApiController {
     public Map<String, List<LandMarkDTO>> getNearbyLandmarks(
             @RequestParam(name = "longitude") String longitude,
             @RequestParam(name = "latitude") String latitude
-    )
-    {
+    ) {
         logger.info("주변 관광지 요청 수신");
-        logger.info("경도: {}, 위도: {},", longitude,latitude);
+        logger.info("경도: {}, 위도: {}", longitude, latitude);
 
         try {
             // TourApiService를 통해 관광지 데이터 가져오기
-            Map<String, List<LandMarkDTO>> landmarks = tourApiService.getNearbySpotsByTheme(longitude,latitude);
+            Map<String, List<LandMarkDTO>> landmarks = tourApiService.getNearbySpotsByTheme(longitude, latitude);
 
             logger.info("응답 데이터에 포함된 테마 수: {}", landmarks.size());
             landmarks.forEach((theme, spots) ->
@@ -56,7 +54,4 @@ public class TourApiController {
             throw e; // 적절한 에러 응답 처리 추가 가능
         }
     }
-
-
-
 }
