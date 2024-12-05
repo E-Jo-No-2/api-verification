@@ -8,7 +8,7 @@ import java.util.Date;
 public class MemoDTO {
     private int memoId;
     private int planner;
-    private Date writeDate;
+    private Date write_date;
     private String memoContent;
 
 }

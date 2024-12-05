@@ -166,27 +166,3 @@ body {
     width: 100%; /* 가로 크기 전체 */
     padding: 10px; /* 패딩 추가 */
 }
-
-/* delete button*/
-/* Style for the delete button */
-.card .delete-btn {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    color: red;
-    font-size: 1.2em;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    outline: none;
-    display: block;
-}
-
-/* Style to hide the delete button on the image */
-.weather-info .delete-btn,
-.weather-forecast .delete-btn {
-
-    display: none;
-}
-
-

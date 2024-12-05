@@ -14,7 +14,7 @@ function initializeMap(latitude, longitude) {
     } else {
         map = new naver.maps.Map("map", {
             center: new naver.maps.LatLng(latitude, longitude),
-            zoom: 12
+            zoom: 18 // 줌 레벨을 더 높게 설정
         });
     }
     // 좌표값을 콘솔에 출력
@@ -124,6 +124,7 @@ function addMarkers(filteredLocations) {
             title: location.location
         });
 
+        // InfoWindow 생성
         const infoWindow = new naver.maps.InfoWindow({
             content: `
                 <div style="padding:10px;min-width:250px;line-height:1.5;">
@@ -131,7 +132,7 @@ function addMarkers(filteredLocations) {
                     <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
                     <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
                     <hr style="margin:10px 0;">
-                    <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})" 
+                    <button onclick="selectLocation('${location.location}')" 
                             style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
                     <button onclick="findRoute(${location.x}, ${location.y})" 
                             style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
@@ -141,9 +142,11 @@ function addMarkers(filteredLocations) {
             disableAnchor: false
         });
 
+        // 마커 클릭 이벤트
         naver.maps.Event.addListener(marker, 'click', () => {
             console.log("Marker clicked:", location.location);
 
+            // InfoWindow가 열려 있다면 닫고, 아니면 열기
             if (infoWindow.getMap()) {
                 infoWindow.close();
             } else {
@@ -155,12 +158,6 @@ function addMarkers(filteredLocations) {
     });
 
     console.log("Markers added:", markers);
-}
-
-// 장소 선택 처리 함수
-function selectLocation(name, lng, lat) {
-    console.log("Location selected:", name);
-    addToTourList(name);
 }
 
 // 길찾기 처리 함수
@@ -260,11 +257,13 @@ window.addEventListener("click", event => {
     }
 });
 
-// 뒤로가기
-function goBack() {
-    console.log("Go back button clicked.");
-    alert("뒤로 가시겠습니까?");
-}
+// 뒤로가기 버튼 클릭 이벤트 추가
+const backButton = document.getElementById('backBtnBelow');
+backButton.addEventListener('click', function() {
+    if (confirm("처음으로 돌아가시겠습니까?")) {
+        window.location.href = '/';
+    }
+});
 
 // 완료 버튼
 function completeTour() {
@@ -272,42 +271,32 @@ function completeTour() {
     alert("플래너 작성 완료를 하시겠습니까?");
 }
 
+// 추가한 부분
+function selectLocation(name) {
+    const dataToSend = {
+        spot_name: name // location.location 값을 spot_name으로 전달
+    };
 
-// 메모 저장하기
-document.getElementById("backBtn").addEventListener("click", () => {
-    const memoContent = document.getElementById("memo").value;
+    console.log("Sending data to save spot:", dataToSend);
 
-    const plannerId = 1; // Ensure this is set to a valid planner ID
-
-    if (plannerId === 0) {
-        alert("Invalid planner ID. Please select a valid planner.");
-        return; // Prevent sending the request
-    }
-
-    if (memoContent) {
-        const memoData = {
-            memoContent: memoContent,
-            planner: { planner_id: 1 },
-            writeDate: new Date().toISOString().split('T')[0]
-        };
-
-
-        fetch('/memo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(memoData)
+    fetch('/api/tour/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+    })
+        .then(response => {
+            if (response.ok) {
+                console.log("Spot saved successfully:", name);
+                alert(`장소가 저장되었습니다: ${name}`);
+            } else {
+                console.error("Failed to save spot");
+                alert(`장소 저장 실패: ${name}`);
+            }
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log("메모 추가됨:", data);
-                alert("메모가 성공적으로 추가되었습니다!");
-                document.getElementById("memo").value = ''; // 메모 입력 필드 초기화
-            })
-            .catch(error => {
-                console.error("메모 저장 실패:", error.message);
-                alert("메모 저장에 실패했습니다.");
-            });
-    }
-});
+        .catch(error => {
+            console.error("Error while saving spot:", error);
+            alert("저장 중 오류가 발생했습니다.");
+        });
+}
