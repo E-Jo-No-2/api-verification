@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadPlannersFromLocalStorage();
 });
 
-//Weather API 호출
+//Weather API 호출하기
 document.addEventListener("DOMContentLoaded", function () {
     fetch("/getWeather")
         .then((response) => {
