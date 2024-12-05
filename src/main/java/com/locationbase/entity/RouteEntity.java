@@ -21,6 +21,9 @@ public class RouteEntity {
     @Column(name = "end_point", nullable = false, length = 255)
     private String end_point;
 
+    @Column(name = "theme_name", nullable = false)
+    private String themeName;
+
     @Column(name = "taxi_fare",nullable = true)
     private int taxi_fare;
 

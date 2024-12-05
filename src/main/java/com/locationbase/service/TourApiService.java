@@ -178,13 +178,4 @@ public class TourApiService {
         return errorResponse;
     }
 
-    // 추가 부분
-    @Transactional
-    public void savePlannerSpot(String spotName) {
-        PlannerSpotEntity spotEntity = new PlannerSpotEntity();
-        spotEntity.setSpot_name(spotName);
-
-        plannerSpotRepository.save(spotEntity);
-        System.out.println("Spot saved: " + spotName);
-    }
 }
