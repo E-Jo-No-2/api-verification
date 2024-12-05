@@ -1,7 +1,5 @@
 package com.locationbase.controller;
 
-
-
 import com.locationbase.service.PlannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,52 +22,47 @@ public class PlannerController {
         this.plannerService = plannerService;
     }
 
-
     @PostMapping("/save")
     public String savePlanner(@RequestParam int plannerId, @RequestParam String userId) {
         logger.info("Planner 저장 요청. Planner ID: {}, User ID: {}", plannerId, userId);
 
         try {
-
-
             plannerService.savePlanner(plannerId, userId);
+            logger.info("Planner 저장 성공. Planner ID: {}", plannerId);
             return "Planner 저장 성공";
         } catch (RuntimeException e) {
-            logger.error("Planner 저장 중 오류 발생: {}", e.getMessage());
+            logger.error("Planner 저장 중 오류 발생. 오류 메시지: {}", e.getMessage());
             return "Planner 저장 실패: " + e.getMessage();
         }
     }
-
 
     @PutMapping("/update")
     public String updatePlanner(@RequestParam int plannerId,
                                 @RequestParam String userId,
                                 @RequestParam LocalDate newDate) {
-        logger.info("Planner 업데이트 요청. Planner ID: {}, User ID: {}", plannerId, userId);
+        logger.info("Planner 업데이트 요청. Planner ID: {}, User ID: {}, 새 날짜: {}", plannerId, userId, newDate);
 
         try {
             plannerService.updatePlanner(plannerId, userId, newDate);
+            logger.info("Planner 업데이트 성공. Planner ID: {}", plannerId);
             return "Planner 업데이트 성공";
         } catch (RuntimeException e) {
-            logger.error("Planner 업데이트 중 오류 발생: {}", e.getMessage());
+            logger.error("Planner 업데이트 중 오류 발생. 오류 메시지: {}", e.getMessage());
             return "Planner 업데이트 실패: " + e.getMessage();
         }
     }
 
-
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deletePlanner(@RequestParam  int plannerId) {
+    public ResponseEntity<?> deletePlanner(@RequestParam int plannerId) {
         logger.info("Planner 삭제 요청. Planner ID: {}", plannerId);
 
         try {
             plannerService.deletePlanner(plannerId);
+            logger.info("Planner 삭제 성공. Planner ID: {}", plannerId);
             return ResponseEntity.ok("Planner 삭제 성공");
         } catch (RuntimeException e) {
-            logger.error("Planner 삭제 중 오류 발생: {}", e.getMessage());
+            logger.error("Planner 삭제 중 오류 발생. 오류 메시지: {}", e.getMessage());
             return ResponseEntity.status(500).body("Planner 삭제 실패: " + e.getMessage());
         }
     }
-
-    }
-
-
+}

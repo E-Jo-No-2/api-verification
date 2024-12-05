@@ -1,12 +1,10 @@
-
 package com.locationbase.service;
+
 import com.locationbase.Domain.repository.PlannerRepository;
 import com.locationbase.Domain.repository.UserRepository;
 import com.locationbase.Domain.repository.WeatherRepository;
-
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.UserEntity;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +23,11 @@ public class PlannerService {
     private final UserRepository userRepository;
     private final JdbcTemplate jdbcTemplate;
 
-
     @Autowired
     public PlannerService(PlannerRepository plannerRepository, UserRepository userRepository, JdbcTemplate jdbcTemplate) {
         this.plannerRepository = plannerRepository;
         this.userRepository = userRepository;
         this.jdbcTemplate = jdbcTemplate;
-
     }
 
     // planner 저장
@@ -48,42 +44,37 @@ public class PlannerService {
         logger.debug("사용자 확인 완료: {}", user);
 
         LocalDate currentDate = LocalDate.now();
-
+        logger.debug("현재 날짜: {}", currentDate);
 
         PlannerEntity planner = new PlannerEntity();
         planner.setPlannerId(plannerId);
         planner.setUserId(user);
         planner.setDate(currentDate);
 
-
         plannerRepository.save(planner);
-
         logger.debug("Planner 저장 성공. 사용자 ID: {}", userId);
     }
 
-    //planner 업데이트
+    // planner 업데이트
     public void updatePlanner(int plannerId, String userId, LocalDate newDate) {
         logger.debug("Planner 업데이트 시작. Planner ID: {}, 사용자 ID: {}", plannerId, userId);
 
         PlannerEntity planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId));
 
+        logger.debug("Planner 확인 완료. Planner ID: {}, 사용자 ID: {}", plannerId, userId);
 
         if (!planner.getUserId().getUserId().equals(userId)) {
             logger.error("사용자 ID가 Planner와 일치하지 않습니다. 사용자 ID: {}, Planner ID: {}", userId, plannerId);
             throw new RuntimeException("사용자 ID가 Planner와 일치하지 않습니다.");
         }
 
-
         planner.setDate(newDate);
-
-
         plannerRepository.save(planner);
-
         logger.debug("Planner 업데이트 성공. Planner ID: {}, 새로운 날짜: {}", plannerId, newDate);
     }
 
-    //planner 삭제
+    // planner 삭제
     public void deletePlanner(int plannerId) {
         logger.debug("Planner 삭제 시작. Planner ID: {}", plannerId);
 
@@ -92,24 +83,19 @@ public class PlannerService {
             throw new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId);
         }
 
-      //  PlannerEntity planner = plannerRepository.findById(plannerId)
-             //   .orElseThrow(() -> new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId));
+        plannerRepository.deleteById(plannerId);
+        logger.debug("Planner 삭제 완료. Planner ID: {}", plannerId);
 
-
-
-            plannerRepository.deleteById(plannerId);
-
+        // planner_id를 재정렬하는 SQL 실행
         String reSeqSql = "UPDATE planner SET planner_id = planner_id - 1 WHERE planner_id > ?";
         jdbcTemplate.update(reSeqSql, plannerId);
+        logger.debug("planner_id 재정렬 완료. Planner ID: {}", plannerId);
 
         // AUTO_INCREMENT 값을 재설정
         resetAutoIncrement();
-
-            logger.debug("Planner 삭제 성공. Planner ID: {}", plannerId);
-        }
+    }
 
     private void resetAutoIncrement() {
-
         // 최신 planner_id를 가져오기
         String maxIdSql = "SELECT MAX(planner_id) FROM planner";
         Integer maxId = jdbcTemplate.queryForObject(maxIdSql, Integer.class);
@@ -126,7 +112,4 @@ public class PlannerService {
             logger.debug("테이블이 비어 있으므로 AUTO_INCREMENT를 1로 재설정");
         }
     }
-
-
 }
-
