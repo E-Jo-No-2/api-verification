@@ -277,6 +277,13 @@ function completeTour() {
 document.getElementById("backBtn").addEventListener("click", () => {
     const memoContent = document.getElementById("memo").value;
 
+    const plannerId = 1; // Ensure this is set to a valid planner ID
+
+    if (plannerId === 0) {
+        alert("Invalid planner ID. Please select a valid planner.");
+        return; // Prevent sending the request
+    }
+
     if (memoContent) {
         const memoData = {
             memoContent: memoContent,

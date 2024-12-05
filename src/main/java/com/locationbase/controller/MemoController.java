@@ -86,9 +86,14 @@ public class MemoController {
     // Create a new memo
     @PostMapping
     public ResponseEntity<MemoEntity> createMemo(@RequestBody MemoRequest request) {
-
-        MemoEntity savedMemo = memoService.createMemo(request.getMemoContent(), request.getPlannerId());
-        return ResponseEntity.ok(savedMemo);
+        try {
+            MemoEntity savedMemo = memoService.createMemo(request.getMemoContent(), request.getPlannerId());
+            return ResponseEntity.ok(savedMemo);
+        } catch (Exception e) {
+            // 예외 로그 출력
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null); // 500 Internal Server Error 반환
+        }
     }
 
     // Get all memos by planner ID

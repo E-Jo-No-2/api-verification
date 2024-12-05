@@ -187,3 +187,48 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 });
 
+
+// WeatherApp API 호출
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/getWeather")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok " + response.statusText);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("날씨 데이터:", data);
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                const forecasts = data.list || [];
+                let weatherHtml = "";
+                forecasts.forEach((forecast) => {
+                    const date = new Date(forecast.dt * 1000);
+                    const monthDay = `${date.getMonth() + 1}월 ${date.getDate()}일`;
+                    const iconCode = forecast.weather[0].icon;
+                    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+                    const description = forecast.weather[0].description;
+                    const temp = `${Math.round(forecast.main.temp)}°C`;
+
+                    weatherHtml += `
+                    <div class="weather-forecast">
+                        <div class="weather-icon">
+                            <img src="${iconUrl}" alt="Weather Icon">
+                        </div>
+                        <h3>${monthDay}</h3>
+                        <p>${description}</p>
+                        <p>${temp}</p>
+                    </div>
+                `;
+                });
+
+                document.getElementById("weather-data").innerHTML = weatherHtml;
+            })
+            .catch((error) => {
+                console.error("날씨 데이터를 불러오지 못했습니다:", error);
+                document.getElementById("weather-data").innerText = "날씨 데이터를 가져오지 못했습니다.";
+            });
+    });

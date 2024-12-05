@@ -30,6 +30,8 @@ public class PlannerController {
         logger.info("Planner 저장 요청. Planner ID: {}, User ID: {}", plannerId, userId);
 
         try {
+
+
             plannerService.savePlanner(plannerId, userId);
             return "Planner 저장 성공";
         } catch (RuntimeException e) {
