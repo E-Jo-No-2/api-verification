@@ -19,14 +19,20 @@ cards.forEach(card => {
         console.log('Selected Landmark:', selectedLandmarkName);
 
         // 서버에서 좌표값 가져오기
-        fetch(`/api/landmark/coordinates?landmarkName=${selectedLandmarkName}`)
+        fetch(`/api/landmark/coordinates?landmarkName=${encodeURIComponent(selectedLandmarkName)}`)
             .then(response => {
+                console.log('Response status:', response.status); // 응답 상태 로그
                 if (!response.ok) {
+                    console.error('Failed to fetch coordinates. Status:', response.status);
                     throw new Error('Network response was not ok');
                 }
-                return response.json();
+                return response.json();  // JSON 파싱
             })
             .then(coordinates => {
+                if (!coordinates.latitude || !coordinates.longitude) {
+                    console.error('Invalid coordinates received:', coordinates);
+                    throw new Error('Invalid coordinates received');
+                }
                 const { latitude, longitude } = coordinates;
                 selectedLatitude = latitude;
                 selectedLongitude = longitude;
@@ -35,13 +41,17 @@ cards.forEach(card => {
                 // 다음 버튼 활성화
                 nextButton.disabled = false;
             })
-            .catch(error => console.error("Error fetching coordinates:", error));
+            .catch(error => {
+                console.error('Error fetching coordinates:', error);
+                alert('좌표 정보를 가져오는 중 오류가 발생했습니다. 다시 시도해 주세요.');
+            });
     });
 });
 
 // 다음 버튼 클릭 이벤트 추가
 nextButton.addEventListener('click', () => {
     if (selectedLatitude && selectedLongitude) {
+        console.log('Redirecting to theme selection with coordinates:', selectedLatitude, selectedLongitude);
         window.location.href = `/themaselect?latitude=${selectedLatitude}&longitude=${selectedLongitude}`;
     } else {
         alert('먼저 랜드마크를 선택해주세요.');
@@ -50,5 +60,6 @@ nextButton.addEventListener('click', () => {
 
 // 뒤로가기 버튼 클릭 이벤트 추가
 backButton.addEventListener('click', () => {
+    console.log('Redirecting to home page');
     window.location.href = '/';
 });
