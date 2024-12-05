@@ -35,7 +35,7 @@ public class TourApiService {
      * @return 테마별로 그룹화된 관광지 목록
      */
     public Map<String, List<LandMarkDTO>> getNearbySpotsByTheme(String longitude, String latitude) {
-        logger.info("주변 관광지 조회 시작:  경도={},위도={}", longitude, latitude);
+        logger.info("주변 관광지 조회 시작: 경도={}, 위도={}", longitude, latitude);
 
         JSONObject response = tourApiClient.NearbyTourSpots(longitude, latitude);
 
@@ -47,7 +47,7 @@ public class TourApiService {
         System.out.println("API 응답 데이터: " + response.toString(2));
         if (!response.has("response")) {
             logger.error("API 응답에 'response' 키가 없습니다: {}", response.toString());
-            throw new RuntimeException("Invalid API response structure.");
+            throw new RuntimeException("유효하지 않은 API 응답 구조.");
         }
 
         // 응답 성공 여부 확인
@@ -77,7 +77,7 @@ public class TourApiService {
             // "response" 키 검증
             if (!response.has("response")) {
                 logger.error("JSON 응답에 'response' 키가 없습니다.");
-                throw new RuntimeException("Invalid JSON 응답 구조: 'response' 키가 없습니다.");
+                throw new RuntimeException("유효하지 않은 JSON 응답 구조: 'response' 키가 없습니다.");
             }
 
             JSONObject responseObj = response.getJSONObject("response");
@@ -85,7 +85,7 @@ public class TourApiService {
             // "body" 키 검증
             if (!responseObj.has("body")) {
                 logger.error("JSON 응답에 'body' 키가 없습니다.");
-                throw new RuntimeException("Invalid JSON 응답 구조: 'body' 키가 없습니다.");
+                throw new RuntimeException("유효하지 않은 JSON 응답 구조: 'body' 키가 없습니다.");
             }
 
             JSONObject body = responseObj.getJSONObject("body");
@@ -94,7 +94,7 @@ public class TourApiService {
             JSONObject itemsObj = body.optJSONObject("items");
             if (itemsObj == null || !itemsObj.has("item")) {
                 logger.error("JSON 응답에 'items.item' 키가 없습니다.");
-                throw new RuntimeException("Invalid JSON 응답 구조: 'items.item' 키가 없습니다.");
+                throw new RuntimeException("유효하지 않은 JSON 응답 구조: 'items.item' 키가 없습니다.");
             }
 
             JSONArray items = itemsObj.getJSONArray("item");
@@ -111,10 +111,10 @@ public class TourApiService {
                 spot.setLatitude(item.optString("mapy"));
                 spot.setCat1(item.optString("cat1"));
                 spot.setDistance(item.optString("dist"));
-                //이 로직은 클라이언트 ( 사용자, 여기서는 ThemaSelects.html)가 이 정보가 필요해요! 라고 요청하는 파라미터를 저장하는 역할입니다.
-                //여기서 만약 우리가 실수로 오타를 해서                 spot.setLongitude(item.optString("mapX"));
-                // mapy, mapx 이렇게 되있으면 -> 순서대로 들어가  X-> y가 들어가고 Y->x가 들어가요. 이래서 오류가 없어 실행은 돼
-                // 그래서 uri를 생성하면 Y -> 127 (경도) 가들어가고 X에 위도가 들어가버려요.
+                //이 로직은 클라이언트(사용자, 여기서는 ThemaSelects.html)가 이 정보가 필요해요! 라고 요청하는 파라미터를 저장하는 역할입니다.
+                //여기서 만약 우리가 실수로 오타를 해서 spot.setLongitude(item.optString("mapX"));
+                //mapy, mapx 이렇게 되있으면 -> 순서대로 들어가 X-> y가 들어가고 Y->x가 들어가요. 이래서 오류가 없어 실행은 돼
+                //그래서 uri를 생성하면 Y -> 127 (경도) 가 들어가고 X에 위도가 들어가버려요.
                 System.out.println("Parsed DTO: " + spot);
                 spots.add(spot);
             }
@@ -124,7 +124,6 @@ public class TourApiService {
 
         return spots;
     }
-
 
     /**
      * 관광지를 테마별로 그룹화
@@ -177,5 +176,4 @@ public class TourApiService {
         errorResponse.put("message", errorMessage);
         return errorResponse;
     }
-
 }
