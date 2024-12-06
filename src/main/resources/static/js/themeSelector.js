@@ -167,14 +167,14 @@ function selectLocation(name, lng, lat) {
 
     // 서버로 데이터 전송
     const routeData = {
-        start_point: `${lat},${lng}`, // 위도, 경도를 start_point로 저장
-        end_point: null, // or some default value
-        theme_name: name // 장소 이름을 theme_name으로 저장
+        lat: lat, // 위도를 숫자로 변환
+        lng: lng,
+        name: name // 장소 이름을 theme_name으로 저장
     };
 
     console.log("[출력] 서버로 데이터 전송 중:", routeData);
 
-    fetch('/api/route/save', {
+    fetch('/api/places/save', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -183,6 +183,11 @@ function selectLocation(name, lng, lat) {
     })
         .then(response => {
             console.log("[응답] 서버로부터 응답 받음:", response);
+            console.log("[출력] 서버 응답 상태 텍스트:", response.statusText);
+            if (!response.ok) {
+                throw new Error(`HTTP error! 상태 코드: ${response.status}`);
+            }
+
             return response.json();
         })
         .then(data => console.log("[서버 응답 본문]:", data))

@@ -15,7 +15,7 @@ public class PlannerSpotEntity {
     @Column(name = "planner_spot_id")
     private int plannerSpotId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
     private PlannerEntity planner;
 
