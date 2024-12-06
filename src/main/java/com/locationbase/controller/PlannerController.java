@@ -23,18 +23,23 @@ public class PlannerController {
     }
 
     @PostMapping("/save")
-    public String savePlanner(@RequestParam int plannerId, @RequestParam String userId) {
-        logger.info("Planner 저장 요청. Planner ID: {}, User ID: {}", plannerId, userId);
-
+    public String savePlanner(@RequestParam String userId) {
         try {
-            plannerService.savePlanner(plannerId, userId);
-            logger.info("Planner 저장 성공. Planner ID: {}", plannerId);
-            return "Planner 저장 성공";
+            // planner 저장 요청: plannerId는 서버에서 자동 생성됨
+            int generatedPlannerId = plannerService.savePlanner(userId);
+
+            // 정상적으로 plannerId가 생성되었으면, 랜드마크 페이지로 리디렉션
+            // 리디렉션 경로를 문자열로 반환
+            return "redirect:/landmark?plannerId=" + generatedPlannerId + "&userId=" + userId;
+
         } catch (RuntimeException e) {
-            logger.error("Planner 저장 중 오류 발생. 오류 메시지: {}", e.getMessage());
-            return "Planner 저장 실패: " + e.getMessage();
+            logger.error("플래너 저장 중 오류 발생: {}", e.getMessage());
+            // 예외 발생 시 ResponseEntity를 사용해 에러 메시지를 반환
+            return "플래너 저장 실패: " + e.getMessage();
         }
     }
+
+
 
     @PutMapping("/update")
     public String updatePlanner(@RequestParam int plannerId,

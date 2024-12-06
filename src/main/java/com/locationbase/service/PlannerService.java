@@ -2,7 +2,6 @@ package com.locationbase.service;
 
 import com.locationbase.Domain.repository.PlannerRepository;
 import com.locationbase.Domain.repository.UserRepository;
-import com.locationbase.Domain.repository.WeatherRepository;
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.UserEntity;
 import org.slf4j.Logger;
@@ -31,7 +30,7 @@ public class PlannerService {
     }
 
     // planner 저장
-    public void savePlanner(int plannerId, String userId) {
+    public int savePlanner(int plannerId, String userId) {
         logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
 
         Optional<UserEntity> userOptional = userRepository.findById(userId);
@@ -53,6 +52,7 @@ public class PlannerService {
 
         plannerRepository.save(planner);
         logger.debug("Planner 저장 성공. 사용자 ID: {}", userId);
+        return plannerId;
     }
 
     // planner 업데이트

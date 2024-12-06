@@ -1,149 +1,4 @@
-// DOM 요소 가져오기
-const cardsContainer = document.getElementById("cards");
-const newPlannerBtn = document.getElementById("new-planner-btn");
-
-// 초기화
-let plannerCount = 0; // 플래너 ID 초기값
-const userId = "testuser"; // 실제 사용자 ID로 대체
-
-// 로컬 저장소에서 플래너 목록 불러오기
-function loadPlannersFromLocalStorage() {
-    const planners = JSON.parse(localStorage.getItem('planners')) || [];
-    console.log("Loaded planners from localStorage:", planners); // 디버깅용
-
-    if (planners.length > 0) {
-        plannerCount = planners[planners.length - 1].id;  // 마지막 플래너의 ID를 plannerCount로 설정
-    }
-
-    planners.forEach(planner => {
-        createPlannerCard(planner.id, planner.category);
-    });
-}
-
-// NEW 버튼 클릭 이벤트
-newPlannerBtn.addEventListener("click", () => {
-    if (!cardsContainer) {
-        alert("플래너를 추가할 수 없습니다. 페이지를 새로고침하세요.");
-        return;
-    }
-
-    // 새로운 카드를 생성할 때는 실제 카드 수를 기반으로 번호를 매김
-    plannerCount++; // 기존 카드 수에서 1 증가시켜 ID 생성
-
-    const newCardData = {
-        id: plannerCount,
-        category: 'CATEGORY',  // 카테고리 데이터 추가
-    };
-
-    // 로컬 저장소에 플래너 정보 저장
-    savePlannerToLocalStorage(newCardData);
-
-    // 새 카드 추가
-    createPlannerCard(newCardData.id, newCardData.category);
-
-    // 새 카드를 추가 후 번호 재정렬
-    updateTourListNumbers();
-});
-
-// 플래너 카드 생성
-function createPlannerCard(id, category) {
-    console.log(`Creating planner card with ID: ${id}, Category: ${category}`); // 디버깅용
-    const newCard = document.createElement("div");
-    newCard.className = "card";
-    newCard.setAttribute("data-id", id);
-    newCard.innerHTML = `
-        <button class="delete-btn" title="플래너 삭제">X</button>
-        <a href="/landmark?plannerId=${id}&userId=${userId}">
-            <h3>${category}</h3>
-            <h2>TOUR${id}</h2>
-        </a>
-    `;
-
-    // NEW 카드 버튼 바로 앞에 새 카드 추가
-    cardsContainer.insertBefore(newCard, newPlannerBtn);
-
-    // 삭제 버튼 이벤트 리스너 추가
-    const deleteBtn = newCard.querySelector(".delete-btn");
-    deleteBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const confirmDelete = confirm("플래너를 정말 삭제하시겠습니까?");
-        if (confirmDelete) {
-            deletePlanner(id); // DELETE 요청 실행
-        }
-    });
-}
-
-// 로컬 저장소에 플래너 정보 저장
-function savePlannerToLocalStorage(plannerData) {
-    let planners = JSON.parse(localStorage.getItem('planners')) || [];
-    planners.push(plannerData);
-    localStorage.setItem('planners', JSON.stringify(planners));
-}
-
-// 플래너 삭제 요청
-function deletePlanner(plannerId) {
-    // 서버에 DELETE 요청 보내기
-    fetch(`/api/planner/delete?plannerId=${plannerId}`, {
-        method: "DELETE",
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("플래너 삭제 실패");
-            }
-            return response.text();
-        })
-        .then((message) => {
-            alert(message); // 성공 메시지
-            handleDeletePlannerSuccess(plannerId); // 성공 시 UI 업데이트
-        })
-        .catch((error) => {
-            console.error("플래너 삭제 실패:", error);
-            alert("플래너 삭제에 실패했습니다: " + error.message);
-        });
-}
-
-// 플래너 삭제 후 UI 업데이트
-function handleDeletePlannerSuccess(deletedPlannerId) {
-    // UI에서 삭제
-    const deletedCard = cardsContainer.querySelector(`[data-id="${deletedPlannerId}"]`);
-    if (deletedCard) {
-        cardsContainer.removeChild(deletedCard);
-    }
-    // 로컬 저장소에서 삭제
-    removePlannerFromLocalStorage(deletedPlannerId);
-    updateTourListNumbers(); // 순서 재정렬
-}
-
-// 로컬 저장소에서 플래너 삭제
-function removePlannerFromLocalStorage(plannerId) {
-    let planners = JSON.parse(localStorage.getItem('planners')) || [];
-    planners = planners.filter(planner => planner.id !== plannerId);
-    localStorage.setItem('planners', JSON.stringify(planners));
-}
-
-// 관광지 리스트 번호 업데이트
-function updateTourListNumbers() {
-    const cards = Array.from(cardsContainer.querySelectorAll(".card"));
-    cards.forEach((card, index) => {
-        const newTourNumber = index + 1;
-        card.querySelector("h2").textContent = `TOUR${newTourNumber}`;
-        card.setAttribute("data-id", newTourNumber);
-    });
-
-    // 마지막에 new 버튼을 다시 추가하여 위치를 보장
-    cardsContainer.appendChild(newPlannerBtn);
-    plannerCount = cards.length; // 현재 카드 수를 기반으로 plannerCount 갱신
-    console.log("플래너 리스트 번호 업데이트 완료:", plannerCount);
-}
-
-// 페이지 로드 시 로컬 저장소에서 플래너 목록 불러오기
-document.addEventListener("DOMContentLoaded", function () {
-    loadPlannersFromLocalStorage();
-});
-
-//Weather API 호출하기
+// Weather API 호출하기
 document.addEventListener("DOMContentLoaded", function () {
     fetch("/getWeather")
         .then((response) => {
@@ -162,11 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
             let weatherHtml = "";
             forecasts.forEach((forecast) => {
                 const date = new Date(forecast.dt * 1000);
-                const monthDay = `${date.getMonth() + 1}월 ${date.getDate()}일`;
+                const monthDay = `${date.getMonth() + 1}월 ${date.getDate()}일`; // 템플릿 리터럴로 수정
                 const iconCode = forecast.weather[0].icon;
-                const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+                const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`; // 템플릿 리터럴로 수정
                 const description = forecast.weather[0].description;
-                const temp = `${Math.round(forecast.main.temp)}°C`;
+                const temp = `${Math.round(forecast.main.temp)}°C`; // 템플릿 리터럴로 수정
 
                 weatherHtml += `
                     <div class="weather-forecast">
@@ -188,5 +43,36 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 });
 
+// 플래너 추가 버튼 클릭 이벤트
+const newPlannerBtn = document.getElementById("new-planner-btn");
 
-
+newPlannerBtn.addEventListener("click", () => {
+    // POST 요청을 보내서 planner를 저장
+    fetch("/api/planner/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded" // 헤더 추가
+        },
+        body: new URLSearchParams({
+            plannerId: 0,  // DB에서 자동 생성될 ID
+            userId: "testuser"  // 실제 사용자 ID로 교체 필요
+        })
+    })
+        .then(response => {
+            console.log("서버 응답:", response);  // 서버 응답 로그 출력
+            return response.json();  // JSON 파싱
+        })
+        .then(data => {
+            console.log("응답 데이터:", data);  // 파싱된 데이터 출력
+            if (data.plannerId) {
+                // plannerId가 생성되면 SelectLandmark 페이지로 이동
+                window.location.href = `/landmark?plannerId=${data.plannerId}&userId=testuser`; // 템플릿 리터럴로 수정
+            } else {
+                console.log("페이지 이동 실패");
+            }
+        })
+        .catch(error => {
+            console.error("플래너 저장 중 오류 발생:", error);  // 에러 로그 출력
+            alert("플래너 저장 중 오류가 발생했습니다.");
+        });
+});
