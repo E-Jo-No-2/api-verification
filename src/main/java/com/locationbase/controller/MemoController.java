@@ -118,7 +118,7 @@ public class MemoController {
         return ResponseEntity.noContent().build();
     }
 
-    // Internal class: MemoRequest for handling incoming request data
+    // 내부 클래스
     public static class MemoRequest {
         private String memoContent;
         private int plannerId;

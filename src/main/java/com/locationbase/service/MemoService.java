@@ -125,7 +125,7 @@ public class MemoService {
 
         MemoEntity memo = new MemoEntity();
         memo.setMemoContent(memoContent);
-        memo.setPlanner(planner);
+        memo.setPlanner(planner); //plannerId
 
         return memoRepository.save(memo);
     }
