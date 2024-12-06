@@ -299,3 +299,42 @@ function completeTour() {
     console.log("완료 버튼 클릭됨.");
     alert("플래너 작성 완료를 하시겠습니까?");
 }
+
+
+// 메모 저장하기
+document.getElementById("backBtn").addEventListener("click", () => {
+    const memoContent = document.getElementById("memo").value;
+
+    const plannerId = 1; // Ensure this is set to a valid planner ID
+    console.log("ㅁㄴㅇㅁㅇㅋㅌㅊ");
+    if (plannerId === 0) {
+        return; // Prevent sending the request
+    }
+
+    if (memoContent) {
+        const memoData = {
+            memoContent: memoContent,
+            planner: { planner_id: 1 },
+            writeDate: new Date().toISOString().split('T')[0]
+        };
+
+
+        fetch('/memos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(memoData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("메모 추가됨:", data);
+                alert("메모가 성공적으로 추가되었습니다!");
+                document.getElementById("memo").value = ''; // 메모 입력 필드 초기화
+            })
+            .catch(error => {
+                console.error("메모 저장 실패:", error.message);
+                alert("메모 저장에 실패했습니다.");
+            });
+    }
+});
