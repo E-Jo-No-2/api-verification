@@ -167,14 +167,14 @@ function selectLocation(name, lng, lat) {
 
     // 서버로 데이터 전송
     const routeData = {
-        start_point: `${lat},${lng}`, // 위도, 경도를 start_point로 저장
-        end_point: null, // or some default value
-        theme_name: name // 장소 이름을 theme_name으로 저장
+        latitude: lat, // 위도
+        longitude: lng, // 경도
+        name: name // 장소 이름
     };
 
     console.log("[출력] 서버로 데이터 전송 중:", routeData);
 
-    fetch('/api/route/save', {
+    fetch('/api/places/save', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
