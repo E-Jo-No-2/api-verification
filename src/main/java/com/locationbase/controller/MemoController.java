@@ -1,46 +1,79 @@
+
 package com.locationbase.controller;
 
 import com.locationbase.entity.MemoEntity;
 import com.locationbase.service.MemoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/memos")
+@RequestMapping("/memo")
 public class MemoController {
 
     private final MemoService memoService;
 
-    @Autowired
     public MemoController(MemoService memoService) {
         this.memoService = memoService;
     }
 
+    // Create a new memo
     @PostMapping
-    public ResponseEntity<MemoEntity> addMemo(@RequestBody MemoEntity memoEntity) {
-        MemoEntity savedMemo = memoService.addMemo(memoEntity);
-        return ResponseEntity.ok(savedMemo);
-    }
-
-    @PutMapping("/{memoId}")
-    public ResponseEntity<MemoEntity> updateMemo(@PathVariable int memoId, @RequestBody String memoContent) {
+    public ResponseEntity<MemoEntity> createMemo(@RequestBody MemoRequest request) {
         try {
-            MemoEntity updatedMemo = memoService.updateMemo(memoId, memoContent);
-            return ResponseEntity.ok(updatedMemo);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(null);
+            // MemoService를 호출하여 memo 저장
+            MemoEntity savedMemo = memoService.createMemo(request.getMemoContent(), request.getPlannerId());
+            return ResponseEntity.ok(savedMemo);
+        } catch (Exception e) {
+            // 예외 로그 출력
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null); // 500 Internal Server Error 반환
         }
     }
 
+    // Get all memos by planner ID
+    @GetMapping("/planner/{plannerId}")
+    public ResponseEntity<List<MemoEntity>> getMemosByPlannerId(@PathVariable int plannerId) {
+        List<MemoEntity> memos = memoService.getMemosByPlannerId(plannerId);
+        return ResponseEntity.ok(memos);
+    }
 
+    // Update a memo by ID
+    @PutMapping("/{memoId}")
+    public ResponseEntity<MemoEntity> updateMemo(@PathVariable int memoId, @RequestBody MemoRequest request) {
+        MemoEntity updatedMemo = memoService.updateMemo(memoId, request.getMemoContent());
+        return ResponseEntity.ok(updatedMemo);
+    }
+
+    // Delete a memo by ID
     @DeleteMapping("/{memoId}")
     public ResponseEntity<Void> deleteMemo(@PathVariable int memoId) {
-        try {
-            memoService.deleteMemo(memoId);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).build();
+        memoService.deleteMemo(memoId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 내부 클래스
+    public static class MemoRequest {
+        private String memoContent;
+        private int plannerId;
+
+        public String getMemoContent() {
+            return memoContent;
+        }
+
+        public void setMemoContent(String memoContent) {
+            this.memoContent = memoContent;
+        }
+
+        public int getPlannerId() {
+            return plannerId;
+        }
+
+        public void setPlannerId(int plannerId) {
+            this.plannerId = plannerId;
         }
     }
 }
+
+

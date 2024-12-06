@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/planner")
+@RequestMapping("/api/planner")
 public class PlannerController {
 
     private static final Logger logger = LoggerFactory.getLogger(PlannerController.class);
@@ -22,50 +22,47 @@ public class PlannerController {
         this.plannerService = plannerService;
     }
 
-    // Save Planner
     @PostMapping("/save")
-    public ResponseEntity<String> savePlanner(
-            @RequestParam String userId,
-            @RequestParam String date) {
-        logger.debug("Save Planner endpoint called with User ID: {}, Date: {}", userId, date);
+    public String savePlanner(@RequestParam int plannerId, @RequestParam String userId) {
+        logger.info("Planner 저장 요청. Planner ID: {}, User ID: {}", plannerId, userId);
+
         try {
-            LocalDate parsedDate = LocalDate.parse(date);
-            plannerService.savePlanner(userId, parsedDate);
-            return ResponseEntity.ok("Planner saved successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            plannerService.savePlanner(plannerId, userId);
+            logger.info("Planner 저장 성공. Planner ID: {}", plannerId);
+            return "Planner 저장 성공";
         } catch (RuntimeException e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            logger.error("Planner 저장 중 오류 발생. 오류 메시지: {}", e.getMessage());
+            return "Planner 저장 실패: " + e.getMessage();
         }
     }
 
-    // Update Planner
     @PutMapping("/update")
-    public ResponseEntity<String> updatePlanner(
-            @RequestParam int plannerId,
-            @RequestParam String userId,
-            @RequestParam String newDate) {
-        logger.debug("Update Planner endpoint called with Planner ID: {}, User ID: {}, New Date: {}", plannerId, userId, newDate);
+    public String updatePlanner(@RequestParam int plannerId,
+                                @RequestParam String userId,
+                                @RequestParam LocalDate newDate) {
+        logger.info("Planner 업데이트 요청. Planner ID: {}, User ID: {}, 새 날짜: {}", plannerId, userId, newDate);
+
         try {
-            LocalDate parsedDate = LocalDate.parse(newDate);
-            plannerService.updatePlanner(plannerId, userId, parsedDate);
-            return ResponseEntity.ok("Planner updated successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            plannerService.updatePlanner(plannerId, userId, newDate);
+            logger.info("Planner 업데이트 성공. Planner ID: {}", plannerId);
+            return "Planner 업데이트 성공";
         } catch (RuntimeException e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            logger.error("Planner 업데이트 중 오류 발생. 오류 메시지: {}", e.getMessage());
+            return "Planner 업데이트 실패: " + e.getMessage();
         }
     }
 
-    // Delete Planner
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deletePlanner(@RequestParam int plannerId) {
-        logger.debug("Delete Planner endpoint called with Planner ID: {}", plannerId);
+    public ResponseEntity<?> deletePlanner(@RequestParam int plannerId) {
+        logger.info("Planner 삭제 요청. Planner ID: {}", plannerId);
+
         try {
             plannerService.deletePlanner(plannerId);
-            return ResponseEntity.ok("Planner deleted successfully");
+            logger.info("Planner 삭제 성공. Planner ID: {}", plannerId);
+            return ResponseEntity.ok("Planner 삭제 성공");
         } catch (RuntimeException e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            logger.error("Planner 삭제 중 오류 발생. 오류 메시지: {}", e.getMessage());
+            return ResponseEntity.status(500).body("Planner 삭제 실패: " + e.getMessage());
         }
     }
 }
