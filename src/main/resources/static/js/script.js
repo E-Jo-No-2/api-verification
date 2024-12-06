@@ -54,7 +54,6 @@ newPlannerBtn.addEventListener("click", () => {
             "Content-Type": "application/x-www-form-urlencoded" // 헤더 추가
         },
         body: new URLSearchParams({
-            plannerId: 0,  // DB에서 자동 생성될 ID
             userId: "testuser"  // 실제 사용자 ID로 교체 필요
         })
     })

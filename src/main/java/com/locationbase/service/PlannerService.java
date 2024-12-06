@@ -30,7 +30,7 @@ public class PlannerService {
     }
 
     // planner 저장
-    public int savePlanner(int plannerId, String userId) {
+    public int savePlanner(String userId) {
         logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
 
         Optional<UserEntity> userOptional = userRepository.findById(userId);
@@ -46,13 +46,13 @@ public class PlannerService {
         logger.debug("현재 날짜: {}", currentDate);
 
         PlannerEntity planner = new PlannerEntity();
-        planner.setPlannerId(plannerId);
+       ;
         planner.setUserId(user);
         planner.setDate(currentDate);
 
         plannerRepository.save(planner);
         logger.debug("Planner 저장 성공. 사용자 ID: {}", userId);
-        return plannerId;
+        return planner.getPlannerId();  // 생성된 plannerId 반환
     }
 
     // planner 업데이트

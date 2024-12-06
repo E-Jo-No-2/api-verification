@@ -23,21 +23,25 @@ public class PlannerController {
     }
 
     @PostMapping("/save")
-    public String savePlanner(@RequestParam String userId) {
+    public ResponseEntity<?> savePlanner(@RequestParam(required = true) String userId) {
         try {
-            // planner 저장 요청: plannerId는 서버에서 자동 생성됨
+            // userId가 유효한지 확인
+            if (userId == null || userId.isEmpty()) {
+                logger.error("userId가 유효하지 않습니다.");
+                return ResponseEntity.badRequest().body("userId는 필수 값입니다.");
+            }
+
+            // planner 저장 요청
             int generatedPlannerId = plannerService.savePlanner(userId);
 
-            // 정상적으로 plannerId가 생성되었으면, 랜드마크 페이지로 리디렉션
-            // 리디렉션 경로를 문자열로 반환
-            return "redirect:/landmark?plannerId=" + generatedPlannerId + "&userId=" + userId;
-
+            // JSON 응답 반환
+            return ResponseEntity.ok().body("{\"plannerId\": " + generatedPlannerId + "}");
         } catch (RuntimeException e) {
             logger.error("플래너 저장 중 오류 발생: {}", e.getMessage());
-            // 예외 발생 시 ResponseEntity를 사용해 에러 메시지를 반환
-            return "플래너 저장 실패: " + e.getMessage();
+            return ResponseEntity.status(500).body("{\"error\": \"플래너 저장 실패: " + e.getMessage() + "\"}");
         }
     }
+
 
 
 
