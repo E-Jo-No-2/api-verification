@@ -131,7 +131,7 @@ public class MemoService {
     }
 
     public List<MemoEntity> getMemosByPlannerId(int plannerId) {
-        return memoRepository.findByPlanner_PlannerId(plannerId);
+       return memoRepository.findByPlanner_PlannerId(plannerId);
     }
 
     public MemoEntity updateMemo(int memoId, String memoContent) {

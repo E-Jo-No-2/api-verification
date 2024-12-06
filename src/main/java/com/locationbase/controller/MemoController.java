@@ -87,6 +87,7 @@ public class MemoController {
     @PostMapping
     public ResponseEntity<MemoEntity> createMemo(@RequestBody MemoRequest request) {
         try {
+            // MemoService를 호출하여 memo 저장
             MemoEntity savedMemo = memoService.createMemo(request.getMemoContent(), request.getPlannerId());
             return ResponseEntity.ok(savedMemo);
         } catch (Exception e) {
