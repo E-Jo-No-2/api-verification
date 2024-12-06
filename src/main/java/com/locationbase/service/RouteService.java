@@ -1,7 +1,7 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.PlaceRepository;
-import com.locationbase.Domain.repository.RouteRepository;
+import com.locationbase.domain.repository.PlaceRepository;
+import com.locationbase.domain.repository.RouteRepository;
 import com.locationbase.dto.RouteDTO;
 import com.locationbase.entity.PlacesEntity;
 import com.locationbase.entity.RouteEntity;

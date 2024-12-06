@@ -1,7 +1,7 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.PlannerRepository;
-import com.locationbase.Domain.repository.UserRepository;
+import com.locationbase.domain.repository.PlannerRepository;
+import com.locationbase.domain.repository.UserRepository;
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.UserEntity;
 import org.slf4j.Logger;

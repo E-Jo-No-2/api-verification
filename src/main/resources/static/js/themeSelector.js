@@ -305,41 +305,103 @@ function completeTour() {
     alert("플래너 작성 완료를 하시겠습니까?");
 }
 
+// planner id를 테스트를 위해 3로 고정
+const plannerId = 3;
+// URL에서 planner_id 가져오기
+//const urlParams = new URLSearchParams(window.location.search);
+//const planner_id = urlParams.get('planner_id');
+// planner_id를 테스트를 위해 1로 고정
+// plannerId를 테스트를 위해 1로 고정
 
-// 메모 저장하기
-document.getElementById("backBtn").addEventListener("click", () => {
-    const memoContent = document.getElementById("memo").value;
+if (!plannerId) {
+    alert("plannerId가 설정되지 않았습니다!");
+    throw new Error("plannerId가 필요합니다.");
+}
 
-    const plannerId = 1; // Ensure this is set to a valid planner ID
-    console.log("ㅁㄴㅇㅁㅇㅋㅌㅊ");
-    if (plannerId === 0) {
-        return; // Prevent sending the request
+// 메모 불러오기 함수
+function loadMemo(plannerId) {
+    const uri = `/memos/planner/${plannerId}`; // URI 생성
+    console.log("메모 불러오기 요청: plannerId =", plannerId);
+    console.log("요청 URI:", uri);
+    fetch(`/memos/planner/${plannerId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`메모 불러오기 실패: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("메모 불러오기 성공:", data);
+            // 메모를 화면의 textarea에 표시
+            document.getElementById("memo").value = data[0]?.memoContent || ''; // 첫 번째 메모 표시
+        })
+        .catch(error => {
+            console.error("메모 불러오기 실패:", error.message);
+            alert("메모를 불러오지 못했습니다.");
+        });
+}
+
+// 메모 저장하기 함수
+function saveMemo(plannerId, memoContent) {
+    console.log("메모 저장 요청: plannerId =", plannerId, "memoContent =", memoContent);
+
+    if (!plannerId) {
+        alert("plannerId가 설정되지 않았습니다!");
+        return;
     }
 
-    if (memoContent) {
-        const memoData = {
-            memoContent: memoContent,
-            planner: { planner_id: 1 },
-            writeDate: new Date().toISOString().split('T')[0]
-        };
+    if (!memoContent) {
+        alert("메모 내용을 입력하세요!");
+        return;
+    }
 
+    const memoData = {
+        memoContent: memoContent,
+        plannerId: plannerId,
+        writeDate: new Date().toISOString().split('T')[0] // 오늘 날짜
+    };
 
-        fetch('/memos', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(memoData)
+    fetch('/memos/${memoId}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(memoData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`메모 저장 실패: ${response.status}`);
+            }
+            return response.json();
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log("메모 추가됨:", data);
-                alert("메모가 성공적으로 추가되었습니다!");
-                document.getElementById("memo").value = ''; // 메모 입력 필드 초기화
-            })
-            .catch(error => {
-                console.error("메모 저장 실패:", error.message);
-                alert("메모 저장에 실패했습니다.");
-            });
+        .then(data => {
+            console.log("메모 저장 성공:", data);
+            alert("메모가 성공적으로 저장되었습니다!");
+        })
+        .catch(error => {
+            console.error("메모 저장 실패:", error.message);
+            alert("메모 저장에 실패했습니다.");
+        });
+}
+
+// 초기 로드 및 이벤트 핸들러 설정
+document.addEventListener("DOMContentLoaded", () => {
+    // 메모 불러오기
+    loadMemo(plannerId);
+
+    // 저장 버튼 클릭 시 메모 저장
+    const saveMemoBtn = document.getElementById("saveMemoBtn");
+    if (saveMemoBtn) {
+        saveMemoBtn.addEventListener("click", () => {
+            const memoContent = document.getElementById("memo").value;
+            saveMemo(plannerId, memoContent);
+        });
+    } else {
+        console.error("저장 버튼(saveMemoBtn)을 찾을 수 없습니다!");
     }
 });
