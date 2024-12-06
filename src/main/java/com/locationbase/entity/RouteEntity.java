@@ -34,4 +34,8 @@ public class RouteEntity {
 
     @Column(name = "distance", length = 10)
     private String distance;
+
+    @ManyToOne
+    @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
+    private PlannerEntity planner; // planner 테이블과의 외래 키 설정
 }

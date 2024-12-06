@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface MemoRepository extends JpaRepository<MemoEntity, Integer> {
 
-    //메모 repository
+   //메모 repository
     List<MemoEntity> findByPlanner_PlannerId(int plannerId);
 }

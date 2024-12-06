@@ -32,7 +32,7 @@ public class WeatherController {
 
     @GetMapping("/main")
     public String main() {
-        logger.debug("Navigating to main page and saving weather data.");
+        logger.info("main() 호출되었음.");
         updateWeatherData(); // main 페이지로 이동할 때 날씨 정보를 저장
         return "main"; // main.html 파일 이름에서 확장자를 제외한 이름 반환
     }
@@ -60,12 +60,14 @@ public class WeatherController {
     }
 
     private void updateWeatherData() {
+        logger.debug("updateWeatherData()호출됨.");
         String lang = "kr";
         // OpenWeatherMap API 키를 여기에 입력했습니다.
         String apiKey = "d33209554507a1997686d8feab67ab6a";
         JSONObject weatherData = WeatherService.get5DayForecast(apiKey, lang);
 
         logger.debug("Fetched weather data: {}", weatherData);
+
 
         if (weatherData != null) {
             logger.debug("Saving weather data from main page.");
