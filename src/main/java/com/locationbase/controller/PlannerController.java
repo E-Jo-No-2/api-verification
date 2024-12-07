@@ -1,6 +1,10 @@
 package com.locationbase.controller;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.locationbase.entity.PlannerEntity;
 import com.locationbase.service.PlannerService;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/planner")
@@ -75,4 +80,67 @@ public class PlannerController {
             return ResponseEntity.status(500).body("Planner 삭제 실패: " + e.getMessage());
         }
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getPlannerList(@RequestParam(required = true) String userId) {
+        try {
+            // PlannerService에서 플래너 목록 조회
+            List<PlannerEntity> planners = plannerService.getPlannerListByUser(userId);
+            return ResponseEntity.ok(planners);
+        } catch (Exception e) {
+            logger.error("Planner 목록 불러오기 실패: {}", e.getMessage());
+            return ResponseEntity.status(500).body("Planner 목록 불러오기 실패");
+        }
+    }
+
+    // PlannerController.java
+    @CrossOrigin
+    @PostMapping("/complete")
+    public ResponseEntity<?> completePlanner(@RequestBody PlannerCompletionRequest request) {
+        logger.info("Planner 완료 요청. Planner ID: {}, 사용자 ID: {}", request.getPlannerId(), request.getUserId());
+
+        try {
+            // Planner 완료 처리
+            plannerService.completePlanner(request.getPlannerId(), request.getUserId());
+            logger.info("Planner 완료 처리 성공. Planner ID: {}", request.getPlannerId());
+
+            // 성공 응답 반환
+            return ResponseEntity.ok("Planner 완료 처리 성공");
+        } catch (RuntimeException e) {
+            logger.error("Planner 완료 처리 중 오류 발생. 오류 메시지: {}", e.getMessage());
+            return ResponseEntity.status(500).body("Planner 완료 처리 실패: " + e.getMessage());
+        }
+    }
+    // 글로벌 예외 처리 (RuntimeException)
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        logger.error("RuntimeException 발생: {}", ex.getMessage());
+        return ResponseEntity.status(500).body("{\"error\": \"" + ex.getMessage() + "\"}");
+    }
+    @NoArgsConstructor
+    public class PlannerCompletionRequest {
+        private int plannerId;
+        private String userId;
+
+
+
+        @JsonCreator
+        public PlannerCompletionRequest(@JsonProperty("plannerId") int plannerId,
+                                        @JsonProperty("userId") String userId) {
+            this.plannerId = plannerId;
+            this.userId = userId;
+        }
+
+        // Getters and setters
+        public int getPlannerId() {
+            return plannerId;
+        }
+
+
+        public String getUserId() {
+            return userId;
+        }
+
+    }
+
 }
