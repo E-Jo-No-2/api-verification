@@ -32,7 +32,7 @@ public class WeatherController {
 
     @GetMapping("/main")
     public String main() {
-        logger.info("main() 호출되었음.");
+
         updateWeatherData(); // main 페이지로 이동할 때 날씨 정보를 저장
         return "main"; // main.html 파일 이름에서 확장자를 제외한 이름 반환
     }

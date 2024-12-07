@@ -1,38 +1,47 @@
 package com.locationbase.service;
 
-import com.locationbase.domain.repository.PlannerRepository;
-import com.locationbase.domain.repository.UserRepository;
-import com.locationbase.entity.PlannerEntity;
-import com.locationbase.entity.UserEntity;
+import com.locationbase.Domain.repository.*;
+import com.locationbase.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PlannerService {
 
     private static final Logger logger = LoggerFactory.getLogger(PlannerService.class);
 
     private final PlannerRepository plannerRepository;
     private final UserRepository userRepository;
-    private final JdbcTemplate jdbcTemplate;
+    private final PlannerSpotRepository plannerSpotRepository;
+    private final RouteRepository routeRepository;
+    private final PlaceRepository placeRepository;
+    private final JdbcTemplate jdbcTemplate;  // JdbcTemplate 필드 추가
 
+    // JdbcTemplate을 @Autowired로 자동 주입 받도록 수정
     @Autowired
-    public PlannerService(PlannerRepository plannerRepository, UserRepository userRepository, JdbcTemplate jdbcTemplate) {
+    public PlannerService(PlannerRepository plannerRepository, UserRepository userRepository,
+                          PlannerSpotRepository plannerSpotRepository, RouteRepository routeRepository,
+                          PlaceRepository placesRepository, JdbcTemplate jdbcTemplate) {
         this.plannerRepository = plannerRepository;
         this.userRepository = userRepository;
-        this.jdbcTemplate = jdbcTemplate;
+        this.plannerSpotRepository = plannerSpotRepository;
+        this.routeRepository = routeRepository;
+        this.placeRepository = placesRepository;
+        this.jdbcTemplate = jdbcTemplate;  // JdbcTemplate 주입
     }
 
-    // planner 저장
     public int savePlanner(String userId) {
-        logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
+        logger.debug("플래너 저장 시작. 사용자 ID: {}", userId);
 
+        // 사용자 존재 확인
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (!userOptional.isPresent()) {
             logger.error("사용자를 찾을 수 없습니다. 사용자 ID: {}", userId);
@@ -42,17 +51,42 @@ public class PlannerService {
         UserEntity user = userOptional.get();
         logger.debug("사용자 확인 완료: {}", user);
 
+        // 플래너 엔티티 생성 및 저장
         LocalDate currentDate = LocalDate.now();
-        logger.debug("현재 날짜: {}", currentDate);
-
         PlannerEntity planner = new PlannerEntity();
-       ;
         planner.setUserId(user);
         planner.setDate(currentDate);
 
         plannerRepository.save(planner);
-        logger.debug("Planner 저장 성공. 사용자 ID: {}", userId);
+        logger.debug("플래너 저장 성공. 사용자 ID: {}", userId);
+
+        // 외래키만 사용하여 관련 엔티티 저장
+        savePlannerSpot(planner);  // PlannerEntity 객체를 전달
+        saveRoute(planner);        // PlannerEntity 객체를 전달
+        savePlaces(planner);       // PlannerEntity 객체를 전달
+
         return planner.getPlannerId();  // 생성된 plannerId 반환
+    }
+
+    private void savePlannerSpot(PlannerEntity planner) {
+        PlannerSpotEntity plannerSpot = new PlannerSpotEntity();
+        plannerSpot.setPlanner(planner);  // PlannerEntity 객체를 설정
+        plannerSpotRepository.save(plannerSpot);
+        logger.debug("planner_spot 저장 완료. plannerId: {}", planner.getPlannerId());
+    }
+
+    private void saveRoute(PlannerEntity planner) {
+        RouteEntity route = new RouteEntity();
+        route.setPlanner(planner);  // PlannerEntity 객체를 설정
+        routeRepository.save(route);
+        logger.debug("route 저장 완료. plannerId: {}", planner.getPlannerId());
+    }
+
+    private void savePlaces(PlannerEntity planner) {
+        PlacesEntity place = new PlacesEntity();
+        place.setPlanner(planner);  // PlannerEntity 객체를 설정
+        placeRepository.save(place);
+        logger.debug("places 저장 완료. plannerId: {}", planner.getPlannerId());
     }
 
     // planner 업데이트

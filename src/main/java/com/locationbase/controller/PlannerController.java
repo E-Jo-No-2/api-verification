@@ -33,6 +33,7 @@ public class PlannerController {
 
             // planner 저장 요청
             int generatedPlannerId = plannerService.savePlanner(userId);
+            logger.info("userId: " + userId + ", generated plannerId: " + generatedPlannerId);
 
             // JSON 응답 반환
             return ResponseEntity.ok().body("{\"plannerId\": " + generatedPlannerId + "}");

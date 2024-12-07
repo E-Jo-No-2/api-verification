@@ -20,7 +20,7 @@ public class LandmarkController {
     @GetMapping("/landmark")
     public String showSelectLandmark(@RequestParam("plannerId") int plannerId, @RequestParam("userId") String userId) {
         // Planner 테이블 업데이트
-        plannerService.savePlanner(userId); // 여기서 plannerId를 전달하지 않음
+
 
         // Service를 호출하여 비즈니스 로직 수행 (필요 시)
         System.out.println("Planner ID: " + plannerId); // 디버깅용 로그
