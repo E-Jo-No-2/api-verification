@@ -1,13 +1,16 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.*;
-import com.locationbase.entity.*;
+import com.locationbase.Domain.repository.PlannerRepository;
+import com.locationbase.Domain.repository.UserRepository;
+import com.locationbase.entity.PlannerEntity;
+import com.locationbase.entity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -20,73 +23,41 @@ public class PlannerService {
 
     private final PlannerRepository plannerRepository;
     private final UserRepository userRepository;
-    private final PlannerSpotRepository plannerSpotRepository;
-    private final RouteRepository routeRepository;
-    private final PlaceRepository placeRepository;
-    private final JdbcTemplate jdbcTemplate;  // JdbcTemplate 필드 추가
+    private final JdbcTemplate jdbcTemplate;
+    private final TransactionTemplate transactionTemplate;
 
-    // JdbcTemplate을 @Autowired로 자동 주입 받도록 수정
     @Autowired
-    public PlannerService(PlannerRepository plannerRepository, UserRepository userRepository,
-                          PlannerSpotRepository plannerSpotRepository, RouteRepository routeRepository,
-                          PlaceRepository placesRepository, JdbcTemplate jdbcTemplate) {
+    public PlannerService(PlannerRepository plannerRepository,
+                          UserRepository userRepository,
+                          JdbcTemplate jdbcTemplate,
+                          TransactionTemplate transactionTemplate) {
         this.plannerRepository = plannerRepository;
         this.userRepository = userRepository;
-        this.plannerSpotRepository = plannerSpotRepository;
-        this.routeRepository = routeRepository;
-        this.placeRepository = placesRepository;
-        this.jdbcTemplate = jdbcTemplate;  // JdbcTemplate 주입
+        this.jdbcTemplate = jdbcTemplate;
+        this.transactionTemplate = transactionTemplate;
     }
 
+    // planner 저장
     public int savePlanner(String userId) {
-        logger.debug("플래너 저장 시작. 사용자 ID: {}", userId);
+        logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
 
-        // 사용자 존재 확인
-        Optional<UserEntity> userOptional = userRepository.findById(userId);
-        if (!userOptional.isPresent()) {
-            logger.error("사용자를 찾을 수 없습니다. 사용자 ID: {}", userId);
-            throw new RuntimeException("사용자를 찾을 수 없습니다. 사용자 ID: " + userId);
-        }
+        // 사용자 ID로 UserEntity 조회 (findByUserId 사용)
+        UserEntity user = (UserEntity) userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. 사용자 ID: " + userId));
 
-        UserEntity user = userOptional.get();
         logger.debug("사용자 확인 완료: {}", user);
 
-        // 플래너 엔티티 생성 및 저장
+        // 현재 날짜를 사용하여 PlannerEntity 생성
         LocalDate currentDate = LocalDate.now();
+        logger.debug("현재 날짜: {}", currentDate);
+
         PlannerEntity planner = new PlannerEntity();
-        planner.setUserId(user);
-        planner.setDate(currentDate);
+        planner.setUserId(user);  // UserEntity 설정
+        planner.setDate(currentDate);  // 날짜 설정
 
-        plannerRepository.save(planner);
-        logger.debug("플래너 저장 성공. 사용자 ID: {}", userId);
-
-        // 외래키만 사용하여 관련 엔티티 저장
-        savePlannerSpot(planner);  // PlannerEntity 객체를 전달
-        saveRoute(planner);        // PlannerEntity 객체를 전달
-        savePlaces(planner);       // PlannerEntity 객체를 전달
-
+        plannerRepository.save(planner);  // 저장
+        logger.debug("Planner 저장 성공. 사용자 ID: {}", userId);
         return planner.getPlannerId();  // 생성된 plannerId 반환
-    }
-
-    private void savePlannerSpot(PlannerEntity planner) {
-        PlannerSpotEntity plannerSpot = new PlannerSpotEntity();
-        plannerSpot.setPlanner(planner);  // PlannerEntity 객체를 설정
-        plannerSpotRepository.save(plannerSpot);
-        logger.debug("planner_spot 저장 완료. plannerId: {}", planner.getPlannerId());
-    }
-
-    private void saveRoute(PlannerEntity planner) {
-        RouteEntity route = new RouteEntity();
-        route.setPlanner(planner);  // PlannerEntity 객체를 설정
-        routeRepository.save(route);
-        logger.debug("route 저장 완료. plannerId: {}", planner.getPlannerId());
-    }
-
-    private void savePlaces(PlannerEntity planner) {
-        PlacesEntity place = new PlacesEntity();
-        place.setPlanner(planner);  // PlannerEntity 객체를 설정
-        placeRepository.save(place);
-        logger.debug("places 저장 완료. plannerId: {}", planner.getPlannerId());
     }
 
     // planner 업데이트
@@ -117,33 +88,40 @@ public class PlannerService {
             throw new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId);
         }
 
+        // 트랜잭션 내 삭제 및 planner_id 재정렬
         plannerRepository.deleteById(plannerId);
         logger.debug("Planner 삭제 완료. Planner ID: {}", plannerId);
 
-        // planner_id를 재정렬하는 SQL 실행
         String reSeqSql = "UPDATE planner SET planner_id = planner_id - 1 WHERE planner_id > ?";
         jdbcTemplate.update(reSeqSql, plannerId);
         logger.debug("planner_id 재정렬 완료. Planner ID: {}", plannerId);
 
-        // AUTO_INCREMENT 값을 재설정
+        // 별도의 트랜잭션에서 AUTO_INCREMENT 값 재설정
         resetAutoIncrement();
     }
 
     private void resetAutoIncrement() {
-        // 최신 planner_id를 가져오기
-        String maxIdSql = "SELECT MAX(planner_id) FROM planner";
-        Integer maxId = jdbcTemplate.queryForObject(maxIdSql, Integer.class);
+        transactionTemplate.executeWithoutResult(status -> {
+            try {
+                // 최신 planner_id 가져오기
+                String maxIdSql = "SELECT MAX(planner_id) FROM planner";
+                Integer maxId = jdbcTemplate.queryForObject(maxIdSql, Integer.class);
 
-        if (maxId != null) {
-            // AUTO_INCREMENT를 다음 ID로 설정
-            String resetSql = "ALTER TABLE planner AUTO_INCREMENT = ?";
-            jdbcTemplate.update(resetSql, maxId + 1);  // 다음 값으로 설정
-            logger.debug("AUTO_INCREMENT 값을 {}로 재설정", maxId + 1);
-        } else {
-            // 테이블이 비어 있으면 1로 설정
-            String resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
-            jdbcTemplate.update(resetSql);
-            logger.debug("테이블이 비어 있으므로 AUTO_INCREMENT를 1로 재설정");
-        }
+                if (maxId != null) {
+                    // AUTO_INCREMENT를 다음 값으로 재설정
+                    String resetSql = "ALTER TABLE planner AUTO_INCREMENT = ?";
+                    jdbcTemplate.update(resetSql, maxId + 1);
+                    logger.debug("AUTO_INCREMENT 값을 {}로 재설정", maxId + 1);
+                } else {
+                    // 테이블이 비어 있는 경우 AUTO_INCREMENT를 1로 설정
+                    String resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
+                    jdbcTemplate.update(resetSql);
+                    logger.debug("테이블이 비어 있으므로 AUTO_INCREMENT를 1로 재설정");
+                }
+            } catch (Exception e) {
+                logger.error("AUTO_INCREMENT 재설정 중 오류 발생", e);
+                throw new RuntimeException("AUTO_INCREMENT 재설정 실패", e);
+            }
+        });
     }
 }
