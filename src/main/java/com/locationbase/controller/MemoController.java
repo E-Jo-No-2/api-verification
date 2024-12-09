@@ -36,8 +36,8 @@ public class MemoController {
     }
 
     // 특정 메모 ID로 메모 수정
-    @PutMapping("/memos/{memoId}")
-    public ResponseEntity<MemoEntity> updateMemo(@PathVariable int memoId, @RequestBody MemoEntity memoEntity) {
+    @PutMapping("/{memoId}")
+    public ResponseEntity<MemoEntity> updateMemo(  @PathVariable("memoId") int memoId, @RequestBody MemoEntity memoEntity) {
         logger.info("메모 수정 요청: 메모 ID={}, 새로운 메모 내용={}", memoId, memoEntity.getMemoContent());
         try {
             MemoEntity updatedMemo = memoService.updateMemo(memoId, memoEntity.getMemoContent());
@@ -49,17 +49,4 @@ public class MemoController {
         }
     }
 
-    // 특정 메모 ID로 메모 삭제
-    @DeleteMapping("/memos")
-    public ResponseEntity<Void> deleteMemo(@PathVariable int memoId) {
-        logger.info("메모 삭제 요청: 메모 ID={}", memoId);
-        try {
-            memoService.deleteMemo(memoId);
-            logger.info("메모 삭제 성공: 메모 ID={}", memoId);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            logger.error("메모 삭제 실패: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).build();
-        }
-    }
 }

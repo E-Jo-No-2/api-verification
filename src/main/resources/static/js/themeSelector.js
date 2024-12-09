@@ -337,6 +337,8 @@ function loadMemo(plannerId) {
         })
         .then(data => {
             console.log("메모 불러오기 성공:", data);
+            memoId =data[0].memoId;
+            console.log("메모 id", memoId);
             // 메모를 화면의 textarea에 표시
             document.getElementById("memo").value = data[0]?.memoContent || ''; // 첫 번째 메모 표시
         })
@@ -346,12 +348,11 @@ function loadMemo(plannerId) {
         });
 }
 
-// 메모 저장하기 함수
-function saveMemo(plannerId, memoContent) {
-    console.log("메모 저장 요청: plannerId =", plannerId, "memoContent =", memoContent);
+function updateMemo(memoId, memoContent) {
+    console.log("메모 수정 요청: memoId =", memoId, "memoContent =", memoContent);
 
-    if (!plannerId) {
-        alert("plannerId가 설정되지 않았습니다!");
+    if (!memoId) {
+        alert("메모 ID가 설정되지 않았습니다!");
         return;
     }
 
@@ -361,13 +362,11 @@ function saveMemo(plannerId, memoContent) {
     }
 
     const memoData = {
-        memoContent: memoContent,
-        plannerId: plannerId,
-        writeDate: new Date().toISOString().split('T')[0] // 오늘 날짜
+        memoContent: memoContent
     };
 
-    fetch('/memos/${memoId}', {
-        method: 'POST',
+    fetch(`/memos/${memoId}`, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -375,19 +374,20 @@ function saveMemo(plannerId, memoContent) {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`메모 저장 실패: ${response.status}`);
+                throw new Error(`메모 수정 실패: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log("메모 저장 성공:", data);
-            alert("메모가 성공적으로 저장되었습니다!");
+            console.log("메모 수정 성공:", data);
+            alert("메모가 성공적으로 수정되었습니다!");
         })
         .catch(error => {
-            console.error("메모 저장 실패:", error.message);
-            alert("메모 저장에 실패했습니다.");
+            console.error("메모 수정 실패:", error.message);
+            alert("메모 수정에 실패했습니다.");
         });
 }
+
 
 // 초기 로드 및 이벤트 핸들러 설정
 document.addEventListener("DOMContentLoaded", () => {
@@ -399,7 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (saveMemoBtn) {
         saveMemoBtn.addEventListener("click", () => {
             const memoContent = document.getElementById("memo").value;
-            saveMemo(plannerId, memoContent);
+            updateMemo(memoId, memoContent);
         });
     } else {
         console.error("저장 버튼(saveMemoBtn)을 찾을 수 없습니다!");
