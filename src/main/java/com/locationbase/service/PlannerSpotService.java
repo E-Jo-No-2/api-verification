@@ -1,6 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.domain.repository.PlannerSpotRepository;
+import com.locationbase.Domain.repository.PlannerSpotRepository;
 import com.locationbase.entity.PlannerSpotEntity;
 import org.springframework.stereotype.Service;
 

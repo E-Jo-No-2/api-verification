@@ -1,6 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.domain.repository.WeatherRepository;
+import com.locationbase.Domain.repository.WeatherRepository;
 import com.locationbase.entity.WeatherEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
