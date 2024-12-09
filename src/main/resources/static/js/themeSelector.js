@@ -190,32 +190,30 @@ function selectLocation(name, lng, lat) {
             console.log("[출력] 서버 응답 상태 코드:", response.status);
 
             if (response.status === 409) { // HTTP 409: Conflict (중복 데이터)
-                return response.text().then(message => {
-                    console.warn("[경고] 중복 데이터:", message);
-                    alert(message); // 사용자에게 오류 메시지 표시
-                    return message; // 반환된 메시지 처리
+                return response.json().then(data => {
+                    alert(data.message); // 사용자에게 오류 메시지 표시
+                    throw new Error(data.message); // 이후 then 블록이 실행되지 않도록 예외 발생
                 });
             }
 
             if (!response.ok) { // 기타 오류 처리
-                throw new Error(`HTTP error! 상태 코드: ${response.status}`);
+                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
             }
 
             return response.json(); // 성공 시 JSON 데이터를 반환
         })
         .then(data => {
-            if (typeof data === 'string') {
-                // 중복 데이터 메시지 출력
-                console.log("[서버 메시지]:", data);
-            } else {
-                // 저장 성공 메시지 출력
-                console.log("[서버 응답 본문]:", data);
-            }
+            console.log("[서버 응답 본문]:", data);
+            alert("장소가 성공적으로 저장되었습니다!");
         })
-        .catch(error => console.error("[오류] 서버 호출 실패:", error));
+        .catch(error => {
+            console.error("[오류] 서버 호출 실패:", error);
+            // 중복 데이터 메시지는 이미 표시되었으므로 기타 오류만 처리
+            if (error.message !== "장소가 이미 존재합니다!") {
+                alert("서버 호출 중 오류가 발생했습니다.");
+            }
+        });
 }
-
-
 
 // 길찾기 처리 함수
 function findRoute(lng, lat) {
