@@ -19,8 +19,6 @@ public class LandmarkController {
     // /landmark 요청이 들어오면 SelectLandmark.html 반환
     @GetMapping("/landmark")
     public String showSelectLandmark(@RequestParam("plannerId") int plannerId, @RequestParam("userId") String userId) {
-        // Planner 테이블 업데이트
-
 
         // Service를 호출하여 비즈니스 로직 수행 (필요 시)
         System.out.println("Planner ID: " + plannerId); // 디버깅용 로그
