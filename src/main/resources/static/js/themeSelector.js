@@ -89,7 +89,7 @@ function transformLocations(data) {
         if (Array.isArray(themeData)) {
             console.log(`테마 처리 중: ${theme}, 위치 수: ${themeData.length}`);
             themeData.forEach(location => {
-                if (location.longitude && location.latitude) {
+                if (location.longitude && location.latitude && location.landmarkName) { // landmarkName 검증 추가
                     transformed.push({
                         x: parseFloat(location.longitude), // 경도
                         y: parseFloat(location.latitude), // 위도
@@ -99,7 +99,7 @@ function transformLocations(data) {
                         theme: theme
                     });
                 } else {
-                    console.warn(`유효하지 않은 좌표를 가진 위치 건너뜀: ${JSON.stringify(location)}`);
+                    console.warn(`유효하지 않은 좌표 또는 이름을 가진 위치 건너뜀: ${JSON.stringify(location)}`);
                 }
             });
         } else {
@@ -117,44 +117,48 @@ function addMarkers(filteredLocations) {
     markers = []; // 마커 배열 초기화
 
     filteredLocations.forEach(location => {
-        console.log(`마커 추가 중 - 위도: ${location.y}, 경도: ${location.x}, 위치: ${location.location}`);
-        const marker = new naver.maps.Marker({
-            position: new naver.maps.LatLng(location.y, location.x),
-            map: map,
-            title: location.location
-        });
+        if (location.location !== undefined && location.location !== "") { // location 검증 추가
+            console.log(`마커 추가 중 - 위도: ${location.y}, 경도: ${location.x}, 위치: ${location.location}`);
+            const marker = new naver.maps.Marker({
+                position: new naver.maps.LatLng(location.y, location.x),
+                map: map,
+                title: location.location
+            });
 
-        // InfoWindow 생성
-        const infoWindow = new naver.maps.InfoWindow({
-            content: `
-                <div style="padding:10px;min-width:250px;line-height:1.5;">
-                    <h4 style="margin:0;">${location.location}</h4>
-                    <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
-                    <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
-                    <hr style="margin:10px 0;">
-                    <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})" 
-                            style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
-                    <button onclick="findRoute(${location.x}, ${location.y})" 
-                            style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
-                </div>
-            `,
-            borderWidth: 1,
-            disableAnchor: false
-        });
+            // InfoWindow 생성
+            const infoWindow = new naver.maps.InfoWindow({
+                content: `
+                    <div style="padding:10px;min-width:250px;line-height:1.5;">
+                        <h4 style="margin:0;">${location.location}</h4>
+                        <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
+                        <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
+                        <hr style="margin:10px 0;">
+                        <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})" 
+                                style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
+                        <button onclick="findRoute(${location.x}, ${location.y})" 
+                                style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
+                    </div>
+                `,
+                borderWidth: 1,
+                disableAnchor: false
+            });
 
-        // 마커 클릭 이벤트
-        naver.maps.Event.addListener(marker, 'click', () => {
-            console.log("마커 클릭됨:", location.location);
+            // 마커 클릭 이벤트
+            naver.maps.Event.addListener(marker, 'click', () => {
+                console.log("마커 클릭됨:", location.location);
 
-            // InfoWindow가 열려 있다면 닫고, 아니면 열기
-            if (infoWindow.getMap()) {
-                infoWindow.close();
-            } else {
-                infoWindow.open(map, marker);
-            }
-        });
+                // InfoWindow가 열려 있다면 닫고, 아니면 열기
+                if (infoWindow.getMap()) {
+                    infoWindow.close();
+                } else {
+                    infoWindow.open(map, marker);
+                }
+            });
 
-        markers.push(marker);
+            markers.push(marker);
+        } else {
+            console.warn(`유효하지 않은 위치를 가진 마커 건너뜀: ${location}`);
+        }
     });
 
     console.log("마커 추가 완료:", markers);
