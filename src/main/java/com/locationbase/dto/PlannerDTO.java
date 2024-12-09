@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class PlannerDTO {
-    private int planner_id;
-    private String user_id; // 외래 키를 참조
-    private Date date;
+    private int plannerId;  // 플래너의 고유 ID (Primary Key)
+    private String userId;  // 관련된 사용자의 ID (Foreign Key)
+    private Date date;      // 플래너의 날짜
 }

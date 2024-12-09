@@ -4,10 +4,9 @@ import lombok.Data;
 
 @Data
 public class Planner_SpotDTO {
-    private int plannerSpotId;
-    private int planner;
-    private String spotName;
-    private int visitOrder;
-    private int routeId;
-
+    private int plannerSpotId;  // 플래너 스팟의 고유 ID (Primary Key)
+    private int plannerId;      // 관련된 플래너의 ID (Foreign Key)
+    private String spotName;    // 스팟의 이름
+    private int visitOrder;     // 방문 순서
+    private int routeId;        // 관련된 경로의 ID (Foreign Key)
 }

@@ -42,7 +42,7 @@ public class PlannerService {
         logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
 
         // 사용자 ID로 UserEntity 조회 (findByUserId 사용)
-        UserEntity user = (UserEntity) userRepository.findByUserId(userId)
+        UserEntity user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. 사용자 ID: " + userId));
 
         logger.debug("사용자 확인 완료: {}", user);
@@ -52,7 +52,7 @@ public class PlannerService {
         logger.debug("현재 날짜: {}", currentDate);
 
         PlannerEntity planner = new PlannerEntity();
-        planner.setUserId(user);  // UserEntity 설정
+        planner.setUser(user);  // UserEntity 설정
         planner.setDate(currentDate);  // 날짜 설정
 
         plannerRepository.save(planner);  // 저장
@@ -69,7 +69,7 @@ public class PlannerService {
 
         logger.debug("Planner 확인 완료. Planner ID: {}, 사용자 ID: {}", plannerId, userId);
 
-        if (!planner.getUserId().getUserId().equals(userId)) {
+        if (!planner.getUser().getUserId().equals(userId)) {
             logger.error("사용자 ID가 Planner와 일치하지 않습니다. 사용자 ID: {}, Planner ID: {}", userId, plannerId);
             throw new RuntimeException("사용자 ID가 Planner와 일치하지 않습니다.");
         }

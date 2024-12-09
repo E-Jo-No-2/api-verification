@@ -1,16 +1,13 @@
 package com.locationbase.service;
 
-import com.locationbase.dto.LandMarkDTO;
+import com.locationbase.dto.LandmarkDTO;
 import com.locationbase.client.TourApiClient;
 import com.locationbase.domain.repository.PlannerSpotRepository;
-import com.locationbase.entity.PlannerEntity;
-import com.locationbase.entity.PlannerSpotEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -34,7 +31,7 @@ public class TourApiService {
      * @param longitude 경도
      * @return 테마별로 그룹화된 관광지 목록
      */
-    public Map<String, List<LandMarkDTO>> getNearbySpotsByTheme(String longitude, String latitude) {
+    public Map<String, List<LandmarkDTO>> getNearbySpotsByTheme(String longitude, String latitude) {
         logger.info("주변 관광지 조회 시작: 경도={}, 위도={}", longitude, latitude);
 
         JSONObject response = tourApiClient.NearbyTourSpots(longitude, latitude);
@@ -57,10 +54,10 @@ public class TourApiService {
         }
 
         logger.info("Tour API 응답 수신 성공");
-        List<LandMarkDTO> spots = parseSpots(response);
+        List<LandmarkDTO> spots = parseSpots(response);
         logger.info("응답 데이터에서 {}개의 관광지를 파싱 완료", spots.size());
 
-        Map<String, List<LandMarkDTO>> groupedSpots = groupSpotsByTheme(spots);
+        Map<String, List<LandmarkDTO>> groupedSpots = groupSpotsByTheme(spots);
         logger.info("관광지를 {}개의 테마로 그룹화 완료", groupedSpots.size());
 
         return groupedSpots;
@@ -71,8 +68,8 @@ public class TourApiService {
      * @param response Tour API 응답 JSON 객체
      * @return 파싱된 관광지 목록
      */
-    private List<LandMarkDTO> parseSpots(JSONObject response) {
-        List<LandMarkDTO> spots = new ArrayList<>();
+    private List<LandmarkDTO> parseSpots(JSONObject response) {
+        List<LandmarkDTO> spots = new ArrayList<>();
         try {
             // "response" 키 검증
             if (!response.has("response")) {
@@ -105,8 +102,8 @@ public class TourApiService {
                 System.out.println("파싱된 아이템: " + item.toString(2));
 
                 // 관광지 데이터 파싱
-                LandMarkDTO spot = new LandMarkDTO();
-                spot.setLandmark_name(item.optString("title"));
+                LandmarkDTO spot = new LandmarkDTO();
+                spot.setLandmarkName(item.optString("title"));
                 spot.setLongitude(item.optString("mapx"));
                 spot.setLatitude(item.optString("mapy"));
                 spot.setCat1(item.optString("cat1"));
@@ -130,10 +127,10 @@ public class TourApiService {
      * @param spots 파싱된 관광지 목록
      * @return 테마별 그룹화된 관광지 맵
      */
-    private Map<String, List<LandMarkDTO>> groupSpotsByTheme(List<LandMarkDTO> spots) {
-        Map<String, List<LandMarkDTO>> groupedSpots = new HashMap<>();
+    private Map<String, List<LandmarkDTO>> groupSpotsByTheme(List<LandmarkDTO> spots) {
+        Map<String, List<LandmarkDTO>> groupedSpots = new HashMap<>();
 
-        for (LandMarkDTO spot : spots) {
+        for (LandmarkDTO spot : spots) {
             String theme = determineTheme(spot.getCat1());
             groupedSpots.computeIfAbsent(theme, k -> new ArrayList<>()).add(spot);
         }
