@@ -226,7 +226,6 @@ function addToTourList(locationName) {
     console.log("관광지 리스트에 추가 중:", locationName);
     const tourList = document.getElementById("tourList");
 
-    // 중복 확인
     const existingItem = Array.from(tourList.children).find(
         item => item.querySelector(".tour-item").textContent.includes(locationName)
     );
@@ -240,7 +239,6 @@ function addToTourList(locationName) {
     textSpan.textContent = `${tourList.children.length + 1}. ${locationName}`;
     textSpan.className = "tour-item";
 
-    // 수정 버튼
     const editBtn = document.createElement("button");
     editBtn.textContent = "수정";
     editBtn.className = "edit-btn";
@@ -252,14 +250,14 @@ function addToTourList(locationName) {
         }
     };
 
-    // 삭제 버튼
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "삭제";
     deleteBtn.className = "delete-btn";
     deleteBtn.onclick = () => {
-        console.log("관광지가 리스트에서 제거되었습니다:", locationName);
-        tourList.removeChild(listItem);
-        updateTourListNumbers();
+        const placeId = parseInt(prompt("삭제할 장소의 ID를 입력하세요:"));
+        if (placeId) {
+            deletePlace(placeId, listItem);
+        }
     };
 
     listItem.appendChild(textSpan);
@@ -426,3 +424,32 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("저장 버튼(saveMemoBtn)을 찾을 수 없습니다!");
     }
 });
+
+// 삭제 버튼 클릭 이벤트 추가 함수
+function deletePlace(id, listItem) {
+    console.log("[입력] 삭제 버튼 클릭됨: ID =", id);
+
+    fetch(`/api/places/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("[서버 응답 본문]:", data);
+            alert(data.message);
+            listItem.remove(); // 리스트 항목 삭제
+            updateTourListNumbers(); // 리스트 번호 업데이트
+        })
+        .catch(error => {
+            console.error("[오류] 서버 호출 실패:", error);
+            alert("장소 삭제 중 오류가 발생했습니다.");
+        });
+}
+

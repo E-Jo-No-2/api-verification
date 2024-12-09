@@ -26,4 +26,9 @@ public class PlacesService {
         placesRepository.save(place);
         return "Place saved successfully!";
     }
+
+    // 장소 삭제 메서드 추가
+    public void deletePlace(int id) {
+        placesRepository.deleteById(id);
+    }
 }

@@ -3,7 +3,6 @@ package com.locationbase.controller;
 import com.locationbase.entity.PlacesEntity;
 import com.locationbase.service.PlacesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,14 +27,20 @@ public class PlacesController {
 
             // 성공적으로 저장된 경우 HTTP 상태 코드 200 반환
             return ResponseEntity.ok("{\"message\":\"장소가 성공적으로 저장되었습니다!\"}");
-        } catch (DataIntegrityViolationException e) {
-            // 데이터 중복 또는 무결성 관련 예외 처리
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("{\"message\":\"중복된 장소입니다. 이미 저장된 장소입니다.\"}");
         } catch (Exception e) {
-            // 기타 알 수 없는 예외 처리
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"message\":\"알 수 없는 오류가 발생했습니다.\"}");
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deletePlace(@PathVariable int id) {
+        try {
+            placesService.deletePlace(id);
+            return ResponseEntity.ok("{\"message\":\"장소가 성공적으로 삭제되었습니다!\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\":\"장소 삭제 중 오류가 발생했습니다.\"}");
         }
     }
 }
