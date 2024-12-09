@@ -1,4 +1,4 @@
-package com.locationbase.domain.repository;
+package com.locationbase.Domain.repository;
 
 import com.locationbase.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,8 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String> {
+    Optional<Object> findByUserId(String userId);
 
-
-    // 사용자의 아이디로 조회 (기본 제공 메소드)
-    Optional<UserEntity> findById(String userId); // 변수명을 userId로 변경
 }

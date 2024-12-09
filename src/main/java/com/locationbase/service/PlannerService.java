@@ -134,9 +134,6 @@ public class PlannerService {
         logger.debug("Planner 완료 처리 성공. Planner ID: {}", plannerId);
     }
 
-
-
-
     // userId에 해당하는 플래너 목록 조회
     public List<PlannerEntity> getPlannerListByUser(String userId) {
         // UserEntity 조회

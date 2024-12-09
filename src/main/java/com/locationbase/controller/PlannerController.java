@@ -52,20 +52,21 @@ public class PlannerController {
 
 
     @PutMapping("/update")
-    public String updatePlanner(@RequestParam int plannerId,
-                                @RequestParam String userId,
-                                @RequestParam LocalDate newDate) {
+    public ResponseEntity<String> updatePlanner(@RequestParam int plannerId,
+                                                @RequestParam String userId,
+                                                @RequestParam LocalDate newDate) {
         logger.info("Planner 업데이트 요청. Planner ID: {}, User ID: {}, 새 날짜: {}", plannerId, userId, newDate);
 
         try {
             plannerService.updatePlanner(plannerId, userId, newDate);
             logger.info("Planner 업데이트 성공. Planner ID: {}", plannerId);
-            return "Planner 업데이트 성공";
+            return ResponseEntity.ok("Planner 업데이트 성공");
         } catch (RuntimeException e) {
             logger.error("Planner 업데이트 중 오류 발생. 오류 메시지: {}", e.getMessage());
-            return "Planner 업데이트 실패: " + e.getMessage();
+            return ResponseEntity.status(500).body("Planner 업데이트 실패: " + e.getMessage());
         }
     }
+
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deletePlanner(@RequestParam int plannerId) {
@@ -122,8 +123,6 @@ public class PlannerController {
         private int plannerId;
         private String userId;
 
-
-
         @JsonCreator
         public PlannerCompletionRequest(@JsonProperty("plannerId") int plannerId,
                                         @JsonProperty("userId") String userId) {
@@ -136,11 +135,9 @@ public class PlannerController {
             return plannerId;
         }
 
-
         public String getUserId() {
             return userId;
         }
-
     }
 
 }

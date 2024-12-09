@@ -13,5 +13,7 @@ public class RouteDTO {
     private Integer taxi_fare; // int형은 기본값이 0이므로, Integer로 nullable 설정
     private String distance;
     private Integer estimated_time; // int형은 기본값이 0이므로, Integer로 nullable 설정
-    private Integer planner_id; // Planner의 ID를 참조, nullable
+    private Integer plannerId; // Planner의 ID를 참조, nullable
+
+
 }
