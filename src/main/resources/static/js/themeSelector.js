@@ -167,9 +167,9 @@ function selectLocation(name, lng, lat) {
 
     // 서버로 데이터 전송
     const routeData = {
-        lat: lat, // 위도를 숫자로 변환
-        lng: lng,
-        name: name // 장소 이름을 theme_name으로 저장
+        lat: lat, // 위도
+        lng: lng, // 경도
+        name: name // 장소 이름
     };
 
     console.log("[출력] 서버로 데이터 전송 중:", routeData);
@@ -183,16 +183,35 @@ function selectLocation(name, lng, lat) {
     })
         .then(response => {
             console.log("[응답] 서버로부터 응답 받음:", response);
-            console.log("[출력] 서버 응답 상태 텍스트:", response.statusText);
-            if (!response.ok) {
+            console.log("[출력] 서버 응답 상태 코드:", response.status);
+
+            if (response.status === 409) { // HTTP 409: Conflict (중복 데이터)
+                return response.text().then(message => {
+                    console.warn("[경고] 중복 데이터:", message);
+                    alert(message); // 사용자에게 오류 메시지 표시
+                    return message; // 반환된 메시지 처리
+                });
+            }
+
+            if (!response.ok) { // 기타 오류 처리
                 throw new Error(`HTTP error! 상태 코드: ${response.status}`);
             }
 
-            return response.json();
+            return response.json(); // 성공 시 JSON 데이터를 반환
         })
-        .then(data => console.log("[서버 응답 본문]:", data))
+        .then(data => {
+            if (typeof data === 'string') {
+                // 중복 데이터 메시지 출력
+                console.log("[서버 메시지]:", data);
+            } else {
+                // 저장 성공 메시지 출력
+                console.log("[서버 응답 본문]:", data);
+            }
+        })
         .catch(error => console.error("[오류] 서버 호출 실패:", error));
 }
+
+
 
 // 길찾기 처리 함수
 function findRoute(lng, lat) {
