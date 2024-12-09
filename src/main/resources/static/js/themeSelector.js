@@ -93,8 +93,8 @@ function transformLocations(data) {
                     transformed.push({
                         x: parseFloat(location.longitude), // 경도
                         y: parseFloat(location.latitude), // 위도
-                        location: location.landmark_name || location.title,
-                        distance: location.Distance,
+                        location: location.landmarkName || location.title,
+                        distance: location.distance,
                         image: location.image,
                         theme: theme
                     });
@@ -289,7 +289,7 @@ window.addEventListener("click", event => {
         console.log("외부 클릭으로 인해 드롭다운 메뉴 닫기.");
         document.getElementById("dropdownMenu").style.display = "none";
     }
-});
+}, { passive: true });
 
 // 뒤로가기 버튼 클릭 이벤트 추가
 const backButton = document.getElementById('backBtnBelow');
