@@ -6,7 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LandmarkRepository extends JpaRepository<LandmarkEntity, Integer> {
-
-
-
 }
