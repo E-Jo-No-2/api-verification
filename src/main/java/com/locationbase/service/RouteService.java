@@ -1,6 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.domain.repository.PlaceRepository;
+import com.locationbase.domain.repository.PlacesRepository;
 import com.locationbase.domain.repository.RouteRepository;
 import com.locationbase.dto.RouteDTO;
 import com.locationbase.entity.PlacesEntity;
@@ -11,21 +11,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RouteService {
     private final RouteRepository routeRepository;
-    private final PlaceRepository placeRepository;
+    private final PlacesRepository placesRepository;
 
-    public RouteService(RouteRepository routeRepository, PlaceRepository placeRepository) {
+    public RouteService(RouteRepository routeRepository, PlacesRepository placesRepository) {
         this.routeRepository = routeRepository;
-        this.placeRepository = placeRepository;
+        this.placesRepository = placesRepository;
     }
 
     @Transactional
     public void saveRoute(RouteDTO routeDTO) {
         System.out.println("[INPUT] Service received RouteDTO: " + routeDTO);
 
-        PlacesEntity startPlace = placeRepository.findById(routeDTO.getStartPoint())
+        PlacesEntity startPlace = placesRepository.findById(routeDTO.getStartPoint())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid start point ID: " + routeDTO.getStartPoint()));
         PlacesEntity endPlace = routeDTO.getEndPoint() != null ?
-                placeRepository.findById(routeDTO.getEndPoint())
+                placesRepository.findById(routeDTO.getEndPoint())
                         .orElse(null) : null;
 
         RouteEntity route = new RouteEntity();
