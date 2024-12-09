@@ -10,5 +10,5 @@ public class PlacesDTO {
     private String lat;
     private String lng;
     private String name;
-    private Integer planner_id; // 외래 키는 nullable
+
 }

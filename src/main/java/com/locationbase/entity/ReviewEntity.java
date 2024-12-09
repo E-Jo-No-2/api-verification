@@ -9,36 +9,35 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "Review",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "spot_id"})})
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "place_id"})})
 @NoArgsConstructor
 public class ReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    private int review_id; // Primary Key
+    private int reviewId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // Foreign Key to User
-    private UserEntity user_id; // Reference to UserEntity
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
-    @Column(name = "rating", length = 5)
-    private String rating; // Rating stored as String
+    @ManyToOne
+    @JoinColumn(name = "place_id", nullable = false)
+    private PlacesEntity place;
+
+    @Column(name = "rating", precision = 2, scale = 1)
+    private Double rating;
 
     @Column(name = "comment", columnDefinition = "TEXT")
-    private String comment; // Review comment
+    private String comment;
 
     @Column(name = "creat_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime create_time; // Timestamp when the review was created
+    private LocalDateTime createTime;
 
     @Column(name = "longitude", nullable = false, length = 20)
-    private String longitude; // Longitude of the review spot
+    private String lng;
 
     @Column(name = "latitude", nullable = false, length = 20)
-    private String latitude; // Latitude of the review spot
-
-    @Column(name = "spot_name", nullable = false, length = 50)
-    private String spot_name; // Name of the reviewed spot
-
-
+    private String lat;
 }
