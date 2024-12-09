@@ -93,8 +93,8 @@ function transformLocations(data) {
                     transformed.push({
                         x: parseFloat(location.longitude), // 경도
                         y: parseFloat(location.latitude), // 위도
-                        location: location.landmark_name || location.title,
-                        distance: location.Distance,
+                        location: location.landmarkName || location.title,
+                        distance: location.distance,
                         image: location.image,
                         theme: theme
                     });
@@ -308,7 +308,7 @@ window.addEventListener("click", event => {
         console.log("외부 클릭으로 인해 드롭다운 메뉴 닫기.");
         document.getElementById("dropdownMenu").style.display = "none";
     }
-});
+}, { passive: true });
 
 // 뒤로가기 버튼 클릭 이벤트 추가
 const backButton = document.getElementById('backBtnBelow');
@@ -356,8 +356,8 @@ function loadMemo(plannerId) {
         })
         .then(data => {
             console.log("메모 불러오기 성공:", data);
-            memoId =data[0].memoId;
-            console.log("메모 id", memoId);
+            memoId = data[0].memoId;
+            console.log("메모 ID", memoId);
             // 메모를 화면의 textarea에 표시
             document.getElementById("memo").value = data[0]?.memoContent || ''; // 첫 번째 메모 표시
         })
@@ -367,6 +367,7 @@ function loadMemo(plannerId) {
         });
 }
 
+// 메모 업데이트 함수
 function updateMemo(memoId, memoContent) {
     console.log("메모 수정 요청: memoId =", memoId, "memoContent =", memoContent);
 
@@ -406,7 +407,6 @@ function updateMemo(memoId, memoContent) {
             alert("메모 수정에 실패했습니다.");
         });
 }
-
 
 // 초기 로드 및 이벤트 핸들러 설정
 document.addEventListener("DOMContentLoaded", () => {

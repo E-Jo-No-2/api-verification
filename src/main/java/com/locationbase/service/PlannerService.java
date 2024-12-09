@@ -42,7 +42,7 @@ public class PlannerService {
         logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
 
         // 사용자 ID로 UserEntity 조회 (findByUserId 사용)
-        UserEntity user = (UserEntity) userRepository.findByUserId(userId)
+        UserEntity user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. 사용자 ID: " + userId));
 
         logger.debug("사용자 확인 완료: {}", user);
