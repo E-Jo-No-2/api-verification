@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PlacesDTO {
-    private int place_id;
-    private String lat;
-    private String lng;
-    private String name;
-    private Integer planner_id; // 외래 키는 nullable
+    private int place_id;       // 장소의 고유 ID (Primary Key)
+    private String lat;         // 장소의 위도
+    private String lng;         // 장소의 경도
+    private String name;        // 장소의 이름
+    private Integer planner_id; // 관련된 플래너의 ID (Foreign Key, nullable)
 }

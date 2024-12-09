@@ -22,18 +22,18 @@ public class RouteService {
     public void saveRoute(RouteDTO routeDTO) {
         System.out.println("[INPUT] Service received RouteDTO: " + routeDTO);
 
-        PlacesEntity startPlace = placeRepository.findById(routeDTO.getStart_point())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid start point ID: " + routeDTO.getStart_point()));
-        PlacesEntity endPlace = routeDTO.getEnd_point() != null ?
-                placeRepository.findById(routeDTO.getEnd_point())
+        PlacesEntity startPlace = placeRepository.findById(routeDTO.getStartPoint())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid start point ID: " + routeDTO.getStartPoint()));
+        PlacesEntity endPlace = routeDTO.getEndPoint() != null ?
+                placeRepository.findById(routeDTO.getEndPoint())
                         .orElse(null) : null;
 
         RouteEntity route = new RouteEntity();
         route.setStart_point(startPlace);
         route.setEnd_point(endPlace);
-        route.setThemeName(routeDTO.getTheme_name());
-        route.setTaxi_fare(routeDTO.getTaxi_fare());
-        route.setEstimated_time(routeDTO.getEstimated_time());
+        route.setThemeName(routeDTO.getThemeName());
+        route.setTaxi_fare(routeDTO.getTaxiFare());
+        route.setEstimated_time(routeDTO.getEstimatedTime());
         route.setDistance(routeDTO.getDistance());
 
         System.out.println("[OUTPUT] Saving RouteEntity: " + route);
