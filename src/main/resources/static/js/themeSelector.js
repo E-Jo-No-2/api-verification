@@ -337,8 +337,8 @@ function loadMemo(plannerId) {
         })
         .then(data => {
             console.log("메모 불러오기 성공:", data);
-            memoId =data[0].memoId;
-            console.log("메모 id", memoId);
+            memoId = data[0].memoId;
+            console.log("메모 ID", memoId);
             // 메모를 화면의 textarea에 표시
             document.getElementById("memo").value = data[0]?.memoContent || ''; // 첫 번째 메모 표시
         })
@@ -348,6 +348,7 @@ function loadMemo(plannerId) {
         });
 }
 
+// 메모 업데이트 함수
 function updateMemo(memoId, memoContent) {
     console.log("메모 수정 요청: memoId =", memoId, "memoContent =", memoContent);
 
@@ -387,7 +388,6 @@ function updateMemo(memoId, memoContent) {
             alert("메모 수정에 실패했습니다.");
         });
 }
-
 
 // 초기 로드 및 이벤트 핸들러 설정
 document.addEventListener("DOMContentLoaded", () => {
