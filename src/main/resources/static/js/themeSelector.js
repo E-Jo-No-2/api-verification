@@ -95,7 +95,7 @@ function transformLocations(data) {
                         y: parseFloat(location.latitude), // 위도
                         location: location.landmarkName || location.title,
                         distance: location.distance,
-                        image: location.image,
+                        image: location.image || '', // image 검증 추가
                         theme: theme
                     });
                 } else {
@@ -117,7 +117,7 @@ function addMarkers(filteredLocations) {
     markers = []; // 마커 배열 초기화
 
     filteredLocations.forEach(location => {
-        if (location.location !== undefined && location.location !== "") { // location 검증 추가
+        if (location.location && location.location !== "") { // location 검증 추가
             console.log(`마커 추가 중 - 위도: ${location.y}, 경도: ${location.x}, 위치: ${location.location}`);
             const marker = new naver.maps.Marker({
                 position: new naver.maps.LatLng(location.y, location.x),
@@ -133,9 +133,9 @@ function addMarkers(filteredLocations) {
                         <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
                         <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
                         <hr style="margin:10px 0;">
-                        <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})" 
+                        <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})"
                                 style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
-                        <button onclick="findRoute(${location.x}, ${location.y})" 
+                        <button onclick="findRoute(${location.x}, ${location.y})"
                                 style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
                     </div>
                 `,
