@@ -19,8 +19,11 @@ public class PlannerEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    private UserEntity userId;  // UserEntity와 관계 설정
+    private UserEntity user;  // UserEntity와 관계 설정
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
+
+    @Column(name = "completed", nullable = false)
+    private boolean completed; // 추가된 필드
 }

@@ -23,10 +23,19 @@ public class PlannerSpotEntity {
     private String spot_name;
 
     @Column(name = "visit_order", nullable = true)
-    private int visitOrder;
+    private Integer visitOrder;
 
-    @Column(name = "route_id", nullable = true)
-    private int route_id;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "route_id", referencedColumnName = "route_id", nullable = true)
+    private RouteEntity route;
 
-    // `latitude`와 `longitude` 필드를 제거합니다.
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "place_id", referencedColumnName = "place_id", nullable = true)
+    private PlacesEntity place;
+
+    @Column(name = "latitude", nullable = false)
+    private double latitude;
+
+    @Column(name = "longitude", nullable = false)
+    private double longitude;
 }

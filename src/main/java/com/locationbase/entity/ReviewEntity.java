@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "Review",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "spot_id"})})
+@Table(name = "review",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "place_id"})})
 @NoArgsConstructor
 public class ReviewEntity {
 
@@ -21,6 +21,10 @@ public class ReviewEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false) // Foreign Key to User
     private UserEntity user_id; // Reference to UserEntity
+
+    @ManyToOne
+    @JoinColumn(name = "place_id", nullable = false) // Foreign Key to Place
+    private PlacesEntity place_id; // Reference to PlacesEntity
 
     @Column(name = "rating", length = 5)
     private String rating; // Rating stored as String
@@ -39,6 +43,4 @@ public class ReviewEntity {
 
     @Column(name = "spot_name", nullable = false, length = 50)
     private String spot_name; // Name of the reviewed spot
-
-
 }
