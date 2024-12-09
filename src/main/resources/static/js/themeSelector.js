@@ -286,6 +286,34 @@ function filterByTheme(theme) {
     addMarkers(filteredLocations);
 }
 
+// 삭제 버튼 클릭 이벤트 추가 함수
+function deletePlace(id, listItem) {
+    console.log("[입력] 삭제 버튼 클릭됨: ID =", id);
+
+    fetch(`/api/places/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("[서버 응답 본문]:", data);
+            alert(data.message);
+            listItem.remove(); // 리스트 항목 삭제
+            updateTourListNumbers(); // 리스트 번호 업데이트
+        })
+        .catch(error => {
+            console.error("[오류] 서버 호출 실패:", error);
+            alert("장소 삭제 중 오류가 발생했습니다.");
+        });
+}
+
 // 드롭다운 토글 함수
 function toggleDropdown() {
     console.log("드롭다운 메뉴를 토글 중...");
@@ -424,32 +452,3 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("저장 버튼(saveMemoBtn)을 찾을 수 없습니다!");
     }
 });
-
-// 삭제 버튼 클릭 이벤트 추가 함수
-function deletePlace(id, listItem) {
-    console.log("[입력] 삭제 버튼 클릭됨: ID =", id);
-
-    fetch(`/api/places/delete/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("[서버 응답 본문]:", data);
-            alert(data.message);
-            listItem.remove(); // 리스트 항목 삭제
-            updateTourListNumbers(); // 리스트 번호 업데이트
-        })
-        .catch(error => {
-            console.error("[오류] 서버 호출 실패:", error);
-            alert("장소 삭제 중 오류가 발생했습니다.");
-        });
-}
-
