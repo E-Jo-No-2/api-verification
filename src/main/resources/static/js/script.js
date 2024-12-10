@@ -43,8 +43,29 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 });
 
+//document.addEventListener("DOMContentLoaded", function () {
+    const plannerCardContainer = document.getElementById("plannerCardContainer");
+    // 서버에서 플래너 목록을 받아옵니다.
+    fetch("/api/planner/list?userId=testuser")  // userId는 실제 값으로 변경
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("플래너 목록을 불러오는 데 실패했습니다.");
+            }
+            return response.json();
+        })
+        .then((planners) => {
+            console.log("플래너 목록:", planners);
+            planners.forEach((planner) => {
+                addPlannerCard(planner);
+            });
+        })
+        .catch((error) => {
+            console.error("플래너 목록 불러오기 오류:", error);
+        });
+//});
+
 // 카드 컨테이너
-const plannerCardContainer = document.getElementById("plannerCardContainer");
+
 
 // 카드 추가 함수
 function addPlannerCard(plannerData) {
@@ -53,18 +74,19 @@ function addPlannerCard(plannerData) {
     // 카드 생성
     const card = document.createElement("div");
     card.className = "planner-card";
-    card.dataset.id = plannerData.id;
+    card.dataset.id = plannerData.plannerId; // 정확한 ID 설정
 
     // 카드 내용
     card.innerHTML = `
-        <h3>${plannerData.title || `Tour ${plannerData.id}`}</h3>
-        <p>${plannerData.description || `작성일: ${plannerData.createdDate}`}</p>
-        <button onclick="viewPlanner(${plannerData.id})">보기</button>
+         <h3>Tour ${plannerData.plannerId}</h3>
+        <button onclick="viewPlanner(${plannerData.plannerId})">보기</button>
+        <button onclick="deletePlannerCard(${plannerData.plannerId})">삭제</button>
     `;
 
     // 카드 컨테이너에 추가
     plannerCardContainer.appendChild(card);
 }
+
 
 // 커스텀 이벤트 리스너 등록
 window.addEventListener("addPlannerCard", (event) => {
@@ -76,7 +98,48 @@ window.addEventListener("addPlannerCard", (event) => {
 function viewPlanner(plannerId) {
     alert(`플래너 ${plannerId}을(를) 엽니다.`);
     // 원하는 동작 구현
+    window.location.href = `/planner/view?plannerId=${plannerId}`;
 }
+
+// 플래너 카드 삭제
+function deletePlannerCard(plannerId) {
+    console.log(`플래너 카드 삭제 요청: ${plannerId}`);
+    if (!plannerId) {
+        console.error("plannerId가 유효하지 않습니다.");
+        return;
+    }
+
+    if (!confirm(`플래너 ${plannerId}을(를) 삭제하시겠습니까?`)) {
+        console.log("삭제 작업 취소");
+        return;
+    }
+
+    fetch(`/api/planner/delete?plannerId=${plannerId}`, {
+        method: "DELETE",
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("플래너 삭제 실패");
+            }
+            return response.text();
+        })
+        .then(() => {
+            // DOM에서 카드 삭제
+            const card = document.querySelector(`.planner-card[data-id="${plannerId}"]`);
+            if (card) {
+                card.remove();
+                console.log(`플래너 카드 ${plannerId} 삭제 성공`);
+                alert(`플래너 ${plannerId}이(가) 성공적으로 삭제되었습니다.`);
+            } else {
+                console.warn(`플래너 카드 ${plannerId}를 찾을 수 없습니다.`);
+            }
+        })
+        .catch(error => {
+            console.error("플래너 삭제 중 오류 발생:", error);
+            alert("플래너 삭제 실패");
+        });
+}
+
 
 // 플래너 추가 버튼 클릭 이벤트
 const newPlannerBtn = document.getElementById("new-planner-btn");

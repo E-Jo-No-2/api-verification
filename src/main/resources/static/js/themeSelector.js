@@ -299,7 +299,7 @@ backButton.addEventListener('click', function() {
     }
 });
 
-/*// 완료 버튼
+// 완료 버튼
 function completeTour() {
     console.log("완료 버튼 클릭됨.");
     alert("플래너 작성 완료를 하시겠습니까?");
@@ -316,51 +316,7 @@ const plannerId = 3;
 if (!plannerId) {
     alert("plannerId가 설정되지 않았습니다!");
     throw new Error("plannerId가 필요합니다.");
-}*/
-// 완료 버튼 이벤트 핸들러
-let plannerId = 3; // 전역 선언
-function completeTour() {
-    console.log("완료 버튼 클릭됨.");
-
-    if (!plannerId) {
-        alert("plannerId가 설정되지 않았습니다!");
-        return;
-    }
-
-    // 사용자 확인을 위한 알림
-    if (!confirm("플래너 작성 완료를 하시겠습니까?")) {
-        return;
-    }
-
-    // API 호출: 완료 처리
-    fetch('/api/planner/complete', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-       body: JSON.stringify({
-            plannerId: plannerId,
-            userId: 'testuser' // 실제 userId를 사용하세요
-
-        }),
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.text();
-            } else {
-                throw new Error('플래너 완료 처리에 실패했습니다.');
-            }
-        })
-        .then(message => {
-            alert(message);
-            console.log("플래너 완료 처리 성공:", message);
-        })
-        .catch(error => {
-            console.error("플래너 완료 처리 중 오류:", error);
-            alert("플래너 완료 처리에 실패했습니다.");
-        });
 }
-
 
 // 메모 불러오기 함수
 function loadMemo(plannerId) {
