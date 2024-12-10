@@ -24,7 +24,7 @@ public class ReviewEntity {
     @JoinColumn(name = "place_id", nullable = false)
     private PlacesEntity place;
 
-    @Column(name = "rating", precision = 2, scale = 1)
+    @Column(name = "rating", precision = 2)
     private Double rating;
 
     @Column(name = "comment", columnDefinition = "TEXT")

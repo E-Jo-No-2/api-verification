@@ -1,9 +1,11 @@
 package com.locationbase.service;
 
 import com.locationbase.domain.repository.ReviewRepository;
+import com.locationbase.dto.ReviewDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -17,12 +19,20 @@ public class ReviewService {
 
     // 장소별 평점 데이터 반환
     public Map<String, Object> getRatingByPlaceId(int placeId) {
-        Object[] result = reviewRepository.getAverageRatingByPlaceId(placeId);
+        List<ReviewDTO> reviews = reviewRepository.getReviewsByPlaceId(placeId);
 
-        // 결과를 Map으로 변환
+        // 평균 평점 및 리뷰 수 계산
+        double averageRating = reviews.stream()
+                .mapToDouble(ReviewDTO::getRating)
+                .average()
+                .orElse(0.0);
+        int reviewCount = reviews.size();
+
+        // 결과 데이터 구성
         Map<String, Object> ratingData = new HashMap<>();
-        ratingData.put("averageRating", result[0] != null ? ((Number) result[0]).doubleValue() : 0.0);
-        ratingData.put("reviewCount", result[1] != null ? ((Number) result[1]).intValue() : 0);
+        ratingData.put("averageRating", averageRating);
+        ratingData.put("reviewCount", reviewCount);
+        ratingData.put("reviews", reviews);
 
         return ratingData;
     }

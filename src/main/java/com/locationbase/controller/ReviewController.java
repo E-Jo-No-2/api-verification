@@ -23,17 +23,26 @@ public class ReviewController {
         this.placeRepository = placeRepository;
     }
 
-    // 특정 장소의 평점 데이터 반환
     @GetMapping("/rating")
-    public ResponseEntity<Map<String, Object>> getRatingByLandmarkName(@RequestParam String name) {
-        // 1. 장소 이름으로 placeId 조회
-        PlacesEntity place = (PlacesEntity) placeRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Place not found: " + name));
+    public ResponseEntity<Map<String, Object>> getRatingByLandmarkName(@RequestParam("name") String name) {
+        try {
+            // 1. 이름으로 placeId 조회
+            PlacesEntity place = placeRepository.findByName(name)
+                    .orElseThrow(() -> new RuntimeException("장소를 찾을 수 없습니다: " + name));
 
-        // 2. placeId를 통해 리뷰 데이터 조회 및 평점 계산
-        Map<String, Object> ratingData = reviewService.getRatingByPlaceId(place.getPlaceId());
-        ratingData.put("placeName", place.getName()); // 장소 이름 추가
+            // 2. placeId로 리뷰 데이터 조회
+            Map<String, Object> ratingData = reviewService.getRatingByPlaceId(place.getPlaceId());
+            ratingData.put("placeName", place.getName());
 
-        return ResponseEntity.ok(ratingData);
+            return ResponseEntity.ok(ratingData);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(Map.of(
+                    "error", "장소를 찾을 수 없습니다: " + name
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "내부 서버 오류: " + e.getMessage()
+            ));
+        }
     }
 }
