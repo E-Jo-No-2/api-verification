@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PlacesRepository extends JpaRepository<PlacesEntity, Integer> {
     Optional<PlacesEntity> findByNameAndLatAndLng(String name, String lat, String lng); // 중복 체크용 메서드
+
 }
