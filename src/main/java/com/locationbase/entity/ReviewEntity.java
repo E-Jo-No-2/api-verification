@@ -5,11 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
 @Data
 @Entity
-@Table(name = "Review",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "place_id"})})
+@Table(name = "Review", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "place_id"})})
 @NoArgsConstructor
 public class ReviewEntity {
 
@@ -34,10 +32,4 @@ public class ReviewEntity {
 
     @Column(name = "creat_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createTime;
-
-    @Column(name = "longitude", nullable = false, length = 20)
-    private String lng;
-
-    @Column(name = "latitude", nullable = false, length = 20)
-    private String lat;
 }

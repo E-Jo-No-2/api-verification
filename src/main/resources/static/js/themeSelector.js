@@ -37,36 +37,66 @@ function loadTourSpots(longitude, latitude) {
         .catch(error => console.error("JSON 데이터를 불러오는 중 오류 발생:", error));
 }
 
+// 모든 카드 요소 가져오기
+const cards = document.querySelectorAll('.landmark-card');
+
+// 클릭 이벤트 추가
+cards.forEach(card => {
+    card.addEventListener('click', () => {
+        cards.forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+
+        const selectedLandmarkName = card.dataset.landmark;
+        console.log('선택된 랜드마크:', selectedLandmarkName);
+
+        fetch(`/api/landmark/coordinates?landmarkName=${selectedLandmarkName}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('네트워크 응답이 정상적이지 않습니다');
+                }
+                return response.json();
+            })
+            .then(coordinates => {
+                const { latitude, longitude } = coordinates;
+                console.log(`좌표를 받았습니다: ${selectedLandmarkName} - 위도: ${latitude}, 경도: ${longitude}`);
+                initializeMap(latitude, longitude);
+                loadTourSpots(longitude, latitude);
+            })
+            .catch(error => console.error("좌표 데이터를 불러오는 중 오류 발생:", error));
+    });
+});
+
+// 초기 지도 설정
+initializeMap(latitude, longitude);
+loadTourSpots(longitude, latitude);
+
 // 데이터 형식 변환 함수
 function transformLocations(data) {
-    console.log("위치 데이터를 변환 중입니다...");
     let transformed = [];
     Object.keys(data).forEach(theme => {
         const themeData = data[theme];
         if (Array.isArray(themeData)) {
             themeData.forEach(location => {
-                if (location.longitude && location.latitude) {
+                if (location.longitude && location.latitude && location.landmarkName) {
                     transformed.push({
-                        x: parseFloat(location.longitude), // 경도
-                        y: parseFloat(location.latitude), // 위도
-                        location: location.landmark_name || location.title,
-                        distance: location.Distance,
-                        image: location.image,
+                        x: parseFloat(location.longitude),
+                        y: parseFloat(location.latitude),
+                        location: location.landmarkName || location.title,
+                        distance: location.distance,
+                        image: location.image || '',
                         theme: theme
                     });
                 }
             });
         }
     });
-    console.log("변환된 데이터:", transformed);
     return transformed;
 }
 
 // 지도에 마커 추가 함수
 function addMarkers(filteredLocations) {
-    console.log("지도에 마커를 추가하는 중입니다...");
     markers.forEach(marker => marker.setMap(null)); // 기존 마커 제거
-    markers = []; // 마커 배열 초기화
+    markers = [];
 
     filteredLocations.forEach(location => {
         const marker = new naver.maps.Marker({
@@ -89,19 +119,18 @@ function addMarkers(filteredLocations) {
                     <button onclick="findRoute(${location.x}, ${location.y})" 
                             style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
                 </div>
-            `
+            `,
+            borderWidth: 1,
+            disableAnchor: false
         });
 
-        // 마커 클릭 이벤트
         naver.maps.Event.addListener(marker, 'click', () => {
-            console.log("마커 클릭됨:", location.location);
-
             if (infoWindow.getMap()) {
                 infoWindow.close();
             } else {
                 infoWindow.open(map, marker);
 
-                // **추가된 부분: 별점 데이터를 서버에서 가져오기**
+                // **별점 데이터 가져오는 부분 추가**
                 fetch(`/api/landmark/rating?name=${encodeURIComponent(location.location)}`)
                     .then(response => {
                         if (!response.ok) {
@@ -125,38 +154,28 @@ function addMarkers(filteredLocations) {
 
         markers.push(marker);
     });
-
-    console.log("마커 추가 완료:", markers);
 }
 
 // 장소 선택 처리 함수
 function selectLocation(name, lng, lat) {
-    console.log("[입력] 마커 클릭됨: 이름 =", name, "경도 =", lng, "위도 =", lat);
-    addToTourList(name);
-
-    const routeData = {
-        lat: lat,
-        lng: lng,
-        name: name
-    };
+    const routeData = { lat: lat, lng: lng, name: name };
 
     fetch('/api/places/save', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(routeData),
     })
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! 상태 코드: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP 오류: ${response.status}`);
             return response.json();
         })
-        .then(data => console.log("[서버 응답 본문]:", data))
-        .catch(error => console.error("[오류] 서버 호출 실패:", error));
+        .then(data => alert("장소가 성공적으로 저장되었습니다!"))
+        .catch(error => console.error("서버 호출 실패:", error));
 }
 
-// 초기 지도 설정
-initializeMap(latitude, longitude);
-loadTourSpots(longitude, latitude);
+// 길찾기 처리 함수
+function findRoute(lng, lat) {
+    alert(`길찾기를 위한 경도: ${lng}, 위도: ${lat}를 호출합니다.`);
+}
+
+// **기타 관련 함수는 기존 코드 그대로 유지**
