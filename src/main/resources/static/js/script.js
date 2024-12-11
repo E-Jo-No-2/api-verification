@@ -44,24 +44,24 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 //document.addEventListener("DOMContentLoaded", function () {
-    const plannerCardContainer = document.getElementById("plannerCardContainer");
-    // 서버에서 플래너 목록을 받아옵니다.
-    fetch("/api/planner/list?userId=testuser")  // userId는 실제 값으로 변경
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("플래너 목록을 불러오는 데 실패했습니다.");
-            }
-            return response.json();
-        })
-        .then((planners) => {
-            console.log("플래너 목록:", planners);
-            planners.forEach((planner) => {
-                addPlannerCard(planner);
-            });
-        })
-        .catch((error) => {
-            console.error("플래너 목록 불러오기 오류:", error);
+const plannerCardContainer = document.getElementById("plannerCardContainer");
+// 서버에서 플래너 목록을 받아옵니다.
+fetch("/api/planner/list?userId=testuser")  // userId는 실제 값으로 변경
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("플래너 목록을 불러오는 데 실패했습니다.");
+        }
+        return response.json();
+    })
+    .then((planners) => {
+        console.log("플래너 목록:", planners);
+        planners.forEach((planner) => {
+            addPlannerCard(planner);
         });
+    })
+    .catch((error) => {
+        console.error("플래너 목록 불러오기 오류:", error);
+    });
 //});
 
 // 카드 컨테이너
@@ -162,9 +162,6 @@ function reloadPlannerList() {
             console.error("플래너 목록 불러오기 오류:", error);
         });
 }
-
-
-
 
 // 플래너 추가 버튼 클릭 이벤트
 const newPlannerBtn = document.getElementById("new-planner-btn");

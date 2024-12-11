@@ -105,10 +105,10 @@ public class PlannerService {
         jdbcTemplate.update(deleteRouteSql, plannerId);
         logger.debug("관련된 route 데이터 삭제 완료. Planner ID: {}", plannerId);
 
-        // places 삭제
+       /* // places 삭제
         String deletePlacesSql = "DELETE FROM places WHERE planner_id = ?";
         jdbcTemplate.update(deletePlacesSql, plannerId);
-        logger.debug("관련된 places 데이터 삭제 완료. Planner ID: {}", plannerId);
+        logger.debug("관련된 places 데이터 삭제 완료. Planner ID: {}", plannerId);*/
 
         // 1. planner와 관련된 memo 항목 삭제 (ON DELETE CASCADE가 제대로 작동하도록 함)
         String deleteMemoSql = "DELETE FROM memo WHERE planner_id = ?";
@@ -203,7 +203,3 @@ public class PlannerService {
     }
 
 }
-
-
-
-

@@ -33,7 +33,7 @@ public class PlannerController {
                 return ResponseEntity.badRequest().body("userId는 필수 값입니다.");
             }
 
-            // planner 저장 요청
+            // planner 저장 요청(user테이블에 있는 userId를 불러와 planner에 저장)
             int generatedPlannerId = plannerService.savePlanner(userId);
             logger.info("userId: " + userId + ", generated plannerId: " + generatedPlannerId);
 
