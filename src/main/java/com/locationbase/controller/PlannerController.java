@@ -1,11 +1,7 @@
 package com.locationbase.controller;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.service.PlannerService;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,21 +49,20 @@ public class PlannerController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<String> updatePlanner(@RequestParam int plannerId,
-                                                @RequestParam String userId,
-                                                @RequestParam LocalDate newDate) {
+    public String updatePlanner(@RequestParam int plannerId,
+                                @RequestParam String userId,
+                                @RequestParam LocalDate newDate) {
         logger.info("Planner 업데이트 요청. Planner ID: {}, User ID: {}, 새 날짜: {}", plannerId, userId, newDate);
 
         try {
             plannerService.updatePlanner(plannerId, userId, newDate);
             logger.info("Planner 업데이트 성공. Planner ID: {}", plannerId);
-            return ResponseEntity.ok("Planner 업데이트 성공");
+            return "Planner 업데이트 성공";
         } catch (RuntimeException e) {
             logger.error("Planner 업데이트 중 오류 발생. 오류 메시지: {}", e.getMessage());
-            return ResponseEntity.status(500).body("Planner 업데이트 실패: " + e.getMessage());
+            return "Planner 업데이트 실패: " + e.getMessage();
         }
     }
-
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deletePlanner(@RequestParam int plannerId) {
@@ -82,7 +77,6 @@ public class PlannerController {
             return ResponseEntity.status(500).body("Planner 삭제 실패: " + e.getMessage());
         }
     }
-
     @GetMapping("/list")
     public ResponseEntity<?> getPlannerList(@RequestParam(required = true) String userId) {
         try {
@@ -94,34 +88,4 @@ public class PlannerController {
             return ResponseEntity.status(500).body("Planner 목록 불러오기 실패");
         }
     }
-
-
-    // 글로벌 예외 처리 (RuntimeException)
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        logger.error("RuntimeException 발생: {}", ex.getMessage());
-        return ResponseEntity.status(500).body("{\"error\": \"" + ex.getMessage() + "\"}");
-    }
-    @Data
-    public class PlannerCompletionRequest {
-        private int plannerId;
-        private String userId;
-
-        @JsonCreator
-        public PlannerCompletionRequest(@JsonProperty("plannerId") int plannerId,
-                                        @JsonProperty("userId") String userId) {
-            this.plannerId = plannerId;
-            this.userId = userId;
-        }
-
-        // Getters and setters
-        public int getPlannerId() {
-            return plannerId;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-    }
-
 }

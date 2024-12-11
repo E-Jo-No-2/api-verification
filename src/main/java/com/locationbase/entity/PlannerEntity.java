@@ -25,5 +25,17 @@ public class PlannerEntity {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    // 플래너 완료 여부
+    @Column(name = "completed", nullable = false)
+    private boolean completed;
 
+    // Getters and Setters
+    @JsonProperty("completed")
+    public boolean isCompleted() {
+        return completed;
+    }
+    @JsonProperty("completed")
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
 }

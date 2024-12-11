@@ -124,16 +124,41 @@ public class PlannerService {
         plannerRepository.deleteById(plannerId);
         logger.debug("Planner 삭제 완료. Planner ID: {}", plannerId);
 
-
-
         // AUTO_INCREMENT 값을 재설정
-        transactionTemplate.executeWithoutResult(status -> {
         resetAutoIncrement();
-        });
+
 
     }
 
+    // PlannerService.java
+    @Transactional
+    public void completePlanner(int plannerId, String userId) {
+        logger.debug("Planner 완료 처리 시작. Planner ID: {}, 사용자 ID: {}", plannerId, userId);
 
+        // PlannerEntity 조회
+        PlannerEntity planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> {
+                    logger.error("Planner를 찾을 수 없습니다. Planner ID: {}", plannerId);
+                    return new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId);
+                });
+
+        // 사용자 ID가 일치하는지 확인
+        if (planner.getUserId() == null) {
+            logger.error("Planner의 사용자 ID가 null입니다. Planner ID: {}", plannerId);
+            throw new RuntimeException("Planner의 사용자 ID가 null입니다.");
+        }
+
+        if (!planner.getUserId().getUserId().equals(userId)) {
+            logger.error("사용자 ID가 Planner와 일치하지 않습니다. 사용자 ID: {}, Planner ID: {}", userId, plannerId);
+            throw new RuntimeException("사용자 ID가 Planner와 일치하지 않습니다.");
+        }
+
+        // 완료 상태로 변경
+        planner.setCompleted(true);
+        plannerRepository.save(planner);
+
+        logger.debug("Planner 완료 처리 성공. Planner ID: {}", plannerId);
+    }
 
     // userId에 해당하는 플래너 목록 조회
     public List<PlannerEntity> getPlannerListByUser(String userId) {
@@ -152,30 +177,32 @@ public class PlannerService {
 
 
     private void resetAutoIncrement() {
+        //transactionTemplate.executeWithoutResult(status -> {
         try {
             // 최신 planner_id 가져오기
-            String maxIdSql = "SELECT COALESCE(MAX(planner_id), 0) FROM planner";
+            String maxIdSql = "SELECT MAX(planner_id) FROM planner";
             Integer maxId = jdbcTemplate.queryForObject(maxIdSql, Integer.class);
 
             // AUTO_INCREMENT 값 설정
-            String resetSql;
             if (maxId == null || maxId == 0) {
-                // 테이블이 비어 있거나 첫 번째 항목인 경우 AUTO_INCREMENT를 1로 설정
-                resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
+                // 테이블이 비어있거나 첫 번째 항목인 경우 AUTO_INCREMENT를 1로 설정
+                String resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
+                jdbcTemplate.update(resetSql);
+                logger.debug("AUTO_INCREMENT 값을 1로 재설정");
             } else {
                 // 최대 ID에 맞춰 AUTO_INCREMENT 값 설정
-                resetSql = "ALTER TABLE planner AUTO_INCREMENT = ?";
+                String resetSql = "ALTER TABLE planner AUTO_INCREMENT = ?";
+                jdbcTemplate.update(resetSql, maxId + 1);
+                logger.debug("AUTO_INCREMENT 값을 {}로 재설정", maxId + 1);
             }
-            jdbcTemplate.update(resetSql, maxId + 1);
-            logger.debug("AUTO_INCREMENT 값 {}로 재설정", maxId + 1);
+
+
         } catch (Exception e) {
             logger.error("AUTO_INCREMENT 재설정 중 오류 발생", e);
             throw new RuntimeException("AUTO_INCREMENT 재설정 실패", e);
         }
     }
-    }
-
-
+}
 
 
 
