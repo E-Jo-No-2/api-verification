@@ -125,13 +125,16 @@ function addMarkers(filteredLocations) {
                 title: location.location
             });
 
-            // InfoWindow 생성
+            // InfoWindow 초기 내용
             const infoWindow = new naver.maps.InfoWindow({
                 content: `
                     <div style="padding:10px;min-width:250px;line-height:1.5;">
                         <h4 style="margin:0;">${location.location}</h4>
                         <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
                         <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
+                        <div id="rating-${location.location}" style="margin-top:10px;">
+                            <p>평점 데이터를 불러오는 중...</p>
+                        </div>
                         <hr style="margin:10px 0;">
                         <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})"
                                 style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
@@ -152,6 +155,35 @@ function addMarkers(filteredLocations) {
                     infoWindow.close();
                 } else {
                     infoWindow.open(map, marker);
+
+                    // 평점 데이터를 서버에서 가져와 업데이트
+                    fetch(`/api/landmark/rating?name=${encodeURIComponent(location.location)}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP 오류: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log(`[성공] ${location.location}의 평점 데이터:`, data);
+
+                            const averageRating = data.averageRating || 0.0;
+                            const reviewCount = data.reviewCount || 0;
+
+                            // 평점 데이터를 표시할 HTML
+                            const ratingHtml = `
+                                <p><b>평균 평점:</b> ${averageRating.toFixed(1)} / 5</p>
+                                <p><b>리뷰 개수:</b> ${reviewCount}개</p>
+                            `;
+
+                            // InfoWindow 내부의 평점 데이터 영역 업데이트
+                            document.getElementById(`rating-${location.location}`).innerHTML = ratingHtml;
+                        })
+                        .catch(error => {
+                            console.error(`[오류] ${location.location}의 평점 데이터를 가져오는 중 문제 발생:`, error.message);
+                            const errorHtml = `<p style="color:red;">평점 데이터를 불러오지 못했습니다.</p>`;
+                            document.getElementById(`rating-${location.location}`).innerHTML = errorHtml;
+                        });
                 }
             });
 
@@ -163,6 +195,7 @@ function addMarkers(filteredLocations) {
 
     console.log("마커 추가 완료:", markers);
 }
+
 
 // 장소 선택 처리 함수
 function selectLocation(name, lng, lat) {
