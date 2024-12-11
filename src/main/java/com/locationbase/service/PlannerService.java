@@ -100,6 +100,12 @@ public class PlannerService {
         resetAutoIncrement();
     }
 
+    // findById 메서드 추가
+    public Optional<PlannerEntity> findById(int plannerId) {
+        logger.debug("Planner ID로 플래너 찾기 시작. Planner ID: {}", plannerId);
+        return plannerRepository.findById(plannerId);
+    }
+
     private void resetAutoIncrement() {
         transactionTemplate.executeWithoutResult(status -> {
             try {
