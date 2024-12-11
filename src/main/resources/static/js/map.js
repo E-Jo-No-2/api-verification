@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // 출발지 및 목적지에 마커 추가
     function addMarkers(startCoords, goalCoords) {
         new naver.maps.Marker({
             position: new naver.maps.LatLng(startCoords[1], startCoords[0]),
@@ -29,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // 경로 그리기
     function drawRoute(routeCoordinates, startCoords, goalCoords, sections) {
         const usedIndices = new Set();
 
@@ -120,12 +122,14 @@ document.addEventListener("DOMContentLoaded", function () {
         focusOnRoute([startCoords, ...routeCoordinates, goalCoords]);
     }
 
+    // 경로 중심으로 지도 맞춤
     function focusOnRoute(routeCoordinates) {
         const bounds = new naver.maps.LatLngBounds();
         routeCoordinates.forEach(coord => bounds.extend(new naver.maps.LatLng(coord[1], coord[0])));
-        map.fitBounds(bounds); // 경로 중심으로 지도 맞춤
+        map.fitBounds(bounds);
     }
 
+    // 경로 정보 표시
     function displayRouteInfo(routeData, selectedOption) {
         const routeDisplayDiv = document.getElementById("routeDisplay");
         if (!routeDisplayDiv) {
@@ -133,18 +137,18 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        routeDisplayDiv.innerHTML = ''; // Clear previous content
+        routeDisplayDiv.innerHTML = ''; // 이전 내용 지우기
 
         const summary = routeData[selectedOption]?.summary || {};
 
         routeDisplayDiv.innerHTML = `
-        <div class="option-box">
-            <h3>${selectedOption}</h3>
-            <p><b>거리:</b> ${summary.distance || 'N/A'}m</p>
-            <p><b>소요 시간:</b> ${Math.ceil((summary.duration || 0) / 60000)}분</p>
-            <p><b>택시 요금:</b> ${summary.taxiFare || 'N/A'}원</p>
-        </div>
-    `;
+            <div class="option-box">
+                <h3>${selectedOption}</h3>
+                <p><b>거리:</b> ${summary.distance || 'N/A'}m</p>
+                <p><b>소요 시간:</b> ${Math.ceil((summary.duration || 0) / 60000)}분</p>
+                <p><b>택시 요금:</b> ${summary.taxiFare || 'N/A'}원</p>
+            </div>
+        `;
     }
 
     document.getElementById("routeForm").addEventListener("submit", function (e) {
