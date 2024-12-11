@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface PlacesRepository extends JpaRepository<PlacesEntity, Integer> {
     @Query("SELECT AVG(r.rating) AS averageRating, COUNT(r) AS reviewCount " +
-            "FROM ReviewEntity r WHERE r.place.placeId = ?1")
+            "FROM ReviewEntity r WHERE r.place.place_id = ?1")
     Object[] getAverageRatingByPlaceId(int placeId);
 
     Optional<PlacesEntity> findByName(String name);

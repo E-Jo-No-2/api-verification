@@ -28,4 +28,6 @@ public class PlacesService {
     public Optional<PlacesEntity> getPlaceByNameAndCoordinates(String name, String lat, String lng) {
         return placesRepository.findByNameAndLatAndLng(name, lat, lng);
     }
+
+
 }
