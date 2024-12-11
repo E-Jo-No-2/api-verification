@@ -76,15 +76,51 @@ function addPlannerCard(plannerData) {
     card.className = "planner-card";
     card.dataset.id = plannerData.plannerId; // 정확한 ID 설정
 
+    // 날짜 입력 필드 추가
+    const dateInput = `<input type="date" id="planner-date-${plannerData.plannerId}" value="${plannerData.date || ''}">`;
+
     // 카드 내용
     card.innerHTML = `
          <h3>Planner ${plannerData.plannerId}</h3>
+         ${dateInput}
         <button onclick="viewPlanner(${plannerData.plannerId})"> Planner 보기</button>
         <button onclick="deletePlannerCard(${plannerData.plannerId})">Planner 삭제</button>
+          <button onclick="updatePlannerDate(${plannerData.plannerId})">날짜 업데이트</button>
+    \
     `;
 
     // 카드 컨테이너에 추가
     plannerCardContainer.appendChild(card);
+}
+
+// 날짜 업데이트 함수
+function updatePlannerDate(plannerId) {
+    const dateInput = document.getElementById(`planner-date-${plannerId}`);
+    const newDate = dateInput.value;
+
+    if (!newDate) {
+        alert("날짜를 입력해 주세요.");
+        return;
+    }
+
+    console.log(`플래너 ${plannerId}의 날짜를 ${newDate}로 업데이트`);
+
+    fetch(`/api/planner/update?plannerId=${plannerId}&userId=testuser&newDate=${newDate}`, {
+        method: "PUT",
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("플래너 날짜 업데이트 실패");
+            }
+            return response.text();
+        })
+        .then(() => {
+            alert(`플래너 ${plannerId}의 날짜가 ${newDate}로 업데이트되었습니다.`);
+        })
+        .catch(error => {
+            console.error("날짜 업데이트 중 오류 발생:", error);
+            alert("날짜 업데이트 실패");
+        });
 }
 
 

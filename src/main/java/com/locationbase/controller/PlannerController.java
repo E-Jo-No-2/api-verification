@@ -51,11 +51,14 @@ public class PlannerController {
     @PutMapping("/update")
     public String updatePlanner(@RequestParam int plannerId,
                                 @RequestParam String userId,
-                                @RequestParam LocalDate newDate) {
+                                @RequestParam String newDate) {
         logger.info("Planner 업데이트 요청. Planner ID: {}, User ID: {}, 새 날짜: {}", plannerId, userId, newDate);
 
         try {
-            plannerService.updatePlanner(plannerId, userId, newDate);
+            // newDate를 LocalDate로 변환
+            LocalDate parsedDate = LocalDate.parse(newDate);
+
+            plannerService.updatePlanner(plannerId, userId, parsedDate);
             logger.info("Planner 업데이트 성공. Planner ID: {}", plannerId);
             return "Planner 업데이트 성공";
         } catch (RuntimeException e) {

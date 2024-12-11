@@ -69,7 +69,7 @@ public class PlannerService {
 
     // planner 업데이트
     public void updatePlanner(int plannerId, String userId, LocalDate newDate) {
-        logger.debug("Planner 업데이트 시작. Planner ID: {}, 사용자 ID: {}", plannerId, userId);
+        logger.debug("Planner 업데이트 시작. Planner ID: {}, 사용자 ID: {}", plannerId, userId, newDate);
 
         PlannerEntity planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new RuntimeException("Planner를 찾을 수 없습니다. Planner ID: " + plannerId));
