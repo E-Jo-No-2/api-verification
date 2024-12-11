@@ -27,4 +27,6 @@ public class PlacesEntity {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
     private PlannerEntity planner; // planner 테이블과의 외래 키 설정
+
 }
+
