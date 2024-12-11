@@ -20,7 +20,7 @@ public class PlannerSpotEntity {
     private PlannerEntity planner;
 
     @Column(name = "spot_name", nullable = true, length = 255)
-    private String spot_name;
+    private String spotName;
 
     @Column(name = "visit_order", nullable = true)
     private Integer visitOrder;

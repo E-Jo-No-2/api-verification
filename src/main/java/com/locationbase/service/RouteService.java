@@ -5,6 +5,8 @@ import com.locationbase.domain.repository.RouteRepository;
 import com.locationbase.dto.RouteDTO;
 import com.locationbase.entity.PlacesEntity;
 import com.locationbase.entity.RouteEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,32 +14,34 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RouteService {
 
-    @Autowired
-    private RouteRepository routeRepository;
+    private static final Logger logger = LoggerFactory.getLogger(RouteService.class);
+
+    private final RouteRepository routeRepository;
+    private final PlacesRepository placesRepository;
 
     @Autowired
-    private PlacesRepository placesRepository;
+    public RouteService(RouteRepository routeRepository, PlacesRepository placesRepository) {
+        this.routeRepository = routeRepository;
+        this.placesRepository = placesRepository;
+    }
 
     @Transactional
     public void saveRoute(RouteDTO routeDTO) {
-        System.out.println("[INPUT] Creating Route with DTO: " + routeDTO);
+        logger.debug("[입력] RouteDTO로 경로 생성 중: {}", routeDTO);
 
         // startPoint와 endPoint를 PlacesEntity로 변환
         PlacesEntity startPlace = placesRepository.findById(routeDTO.getStartPoint())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid start point ID: " + routeDTO.getStartPoint()));
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 출발 지점 ID: " + routeDTO.getStartPoint()));
         PlacesEntity endPlace = placesRepository.findById(routeDTO.getEndPoint())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid end point ID: " + routeDTO.getEndPoint()));
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 도착 지점 ID: " + routeDTO.getEndPoint()));
 
         // RouteEntity 생성 및 저장
         RouteEntity route = new RouteEntity();
-        route.setStart_point(startPlace);
-        route.setEnd_point(endPlace);
+        route.setStartPoint(startPlace);
+        route.setEndPoint(endPlace);
         route.setThemeName(routeDTO.getThemeName());
-        routeRepository.save(route);
 
-        System.out.println("[DEBUG] RouteEntity being saved: start_point="
-                + startPlace.getPlace_id() + ", end_point=" + endPlace.getPlace_id());
+        logger.debug("[디버그] RouteEntity 저장 중: start_point={}, end_point={}", startPlace.getPlaceId(), endPlace.getPlaceId());
         routeRepository.save(route);
-
     }
 }

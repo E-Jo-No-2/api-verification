@@ -13,7 +13,7 @@ public class PlacesEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "place_id")
-    private int place_id; // Primary Key
+    private int placeId; // Primary Key
 
     @Column(name = "lat", length = 255)
     private String lat;
@@ -29,4 +29,3 @@ public class PlacesEntity {
     private PlannerEntity planner; // planner 테이블과의 외래 키 설정
 
 }
-
