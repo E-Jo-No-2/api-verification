@@ -42,7 +42,7 @@ public class PlacesController {
                         .body("{\"message\":\"장소 저장 후 ID를 찾을 수 없습니다.\"}");
             }
 
-            Integer currentPlaceId = savedPlace.get().getPlace_id();
+            Integer currentPlaceId = savedPlace.get().getPlaceId();
 
             if (lastSelectedPlaceId != null) {
                 System.out.println("[DEBUG] Creating route: start_point=" + lastSelectedPlaceId + ", end_point=" + currentPlaceId);

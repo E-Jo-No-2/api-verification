@@ -36,7 +36,7 @@ public class RouteService {
         routeRepository.save(route);
 
         System.out.println("[DEBUG] RouteEntity being saved: start_point="
-                + startPlace.getPlace_id() + ", end_point=" + endPlace.getPlace_id());
+                + startPlace.getPlaceId() + ", end_point=" + endPlace.getPlaceId());
         routeRepository.save(route);
 
     }
