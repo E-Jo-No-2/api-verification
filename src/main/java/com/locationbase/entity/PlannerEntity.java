@@ -26,7 +26,7 @@ public class PlannerEntity {
     private LocalDate date;
 
     // 플래너 완료 여부
-    @Column(name = "completed", nullable = false)
+    @Column(name = "completed", nullable = true)
     private boolean completed;
 
     // Getters and Setters

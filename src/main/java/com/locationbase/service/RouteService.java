@@ -1,8 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.PlaceRepository;
-import com.locationbase.Domain.repository.PlannerRepository;
-import com.locationbase.Domain.repository.RouteRepository;
+import com.locationbase.Domain.repository.*;
 import com.locationbase.dto.RouteDTO;
 import com.locationbase.entity.PlacesEntity;
 import com.locationbase.entity.PlannerEntity;
@@ -14,12 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class RouteService {
     private final RouteRepository routeRepository;
     private final PlaceRepository placeRepository;
-    private final PlannerRepository plannerRepository; //plannerId 저장
+    private final PlannerRepository plannerRepository;
+    private final PlannerSpotRepository plannerSpotRepository;
+    private final MemoRepository memoRepository;//plannerId 저장
 
-    public RouteService(RouteRepository routeRepository, PlaceRepository placeRepository, PlannerRepository plannerRepository ) {
+    public RouteService(RouteRepository routeRepository, PlaceRepository placeRepository, PlannerRepository plannerRepository,PlannerSpotRepository plannerSpotRepository,MemoRepository memoRepository ) {
         this.routeRepository = routeRepository;
         this.placeRepository = placeRepository;
-        this.plannerRepository = plannerRepository; //plannerId 저장
+        this.plannerRepository = plannerRepository;
+        this.plannerSpotRepository = plannerSpotRepository;
+        this.memoRepository = memoRepository;//plannerId 저장
     }
 
     @Transactional

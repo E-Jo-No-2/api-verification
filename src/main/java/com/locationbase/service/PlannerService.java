@@ -115,7 +115,7 @@ public class PlannerService {
         jdbcTemplate.update(deleteMemoSql, plannerId);
 
 
-       /* // planner_id를 재정렬하는 SQL 실행
+        /*// planner_id를 재정렬하는 SQL 실행
         String reSeqSql = "UPDATE planner SET planner_id = planner_id - 1 WHERE planner_id > ?";
         jdbcTemplate.update(reSeqSql, plannerId);
         logger.debug("planner_id 재정렬 완료. Planner ID: {}", plannerId);*/
@@ -177,32 +177,33 @@ public class PlannerService {
 
 
     private void resetAutoIncrement() {
-        //transactionTemplate.executeWithoutResult(status -> {
         try {
-            // 최신 planner_id 가져오기
-            String maxIdSql = "SELECT MAX(planner_id) FROM planner";
-            Integer maxId = jdbcTemplate.queryForObject(maxIdSql, Integer.class);
+            transactionTemplate.executeWithoutResult(status -> {
+                // 최신 planner_id 가져오기
+                String maxIdSql = "SELECT MAX(planner_id) FROM planner";
+                Integer maxId = jdbcTemplate.queryForObject(maxIdSql, Integer.class);
 
-            // AUTO_INCREMENT 값 설정
-            if (maxId == null || maxId == 0) {
-                // 테이블이 비어있거나 첫 번째 항목인 경우 AUTO_INCREMENT를 1로 설정
-                String resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
-                jdbcTemplate.update(resetSql);
-                logger.debug("AUTO_INCREMENT 값을 1로 재설정");
-            } else {
-                // 최대 ID에 맞춰 AUTO_INCREMENT 값 설정
-                String resetSql = "ALTER TABLE planner AUTO_INCREMENT = ?";
-                jdbcTemplate.update(resetSql, maxId + 1);
-                logger.debug("AUTO_INCREMENT 값을 {}로 재설정", maxId + 1);
-            }
-
-
+                // AUTO_INCREMENT 값 설정
+                if (maxId == null || maxId == 0) {
+                    // 테이블이 비어있거나 첫 번째 항목인 경우 AUTO_INCREMENT를 1로 설정
+                    String resetSql = "ALTER TABLE planner AUTO_INCREMENT = 1";
+                    jdbcTemplate.update(resetSql);
+                    logger.debug("AUTO_INCREMENT 값을 1로 재설정");
+                } else {
+                    // 최대 ID에 맞춰 AUTO_INCREMENT 값 설정
+                    String resetSql = "ALTER TABLE planner AUTO_INCREMENT = ?";
+                    jdbcTemplate.update(resetSql, maxId + 1);
+                    logger.debug("AUTO_INCREMENT 값을 {}로 재설정", maxId + 1);
+                }
+            });
         } catch (Exception e) {
             logger.error("AUTO_INCREMENT 재설정 중 오류 발생", e);
             throw new RuntimeException("AUTO_INCREMENT 재설정 실패", e);
         }
     }
+
 }
+
 
 
 

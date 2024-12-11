@@ -188,5 +188,31 @@ body {
 
     display: none;
 }
+/*추가 */
+.planner-card {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+#new-planner-btn {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#new-planner-btn:hover {
+    background-color: #45a049;
+}
+
 
 

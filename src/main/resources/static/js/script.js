@@ -78,9 +78,9 @@ function addPlannerCard(plannerData) {
 
     // 카드 내용
     card.innerHTML = `
-         <h3>Tour ${plannerData.plannerId}</h3>
-        <button onclick="viewPlanner(${plannerData.plannerId})">보기</button>
-        <button onclick="deletePlannerCard(${plannerData.plannerId})">삭제</button>
+         <h3>Planner ${plannerData.plannerId}</h3>
+        <button onclick="viewPlanner(${plannerData.plannerId})"> Planner 보기</button>
+        <button onclick="deletePlannerCard(${plannerData.plannerId})">Planner 삭제</button>
     `;
 
     // 카드 컨테이너에 추가
