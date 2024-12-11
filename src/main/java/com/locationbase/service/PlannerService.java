@@ -121,11 +121,21 @@ public class PlannerService {
         logger.debug("planner_id 재정렬 완료. Planner ID: {}", plannerId);*/
 
         // planner 삭제
-        plannerRepository.deleteById(plannerId);
-        logger.debug("Planner 삭제 완료. Planner ID: {}", plannerId);
+       /* plannerRepository.deleteById(plannerId);
+        logger.debug("Planner 삭제 완료. Planner ID: {}", plannerId);*/
+        jdbcTemplate.update("DELETE FROM planner WHERE planner_id = ?", plannerId);
+        logger.debug("planner 데이터 삭제 완료. Planner ID: {}", plannerId);
+
 
         // AUTO_INCREMENT 값을 재설정
-        resetAutoIncrement();
+       // resetAutoIncrement();
+        try {
+            resetAutoIncrement();
+        } catch (Exception e) {
+            logger.error("resetAutoIncrement 실행 중 오류 발생: {}", e.getMessage());
+            throw e;
+        }
+
 
 
     }
