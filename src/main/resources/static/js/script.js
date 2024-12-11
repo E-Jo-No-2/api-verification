@@ -104,6 +104,7 @@ function viewPlanner(plannerId) {
 // 플래너 카드 삭제
 function deletePlannerCard(plannerId) {
     console.log(`플래너 카드 삭제 요청: ${plannerId}`);
+
     if (!plannerId) {
         console.error("plannerId가 유효하지 않습니다.");
         return;
@@ -114,7 +115,8 @@ function deletePlannerCard(plannerId) {
         return;
     }
 
-    fetch(`/api/planner/delete?plannerId=${plannerId}`, {
+    console.log(`플래너 삭제 API 호출: ${plannerId}`);
+    fetch(`/api/planner/delete?plannerId=${plannerId}`, {  // URL을 올바르게 수정
         method: "DELETE",
     })
         .then(response => {
@@ -139,6 +141,29 @@ function deletePlannerCard(plannerId) {
             alert("플래너 삭제 실패");
         });
 }
+
+
+// 플래너 목록 새로 고침
+function reloadPlannerList() {
+    fetch("/api/planner/list?userId=testuser")  // userId는 실제 값으로 변경
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("플래너 목록을 불러오는 데 실패했습니다.");
+            }
+            return response.json();
+        })
+        .then((planners) => {
+            plannerCardContainer.innerHTML = '';  // 기존 카드들 초기화
+            planners.forEach((planner) => {
+                addPlannerCard(planner);
+            });
+        })
+        .catch((error) => {
+            console.error("플래너 목록 불러오기 오류:", error);
+        });
+}
+
+
 
 
 // 플래너 추가 버튼 클릭 이벤트

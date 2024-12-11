@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.service.PlannerService;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,31 +95,14 @@ public class PlannerController {
         }
     }
 
-    // PlannerController.java
-    @CrossOrigin
-    @PostMapping("/complete")
-    public ResponseEntity<?> completePlanner(@RequestBody PlannerCompletionRequest request) {
-        logger.info("Planner 완료 요청. Planner ID: {}, 사용자 ID: {}", request.getPlannerId(), request.getUserId());
 
-        try {
-            // Planner 완료 처리
-            plannerService.completePlanner(request.getPlannerId(), request.getUserId());
-            logger.info("Planner 완료 처리 성공. Planner ID: {}", request.getPlannerId());
-
-            // 성공 응답 반환
-            return ResponseEntity.ok("Planner 완료 처리 성공");
-        } catch (RuntimeException e) {
-            logger.error("Planner 완료 처리 중 오류 발생. 오류 메시지: {}", e.getMessage());
-            return ResponseEntity.status(500).body("Planner 완료 처리 실패: " + e.getMessage());
-        }
-    }
     // 글로벌 예외 처리 (RuntimeException)
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         logger.error("RuntimeException 발생: {}", ex.getMessage());
         return ResponseEntity.status(500).body("{\"error\": \"" + ex.getMessage() + "\"}");
     }
-    @NoArgsConstructor
+    @Data
     public class PlannerCompletionRequest {
         private int plannerId;
         private String userId;

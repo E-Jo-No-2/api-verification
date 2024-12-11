@@ -24,7 +24,7 @@ public class PlannerSpotService {
                 .orElseThrow(() -> new RuntimeException("Planner를 찾을 수 없습니다: " + plannerId));
 
         PlannerSpotEntity spot = new PlannerSpotEntity();
-        spot.setPlanner(planner);
+        spot.setPlanner(planner);//plannerId 저장
         spot.setSpot_name(spotName);
         plannerSpotRepository.save(spot);
     }
