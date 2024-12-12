@@ -10,4 +10,5 @@ public class PlacesDTO {
     private String lat;         // 장소의 위도
     private String lng;         // 장소의 경도
     private String name;        // 장소의 이름
+    private Integer plannerId; // 관련된 플래너의 ID (Foreign Key, nullable)
 }
