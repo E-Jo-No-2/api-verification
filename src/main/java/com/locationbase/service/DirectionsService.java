@@ -1,7 +1,10 @@
 package com.locationbase.service;
 
+import com.locationbase.domain.repository.RouteRepository;
+import com.locationbase.entity.RouteEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,6 +21,23 @@ public class DirectionsService {
 
     private final String CLIENT_ID = "zf3b8gnmu2"; // 네이버 API Client ID
     private final String CLIENT_SECRET = "AWc84Y7RPJwSaiIZZz3vmPd3J2FqecHFOtwOSYxi"; // 네이버 API Client Secret
+
+    @Autowired
+    private RouteRepository routeRepository;
+
+    public List<Map<String, Object>> getRoutesByPlannerId(int plannerId) {
+        List<RouteEntity> routes = routeRepository.findByPlanner_PlannerId(plannerId); // 메서드 이름 수정
+        List<Map<String, Object>> routeData = new ArrayList<>();
+
+        for (RouteEntity route : routes) {
+            Map<String, Object> routeMap = new HashMap<>();
+            routeMap.put("start_point", route.getStartPoint());
+            routeMap.put("end_point", route.getEndPoint());
+            routeData.add(routeMap);
+        }
+
+        return routeData;
+    }
 
     public Map<String, Object> getRouteWithAllOptions(String start, String goal, List<String> waypoints) {
         Map<String, Object> routeOptions = new HashMap<>();

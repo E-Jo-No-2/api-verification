@@ -5,6 +5,15 @@ const backButton = document.getElementById('back-btn');
 let selectedLatitude = null;
 let selectedLongitude = null;
 
+// 현재 URL에서 plannerId와 userId를 추출하는 함수
+function getUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+        plannerId: urlParams.get('plannerId'),
+        userId: urlParams.get('userId')
+    };
+}
+
 // 클릭 이벤트 추가
 cards.forEach(card => {
     card.addEventListener('click', () => {
@@ -50,9 +59,11 @@ cards.forEach(card => {
 
 // 다음 버튼 클릭 이벤트 추가
 nextButton.addEventListener('click', () => {
+    const { plannerId, userId } = getUrlParams(); // URL 파라미터 추출
+
     if (selectedLatitude && selectedLongitude) {
         console.log('Redirecting to theme selection with coordinates:', selectedLatitude, selectedLongitude);
-        window.location.href = `/themaselect?latitude=${selectedLatitude}&longitude=${selectedLongitude}`;
+        window.location.href = `/themaselect?latitude=${selectedLatitude}&longitude=${selectedLongitude}&plannerId=${plannerId}&userId=${userId}`; // URL 파라미터 유지
     } else {
         alert('먼저 랜드마크를 선택해주세요.');
     }

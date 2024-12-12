@@ -5,6 +5,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     let selectedOption = "trafast"; // 기본 옵션 설정
+    const plannerId = getPlannerIdFromUrl(); // URL에서 plannerId를 추출하는 함수
+
+    if (plannerId) {
+        // 경로 데이터를 가져와 입력 필드에 채우기
+        fetch(`/get-routes?plannerId=${plannerId}`)
+            .then(response => response.json())
+            .then(routes => {
+                if (routes.length > 0) {
+                    const start = `${routes[0].start_point.lng},${routes[0].start_point.lat}`;
+                    const goals = routes.map(route => `${route.end_point.lng},${route.end_point.lat}`).join('|');
+
+                    document.getElementById("start").value = start;
+                    document.getElementById("goal").value = goals;
+
+                    // 폼을 자동으로 제출
+                    document.getElementById("routeForm").dispatchEvent(new Event('submit'));
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    } else {
+        console.error('Planner ID not found in URL');
+    }
+
+    // URL에서 plannerId를 추출하는 함수 (예시)
+    function getPlannerIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('plannerId');
+    }
 
     // 옵션 버튼 클릭 이벤트 추가
     document.getElementById("options-buttons").addEventListener("click", (event) => {
@@ -23,10 +51,12 @@ document.addEventListener("DOMContentLoaded", function () {
             title: "출발지"
         });
 
-        new naver.maps.Marker({
-            position: new naver.maps.LatLng(goalCoords[1], goalCoords[0]),
-            map: map,
-            title: "목적지"
+        goalCoords.forEach(coord => {
+            new naver.maps.Marker({
+                position: new naver.maps.LatLng(coord[1], coord[0]),
+                map: map,
+                title: "목적지"
+            });
         });
     }
 
@@ -119,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        focusOnRoute([startCoords, ...routeCoordinates, goalCoords]);
+        focusOnRoute([startCoords, ...routeCoordinates, ...goalCoords]);
     }
 
     // 경로 중심으로 지도 맞춤
@@ -157,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const start = document.getElementById("start").value.trim();
         const goal = document.getElementById("goal").value.trim();
         const startCoords = start.split(',').map(Number);
-        const goalCoords = goal.split(',').map(Number);
+        const goalCoords = goal.split('|').map(point => point.split(',').map(Number));
 
         addMarkers(startCoords, goalCoords);
 
@@ -175,4 +205,9 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error('Error:', error));
     });
+
+    function getPlannerIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('plannerId');
+    }
 });
