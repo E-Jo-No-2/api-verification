@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 plannerCard.dataset.id = planner.plannerId;
 
                 plannerCard.innerHTML = `
-                    <h3>Planner ID: ${planner.plannerId}</h3>
+                    <h3>Tour ${planner.plannerId}</h3>
                     <p>Date: ${planner.date}</p>
                     <button onclick="viewPlanner(${planner.plannerId})">Planner 보기</button>
                     <button onclick="deletePlannerCard(${planner.plannerId})">Planner 삭제</button>
