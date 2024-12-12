@@ -7,6 +7,7 @@ import com.locationbase.dto.RouteDTO;
 import com.locationbase.entity.PlacesEntity;
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.RouteEntity;
+import com.locationbase.entity.PlannerSpotEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,14 @@ public class RouteService {
     private final RouteRepository routeRepository;
     private final PlacesRepository placesRepository;
     private final PlannerRepository plannerRepository;
+    private final PlannerSpotService plannerSpotService;  // PlannerSpotService 추가
 
     @Autowired
-    public RouteService(RouteRepository routeRepository, PlacesRepository placesRepository, PlannerRepository plannerRepository) {
+    public RouteService(RouteRepository routeRepository, PlacesRepository placesRepository, PlannerRepository plannerRepository, PlannerSpotService plannerSpotService) {
         this.routeRepository = routeRepository;
         this.placesRepository = placesRepository;
         this.plannerRepository = plannerRepository;
+        this.plannerSpotService = plannerSpotService;  // PlannerSpotService 추가
     }
 
     @Transactional
@@ -68,11 +71,22 @@ public class RouteService {
         routeRepository.save(route);
         routeRepository.flush();  // 명시적으로 커밋하여 즉시 저장
 
+        // PlannerSpotEntity 생성 및 저장
+        PlannerSpotEntity plannerSpot = new PlannerSpotEntity();
+        plannerSpot.setSpotName("New Spot");  // Spot 이름 설정
+        plannerSpot.setLatitude(endPlace.getLat());
+        plannerSpot.setLongitude(endPlace.getLng());
+        plannerSpot.setPlanner(planner);
+        plannerSpot.setPlace(endPlace);
+        plannerSpot.setRoute(route);
+
+        logger.debug("PlannerSpotEntity 저장 시도: {}", plannerSpot);
+        plannerSpotService.savePlannerSpot(plannerSpot);
+
         // 로그 추가: 경로 저장 후의 상태 확인
         logger.debug("[확인] 경로 저장 완료: {}", route);
     }
 
-    // findByStartPointAndEndPoint 메서드 추가
     @Transactional(readOnly = true)
     public Optional<RouteEntity> findByStartPointAndEndPoint(Integer startPoint, Integer endPoint) {
         PlacesEntity startPlace = placesRepository.findById(startPoint)
