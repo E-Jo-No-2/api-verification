@@ -224,7 +224,7 @@ function selectLocation(name, lng, lat) {
 
             if (response.status === 409) { // HTTP 409: Conflict (중복 데이터)
                 return response.json().then(data => {
-                    alert(data.message); // 사용자에게 오류 메시지 표시
+                    // alert(data.message); // 사용자에게 오류 메시지 표시
                     throw new Error(data.message); // 이후 then 블록이 실행되지 않도록 예외 발생
                 });
             }
@@ -243,7 +243,7 @@ function selectLocation(name, lng, lat) {
             console.error("[오류] 서버 호출 실패:", error);
             // 중복 데이터 메시지는 이미 표시되었으므로 기타 오류만 처리
             if (error.message !== "장소가 이미 존재합니다!") {
-                alert("서버 호출 중 오류가 발생했습니다.");
+                // alert("서버 호출 중 오류가 발생했습니다.");
             }
         });
 }
@@ -386,7 +386,7 @@ function completeTour() {
 }
 
 // planner id를 테스트를 위해 3로 고정
-const plannerId = 3;
+// const plannerId = 3;
 // URL에서 planner_id 가져오기
 //const urlParams = new URLSearchParams(window.location.search);
 //const planner_id = urlParams.get('planner_id');

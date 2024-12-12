@@ -116,7 +116,7 @@ function createPlanner(date) {
         })
         .catch((error) => {
             console.error('Planner 생성 실패:', error);
-            alert("플래너 생성 중 오류가 발생했습니다.");
+            alert("플래너가 이미 생성되었습니다.");
         })
         .finally(() => {
             if (createButton) {
