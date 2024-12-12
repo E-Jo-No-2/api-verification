@@ -71,7 +71,7 @@ public class PlacesController {
             }
 
             RouteDTO routeDTO = null;
-            if (lastSelectedPlaceId != null) {
+            if (lastSelectedPlaceId != null && !lastSelectedPlaceId.equals(currentPlaceId)) {
                 logger.debug("경로 생성 중: 출발 지점={}, 도착 지점={}, 플래너 ID={}", lastSelectedPlaceId, currentPlaceId, plannerId);
                 routeDTO = new RouteDTO();
                 routeDTO.setStartPoint(lastSelectedPlaceId);
@@ -83,7 +83,7 @@ public class PlacesController {
                 // 로그 추가: 경로 조회 시도
                 logger.debug("경로 조회 시도: start_point={}, end_point={}", lastSelectedPlaceId, currentPlaceId);
             } else {
-                logger.debug("첫 번째 장소가 선택되었으며, 경로가 생성되지 않았습니다.");
+                logger.debug("첫 번째 장소가 선택되었거나 출발 지점과 도착 지점이 동일하여 경로가 생성되지 않았습니다.");
             }
 
             // 마지막 선택된 place_id 업데이트
@@ -97,9 +97,7 @@ public class PlacesController {
                 plannerSpot.setLongitude(place.getLng());
                 plannerSpot.setPlanner(plannerOptional.get());
                 plannerSpot.setPlace(savedPlace.get());
-
-                // RouteEntity 설정 및 로그 추가
-                logger.debug("경로 엔티티 조회 시도: start_point={}, end_point={}", lastSelectedPlaceId, currentPlaceId);
+                // RouteEntity 설정
                 RouteEntity routeEntity = routeService.findByStartPointAndEndPoint(lastSelectedPlaceId, currentPlaceId).orElseThrow(
                         () -> new RuntimeException("경로 정보를 찾을 수 없습니다.")
                 );
