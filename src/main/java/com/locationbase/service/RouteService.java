@@ -24,14 +24,14 @@ public class RouteService {
     private final RouteRepository routeRepository;
     private final PlacesRepository placesRepository;
     private final PlannerRepository plannerRepository;
-    private final PlannerSpotService plannerSpotService;  // PlannerSpotService 추가
+    private final PlannerSpotService plannerSpotService;
 
     @Autowired
     public RouteService(RouteRepository routeRepository, PlacesRepository placesRepository, PlannerRepository plannerRepository, PlannerSpotService plannerSpotService) {
         this.routeRepository = routeRepository;
         this.placesRepository = placesRepository;
         this.plannerRepository = plannerRepository;
-        this.plannerSpotService = plannerSpotService;  // PlannerSpotService 추가
+        this.plannerSpotService = plannerSpotService;
     }
 
     @Transactional
@@ -79,6 +79,10 @@ public class RouteService {
         plannerSpot.setPlanner(planner);
         plannerSpot.setPlace(endPlace);
         plannerSpot.setRoute(route);
+
+        // 방문 순서 설정
+        int lastVisitOrder = plannerSpotService.getLastVisitOrderByPlannerId(routeDTO.getPlannerId());
+        plannerSpot.setVisitOrder(lastVisitOrder + 1);
 
         logger.debug("PlannerSpotEntity 저장 시도: {}", plannerSpot);
         plannerSpotService.savePlannerSpot(plannerSpot);
