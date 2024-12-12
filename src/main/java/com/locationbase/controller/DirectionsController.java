@@ -22,6 +22,18 @@ public class DirectionsController {
         return "map"; // map.html
     }
 
+    @GetMapping("/get-routes")
+    @ResponseBody
+    public ResponseEntity<?> getRoutes(@RequestParam("plannerId") int plannerId) {
+        try {
+            // RouteService에서 plannerId에 해당하는 경로 데이터를 가져오기
+            List<Map<String, Object>> routes = directionsService.getRoutesByPlannerId(plannerId);
+            return ResponseEntity.ok(routes);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching routes: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/calculate-route")
     @ResponseBody
     public ResponseEntity<?> calculateRoute(

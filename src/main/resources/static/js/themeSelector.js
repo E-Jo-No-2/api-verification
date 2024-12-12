@@ -6,6 +6,8 @@ var markers = [];
 const urlParams = new URLSearchParams(window.location.search);
 const latitude = parseFloat(urlParams.get('latitude')) || 37.5665; // 기본값: 서울
 const longitude = parseFloat(urlParams.get('longitude')) || 126.9780; // 기본값: 서울
+const plannerId = urlParams.get('plannerId');
+const userId = urlParams.get('userId');
 
 // 지도 초기화 함수
 function initializeMap(latitude, longitude) {
@@ -224,7 +226,6 @@ function selectLocation(name, lng, lat) {
 
             if (response.status === 409) { // HTTP 409: Conflict (중복 데이터)
                 return response.json().then(data => {
-                    // alert(data.message); // 사용자에게 오류 메시지 표시
                     throw new Error(data.message); // 이후 then 블록이 실행되지 않도록 예외 발생
                 });
             }
@@ -385,14 +386,7 @@ function completeTour() {
     alert("플래너 작성 완료를 하시겠습니까?");
 }
 
-// planner id를 테스트를 위해 3로 고정
-// const plannerId = 3;
-// URL에서 planner_id 가져오기
-//const urlParams = new URLSearchParams(window.location.search);
-//const planner_id = urlParams.get('planner_id');
-// planner_id를 테스트를 위해 1로 고정
-// plannerId를 테스트를 위해 1로 고정
-
+// URL에서 plannerId 가져오기
 if (!plannerId) {
     alert("plannerId가 설정되지 않았습니다!");
     throw new Error("plannerId가 필요합니다.");
@@ -403,7 +397,7 @@ function loadMemo(plannerId) {
     const uri = `/memos/planner/${plannerId}`; // URI 생성
     console.log("메모 불러오기 요청: plannerId =", plannerId);
     console.log("요청 URI:", uri);
-    fetch(`/memos/planner/${plannerId}`, {
+    fetch(uri, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -483,5 +477,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     } else {
         console.error("저장 버튼(saveMemoBtn)을 찾을 수 없습니다!");
+    }
+
+    // '플래너 완료' 버튼 클릭 시 '/map'으로 이동
+    const completeTourBtn = document.getElementById("completeTourBtn");
+    if (completeTourBtn) {
+        completeTourBtn.addEventListener("click", () => {
+            if (confirm("플래너 작성 완료를 하시겠습니까?")) {
+                window.location.href = `/map?latitude=${latitude}&longitude=${longitude}&plannerId=${plannerId}&userId=${userId}`;
+            }
+        });
+    } else {
+        console.error("완료 버튼(completeTourBtn)을 찾을 수 없습니다!");
     }
 });
