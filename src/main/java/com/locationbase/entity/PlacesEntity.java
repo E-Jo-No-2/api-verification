@@ -29,4 +29,3 @@ public class PlacesEntity {
     private PlannerEntity planner; // planner 테이블과의 외래 키 설정
 
 }
-

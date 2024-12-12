@@ -20,7 +20,7 @@ public class PlannerSpotEntity {
     private PlannerEntity planner;
 
     @Column(name = "spot_name", nullable = true, length = 255)
-    private String spot_name;
+    private String spotName;
 
     @Column(name = "visit_order", nullable = true)
     private Integer visitOrder;
@@ -34,8 +34,8 @@ public class PlannerSpotEntity {
     private PlacesEntity place;
 
     @Column(name = "latitude", nullable = false)
-    private double latitude;
+    private String latitude;  // 타입 변경: double -> String
 
     @Column(name = "longitude", nullable = false)
-    private double longitude;
+    private String longitude; // 타입 변경: double -> String
 }
