@@ -32,7 +32,7 @@ public class PlacesController {
     private final PlannerService plannerService;
     private final PlannerSpotService plannerSpotService;
     private Integer lastSelectedPlaceId = null;
-    private Integer plannerId = 2;
+    private Integer plannerId = 1; // 플래너 ID를 1로 설정
 
     @Autowired
     public PlacesController(PlacesService placesService, RouteService routeService, PlannerService plannerService, PlannerSpotService plannerSpotService) {
@@ -98,6 +98,7 @@ public class PlacesController {
                 plannerSpot.setPlanner(plannerOptional.get());
                 plannerSpot.setPlace(savedPlace.get());
                 // RouteEntity 설정
+                logger.debug("PlannerSpot 저장 시도: lastSelectedPlaceId={}, currentPlaceId={}", lastSelectedPlaceId, currentPlaceId);
                 RouteEntity routeEntity = routeService.findByStartPointAndEndPoint(lastSelectedPlaceId, currentPlaceId).orElseThrow(
                         () -> new RuntimeException("경로 정보를 찾을 수 없습니다.")
                 );

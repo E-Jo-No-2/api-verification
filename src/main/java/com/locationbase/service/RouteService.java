@@ -71,12 +71,15 @@ public class RouteService {
     }
 
     // findByStartPointAndEndPoint 메서드 추가
+    @Transactional(readOnly = true)
     public Optional<RouteEntity> findByStartPointAndEndPoint(Integer startPoint, Integer endPoint) {
         PlacesEntity startPlace = placesRepository.findById(startPoint)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 출발 지점 ID: " + startPoint));
         PlacesEntity endPlace = placesRepository.findById(endPoint)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 도착 지점 ID: " + endPoint));
 
+        // 로그 추가: 경로 조회 시도
+        logger.debug("[디버그] 경로 조회 시도: start_point={}, end_point={}", startPlace.getPlaceId(), endPlace.getPlaceId());
         return routeRepository.findByStartPointAndEndPoint(startPlace, endPlace);
     }
 }
