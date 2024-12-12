@@ -32,7 +32,6 @@ public class PlacesController {
     private final PlannerService plannerService;
     private final PlannerSpotService plannerSpotService;
     private Integer lastSelectedPlaceId = null;
-    private Integer plannerId = 3; // 플래너 ID를 1로 설정
 
     @Autowired
     public PlacesController(PlacesService placesService, RouteService routeService, PlannerService plannerService, PlannerSpotService plannerSpotService) {
@@ -45,11 +44,18 @@ public class PlacesController {
     @PostMapping("/save")
     public ResponseEntity<?> savePlace(@RequestBody PlacesEntity place) {
         try {
+            Integer plannerId = PlannerController.getLatestPlannerId(); // 최신 플래너 ID 가져오기
+            if (plannerId == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"플래너 ID를 찾을 수 없습니다.\"}");
+            }
+
+            logger.debug("장소 저장 시도: {}", place);
             // 장소 저장
             String result = placesService.savePlace(place);
 
             // 중복 데이터일 경우
             if (result.equals("Place already exists!")) {
+                logger.warn("장소가 이미 존재합니다: {}", place);
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"message\":\"장소가 이미 존재합니다!\"}");
             }
 
@@ -57,15 +63,18 @@ public class PlacesController {
             Optional<PlacesEntity> savedPlace = placesService.getPlaceByNameAndCoordinates(
                     place.getName(), place.getLat(), place.getLng());
             if (savedPlace.isEmpty()) {
+                logger.error("장소 저장 후 ID를 찾을 수 없습니다: {}", place);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("{\"message\":\"장소 저장 후 ID를 찾을 수 없습니다.\"}");
             }
 
             Integer currentPlaceId = savedPlace.get().getPlaceId();
+            logger.debug("저장된 장소 ID: {}", currentPlaceId);
 
             // 플래너 존재 여부 확인
             Optional<PlannerEntity> plannerOptional = plannerService.findById(plannerId);
             if (plannerOptional.isEmpty()) {
+                logger.error("유효하지 않은 플래너 ID: {}", plannerId);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("{\"message\":\"유효하지 않은 플래너 ID: " + plannerId + "\"}");
             }
@@ -81,7 +90,7 @@ public class PlacesController {
                 routeService.saveRoute(routeDTO);
 
                 // 로그 추가: 경로 조회 시도
-                logger.debug("경로 조회 시도: start_point={}, end_point={}", lastSelectedPlaceId, currentPlaceId);
+                logger.debug("경로 조회 시도: 출발 지점={}, 도착 지점={}", lastSelectedPlaceId, currentPlaceId);
             } else {
                 logger.debug("첫 번째 장소가 선택되었거나 출발 지점과 도착 지점이 동일하여 경로가 생성되지 않았습니다.");
             }
@@ -105,6 +114,7 @@ public class PlacesController {
                 plannerSpot.setRoute(routeEntity);
 
                 plannerSpotService.savePlannerSpot(plannerSpot);
+                logger.debug("PlannerSpot 저장 완료: {}", plannerSpot);
             }
 
             return ResponseEntity.ok("{\"message\":\"장소가 성공적으로 저장되었습니다!\"}");

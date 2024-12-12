@@ -1,9 +1,8 @@
-
-
 package com.locationbase.controller;
 
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.service.PlannerService;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,9 @@ public class PlannerController {
     private static final Logger logger = LoggerFactory.getLogger(PlannerController.class);
 
     private final PlannerService plannerService;
+    // 최신 플래너 ID 반환 메서드
+    @Getter
+    private static Integer latestPlannerId; // 최신 플래너 ID 저장
 
     @Autowired
     public PlannerController(PlannerService plannerService) {
@@ -49,6 +51,7 @@ public class PlannerController {
 
             // Planner 저장
             int generatedPlannerId = plannerService.savePlanner(userId, plannerDate);
+            latestPlannerId = generatedPlannerId; // 최신 플래너 ID 저장
             logger.info("userId: {}, generated plannerId: {}, date: {}", userId, generatedPlannerId, plannerDate);
 
             // JSON 응답 반환
@@ -58,9 +61,6 @@ public class PlannerController {
             return ResponseEntity.status(500).body("{\"error\": \"플래너 저장 실패: " + e.getMessage() + "\"}");
         }
     }
-
-
-
 
     @PutMapping("/update")
     public String updatePlanner(@RequestParam int plannerId,
@@ -94,6 +94,7 @@ public class PlannerController {
             return ResponseEntity.status(500).body("Planner 삭제 실패: " + e.getMessage());
         }
     }
+
     @GetMapping("/list")
     public ResponseEntity<?> getPlannerList(@RequestParam(required = true) String userId) {
         try {
@@ -106,4 +107,3 @@ public class PlannerController {
         }
     }
 }
-
