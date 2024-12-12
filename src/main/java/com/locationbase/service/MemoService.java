@@ -18,7 +18,8 @@ public class MemoService {
     private final MemoRepository memoRepository;
     private final PlannerRepository plannerRepository;
 
-    public MemoService(MemoRepository memoRepository, PlannerRepository plannerRepository) {
+    public MemoService(MemoRepository memoRepository
+            , PlannerRepository plannerRepository) {
         this.memoRepository = memoRepository;
         this.plannerRepository = plannerRepository;
     }

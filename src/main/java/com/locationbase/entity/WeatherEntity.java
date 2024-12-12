@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "Weather")
+@Table(name = "weather")
 @NoArgsConstructor
 public class WeatherEntity {
 

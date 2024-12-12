@@ -89,17 +89,17 @@ function transformLocations(data) {
         if (Array.isArray(themeData)) {
             console.log(`테마 처리 중: ${theme}, 위치 수: ${themeData.length}`);
             themeData.forEach(location => {
-                if (location.longitude && location.latitude) {
+                if (location.longitude && location.latitude && location.landmarkName) { // landmarkName 검증 추가
                     transformed.push({
                         x: parseFloat(location.longitude), // 경도
                         y: parseFloat(location.latitude), // 위도
-                        location: location.landmark_name || location.title,
-                        distance: location.Distance,
-                        image: location.image,
+                        location: location.landmarkName || location.title,
+                        distance: location.distance,
+                        image: location.image || '', // image 검증 추가
                         theme: theme
                     });
                 } else {
-                    console.warn(`유효하지 않은 좌표를 가진 위치 건너뜀: ${JSON.stringify(location)}`);
+                    console.warn(`유효하지 않은 좌표 또는 이름을 가진 위치 건너뜀: ${JSON.stringify(location)}`);
                 }
             });
         } else {
@@ -117,48 +117,85 @@ function addMarkers(filteredLocations) {
     markers = []; // 마커 배열 초기화
 
     filteredLocations.forEach(location => {
-        console.log(`마커 추가 중 - 위도: ${location.y}, 경도: ${location.x}, 위치: ${location.location}`);
-        const marker = new naver.maps.Marker({
-            position: new naver.maps.LatLng(location.y, location.x),
-            map: map,
-            title: location.location
-        });
+        if (location.location && location.location !== "") { // location 검증 추가
+            console.log(`마커 추가 중 - 위도: ${location.y}, 경도: ${location.x}, 위치: ${location.location}`);
+            const marker = new naver.maps.Marker({
+                position: new naver.maps.LatLng(location.y, location.x),
+                map: map,
+                title: location.location
+            });
 
-        // InfoWindow 생성
-        const infoWindow = new naver.maps.InfoWindow({
-            content: `
-                <div style="padding:10px;min-width:250px;line-height:1.5;">
-                    <h4 style="margin:0;">${location.location}</h4>
-                    <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
-                    <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
-                    <hr style="margin:10px 0;">
-                    <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})" 
-                            style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
-                    <button onclick="findRoute(${location.x}, ${location.y})" 
-                            style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
-                </div>
-            `,
-            borderWidth: 1,
-            disableAnchor: false
-        });
+            // InfoWindow 초기 내용
+            const infoWindow = new naver.maps.InfoWindow({
+                content: `
+                    <div style="padding:10px;min-width:250px;line-height:1.5;">
+                        <h4 style="margin:0;">${location.location}</h4>
+                        <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
+                        <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
+                        <div id="rating-${location.location}" style="margin-top:10px;">
+                            <p>평점 데이터를 불러오는 중...</p>
+                        </div>
+                        <hr style="margin:10px 0;">
+                        <button onclick="selectLocation('${location.location}', ${location.x}, ${location.y})"
+                                style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; cursor:pointer;">장소 선택</button>
+                        <button onclick="findRoute(${location.x}, ${location.y})"
+                                style="padding:5px 10px; background-color:#007BFF; color:white; border:none; cursor:pointer;">길찾기</button>
+                    </div>
+                `,
+                borderWidth: 1,
+                disableAnchor: false
+            });
 
-        // 마커 클릭 이벤트
-        naver.maps.Event.addListener(marker, 'click', () => {
-            console.log("마커 클릭됨:", location.location);
+            // 마커 클릭 이벤트
+            naver.maps.Event.addListener(marker, 'click', () => {
+                console.log("마커 클릭됨:", location.location);
 
-            // InfoWindow가 열려 있다면 닫고, 아니면 열기
-            if (infoWindow.getMap()) {
-                infoWindow.close();
-            } else {
-                infoWindow.open(map, marker);
-            }
-        });
+                // InfoWindow가 열려 있다면 닫고, 아니면 열기
+                if (infoWindow.getMap()) {
+                    infoWindow.close();
+                } else {
+                    infoWindow.open(map, marker);
 
-        markers.push(marker);
+                    // 평점 데이터를 서버에서 가져와 업데이트
+                    fetch(`/api/landmark/rating?name=${encodeURIComponent(location.location)}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP 오류: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log(`[성공] ${location.location}의 평점 데이터:`, data);
+
+                            const averageRating = data.averageRating || 0.0;
+                            const reviewCount = data.reviewCount || 0;
+
+                            // 평점 데이터를 표시할 HTML
+                            const ratingHtml = `
+                                <p><b>평균 평점:</b> ${averageRating.toFixed(1)} / 5</p>
+                                <p><b>리뷰 개수:</b> ${reviewCount}개</p>
+                            `;
+
+                            // InfoWindow 내부의 평점 데이터 영역 업데이트
+                            document.getElementById(`rating-${location.location}`).innerHTML = ratingHtml;
+                        })
+                        .catch(error => {
+                            console.error(`[오류] ${location.location}의 평점 데이터를 가져오는 중 문제 발생:`, error.message);
+                            const errorHtml = `<p style="color:red;">평점 데이터를 불러오지 못했습니다.</p>`;
+                            document.getElementById(`rating-${location.location}`).innerHTML = errorHtml;
+                        });
+                }
+            });
+
+            markers.push(marker);
+        } else {
+            console.warn(`유효하지 않은 위치를 가진 마커 건너뜀: ${location}`);
+        }
     });
 
     console.log("마커 추가 완료:", markers);
 }
+
 
 // 장소 선택 처리 함수
 function selectLocation(name, lng, lat) {
@@ -167,9 +204,9 @@ function selectLocation(name, lng, lat) {
 
     // 서버로 데이터 전송
     const routeData = {
-        lat: lat, // 위도를 숫자로 변환
-        lng: lng,
-        name: name // 장소 이름을 theme_name으로 저장
+        lat: lat, // 위도
+        lng: lng, // 경도
+        name: name // 장소 이름
     };
 
     console.log("[출력] 서버로 데이터 전송 중:", routeData);
@@ -183,15 +220,32 @@ function selectLocation(name, lng, lat) {
     })
         .then(response => {
             console.log("[응답] 서버로부터 응답 받음:", response);
-            console.log("[출력] 서버 응답 상태 텍스트:", response.statusText);
-            if (!response.ok) {
-                throw new Error(`HTTP error! 상태 코드: ${response.status}`);
+            console.log("[출력] 서버 응답 상태 코드:", response.status);
+
+            if (response.status === 409) { // HTTP 409: Conflict (중복 데이터)
+                return response.json().then(data => {
+                    alert(data.message); // 사용자에게 오류 메시지 표시
+                    throw new Error(data.message); // 이후 then 블록이 실행되지 않도록 예외 발생
+                });
             }
 
-            return response.json();
+            if (!response.ok) { // 기타 오류 처리
+                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+            }
+
+            return response.json(); // 성공 시 JSON 데이터를 반환
         })
-        .then(data => console.log("[서버 응답 본문]:", data))
-        .catch(error => console.error("[오류] 서버 호출 실패:", error));
+        .then(data => {
+            console.log("[서버 응답 본문]:", data);
+            alert("장소가 성공적으로 저장되었습니다!");
+        })
+        .catch(error => {
+            console.error("[오류] 서버 호출 실패:", error);
+            // 중복 데이터 메시지는 이미 표시되었으므로 기타 오류만 처리
+            if (error.message !== "장소가 이미 존재합니다!") {
+                alert("서버 호출 중 오류가 발생했습니다.");
+            }
+        });
 }
 
 // 길찾기 처리 함수
@@ -205,7 +259,6 @@ function addToTourList(locationName) {
     console.log("관광지 리스트에 추가 중:", locationName);
     const tourList = document.getElementById("tourList");
 
-    // 중복 확인
     const existingItem = Array.from(tourList.children).find(
         item => item.querySelector(".tour-item").textContent.includes(locationName)
     );
@@ -219,7 +272,6 @@ function addToTourList(locationName) {
     textSpan.textContent = `${tourList.children.length + 1}. ${locationName}`;
     textSpan.className = "tour-item";
 
-    // 수정 버튼
     const editBtn = document.createElement("button");
     editBtn.textContent = "수정";
     editBtn.className = "edit-btn";
@@ -231,14 +283,14 @@ function addToTourList(locationName) {
         }
     };
 
-    // 삭제 버튼
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "삭제";
     deleteBtn.className = "delete-btn";
     deleteBtn.onclick = () => {
-        console.log("관광지가 리스트에서 제거되었습니다:", locationName);
-        tourList.removeChild(listItem);
-        updateTourListNumbers();
+        const placeId = parseInt(prompt("삭제할 장소의 ID를 입력하세요:"));
+        if (placeId) {
+            deletePlace(placeId, listItem);
+        }
     };
 
     listItem.appendChild(textSpan);
@@ -267,6 +319,34 @@ function filterByTheme(theme) {
     addMarkers(filteredLocations);
 }
 
+// 삭제 버튼 클릭 이벤트 추가 함수
+function deletePlace(id, listItem) {
+    console.log("[입력] 삭제 버튼 클릭됨: ID =", id);
+
+    fetch(`/api/places/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("[서버 응답 본문]:", data);
+            alert(data.message);
+            listItem.remove(); // 리스트 항목 삭제
+            updateTourListNumbers(); // 리스트 번호 업데이트
+        })
+        .catch(error => {
+            console.error("[오류] 서버 호출 실패:", error);
+            alert("장소 삭제 중 오류가 발생했습니다.");
+        });
+}
+
 // 드롭다운 토글 함수
 function toggleDropdown() {
     console.log("드롭다운 메뉴를 토글 중...");
@@ -289,7 +369,7 @@ window.addEventListener("click", event => {
         console.log("외부 클릭으로 인해 드롭다운 메뉴 닫기.");
         document.getElementById("dropdownMenu").style.display = "none";
     }
-});
+}, { passive: true });
 
 // 뒤로가기 버튼 클릭 이벤트 추가
 const backButton = document.getElementById('backBtnBelow');
@@ -337,6 +417,8 @@ function loadMemo(plannerId) {
         })
         .then(data => {
             console.log("메모 불러오기 성공:", data);
+            memoId = data[0].memoId;
+            console.log("메모 ID", memoId);
             // 메모를 화면의 textarea에 표시
             document.getElementById("memo").value = data[0]?.memoContent || ''; // 첫 번째 메모 표시
         })
@@ -346,12 +428,12 @@ function loadMemo(plannerId) {
         });
 }
 
-// 메모 저장하기 함수
-function saveMemo(plannerId, memoContent) {
-    console.log("메모 저장 요청: plannerId =", plannerId, "memoContent =", memoContent);
+// 메모 업데이트 함수
+function updateMemo(memoId, memoContent) {
+    console.log("메모 수정 요청: memoId =", memoId, "memoContent =", memoContent);
 
-    if (!plannerId) {
-        alert("plannerId가 설정되지 않았습니다!");
+    if (!memoId) {
+        alert("메모 ID가 설정되지 않았습니다!");
         return;
     }
 
@@ -361,13 +443,11 @@ function saveMemo(plannerId, memoContent) {
     }
 
     const memoData = {
-        memoContent: memoContent,
-        plannerId: plannerId,
-        writeDate: new Date().toISOString().split('T')[0] // 오늘 날짜
+        memoContent: memoContent
     };
 
-    fetch('/memos/${memoId}', {
-        method: 'POST',
+    fetch(`/memos/${memoId}`, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -375,17 +455,17 @@ function saveMemo(plannerId, memoContent) {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`메모 저장 실패: ${response.status}`);
+                throw new Error(`메모 수정 실패: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log("메모 저장 성공:", data);
-            alert("메모가 성공적으로 저장되었습니다!");
+            console.log("메모 수정 성공:", data);
+            alert("메모가 성공적으로 수정되었습니다!");
         })
         .catch(error => {
-            console.error("메모 저장 실패:", error.message);
-            alert("메모 저장에 실패했습니다.");
+            console.error("메모 수정 실패:", error.message);
+            alert("메모 수정에 실패했습니다.");
         });
 }
 
@@ -399,7 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (saveMemoBtn) {
         saveMemoBtn.addEventListener("click", () => {
             const memoContent = document.getElementById("memo").value;
-            saveMemo(plannerId, memoContent);
+            updateMemo(memoId, memoContent);
         });
     } else {
         console.error("저장 버튼(saveMemoBtn)을 찾을 수 없습니다!");

@@ -1,57 +1,43 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.*;
+import com.locationbase.domain.repository.PlacesRepository;
+import com.locationbase.domain.repository.RouteRepository;
 import com.locationbase.dto.RouteDTO;
 import com.locationbase.entity.PlacesEntity;
-import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.RouteEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RouteService {
-    private final RouteRepository routeRepository;
-    private final PlaceRepository placeRepository;
-    private final PlannerRepository plannerRepository;
-    private final PlannerSpotRepository plannerSpotRepository;
-    private final MemoRepository memoRepository;//plannerId 저장
 
-    public RouteService(RouteRepository routeRepository, PlaceRepository placeRepository, PlannerRepository plannerRepository,PlannerSpotRepository plannerSpotRepository,MemoRepository memoRepository ) {
-        this.routeRepository = routeRepository;
-        this.placeRepository = placeRepository;
-        this.plannerRepository = plannerRepository;
-        this.plannerSpotRepository = plannerSpotRepository;
-        this.memoRepository = memoRepository;//plannerId 저장
-    }
+    @Autowired
+    private RouteRepository routeRepository;
+
+    @Autowired
+    private PlacesRepository placesRepository;
 
     @Transactional
     public void saveRoute(RouteDTO routeDTO) {
-        System.out.println("[INPUT] Service received RouteDTO: " + routeDTO);
+        System.out.println("[INPUT] Creating Route with DTO: " + routeDTO);
 
-        PlacesEntity startPlace = placeRepository.findById(routeDTO.getStart_point())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid start point ID: " + routeDTO.getStart_point()));
-        PlacesEntity endPlace = routeDTO.getEnd_point() != null ?
-                placeRepository.findById(routeDTO.getEnd_point())
-                        .orElse(null) : null;
+        // startPoint와 endPoint를 PlacesEntity로 변환
+        PlacesEntity startPlace = placesRepository.findById(routeDTO.getStartPoint())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid start point ID: " + routeDTO.getStartPoint()));
+        PlacesEntity endPlace = placesRepository.findById(routeDTO.getEndPoint())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid end point ID: " + routeDTO.getEndPoint()));
 
-        PlannerEntity planner = plannerRepository.findById(routeDTO.getPlannerId())
-                .orElseThrow(() -> new RuntimeException("Planner not found: " + routeDTO.getPlannerId()));//plannerId 저장
-
+        // RouteEntity 생성 및 저장
         RouteEntity route = new RouteEntity();
-        route.setPlanner(planner); //plannerId 저장
         route.setStart_point(startPlace);
         route.setEnd_point(endPlace);
-        route.setThemeName(routeDTO.getTheme_name());
-        route.setTaxi_fare(routeDTO.getTaxi_fare());
-        route.setEstimated_time(routeDTO.getEstimated_time());
-        route.setDistance(routeDTO.getDistance());
-
-        System.out.println("[OUTPUT] Saving RouteEntity: " + route);
-
+        route.setThemeName(routeDTO.getThemeName());
         routeRepository.save(route);
-    }
 
-    public PlannerRepository getPlannerRepository() {
-        return plannerRepository;
+        System.out.println("[DEBUG] RouteEntity being saved: start_point="
+                + startPlace.getPlaceId() + ", end_point=" + endPlace.getPlaceId());
+        routeRepository.save(route);
+
     }
 }
