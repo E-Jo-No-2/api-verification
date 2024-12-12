@@ -1,7 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.LandMarkRepository;
-import com.locationbase.Domain.repository.LandMarkRepository;
+import com.locationbase.domain.repository.LandMarkRepository;
 import com.locationbase.entity.LandmarkEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

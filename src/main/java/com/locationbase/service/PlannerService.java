@@ -1,7 +1,7 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.PlannerRepository;
-import com.locationbase.Domain.repository.UserRepository;
+import com.locationbase.domain.repository.PlannerRepository;
+import com.locationbase.domain.repository.UserRepository;
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.UserEntity;
 import org.slf4j.Logger;
@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class PlannerService {
 
     private static final Logger logger = LoggerFactory.getLogger(PlannerService.class);
@@ -62,8 +61,10 @@ public class PlannerService {
         return planner.getPlannerId();
     }
 
-
-
+    // planner 조회 (새로 추가된 메서드)
+    public Optional<PlannerEntity> findById(Integer plannerId) {
+        return plannerRepository.findById(plannerId);
+    }
 
     // planner 업데이트
     public void updatePlanner(int plannerId, String userId, LocalDate newDate) {
@@ -83,6 +84,7 @@ public class PlannerService {
         plannerRepository.save(planner);
         logger.debug("Planner 업데이트 성공. Planner ID: {}, 새로운 날짜: {}", plannerId, newDate);
     }
+
     @Transactional
     public void deletePlanner(int plannerId) {
         logger.debug("Planner 삭제 시작. Planner ID: {}", plannerId);
@@ -103,42 +105,23 @@ public class PlannerService {
         jdbcTemplate.update(deleteRouteSql, plannerId);
         logger.debug("관련된 route 데이터 삭제 완료. Planner ID: {}", plannerId);
 
-       /* // places 삭제
-        String deletePlacesSql = "DELETE FROM places WHERE planner_id = ?";
-        jdbcTemplate.update(deletePlacesSql, plannerId);
-        logger.debug("관련된 places 데이터 삭제 완료. Planner ID: {}", plannerId);*/
-
         // 1. planner와 관련된 memo 항목 삭제 (ON DELETE CASCADE가 제대로 작동하도록 함)
         String deleteMemoSql = "DELETE FROM memo WHERE planner_id = ?";
         jdbcTemplate.update(deleteMemoSql, plannerId);
 
-
-        /*// planner_id를 재정렬하는 SQL 실행
-        String reSeqSql = "UPDATE planner SET planner_id = planner_id - 1 WHERE planner_id > ?";
-        jdbcTemplate.update(reSeqSql, plannerId);
-        logger.debug("planner_id 재정렬 완료. Planner ID: {}", plannerId);*/
-
         // planner 삭제
-       /* plannerRepository.deleteById(plannerId);
-        logger.debug("Planner 삭제 완료. Planner ID: {}", plannerId);*/
         jdbcTemplate.update("DELETE FROM planner WHERE planner_id = ?", plannerId);
         logger.debug("planner 데이터 삭제 완료. Planner ID: {}", plannerId);
 
-
         // AUTO_INCREMENT 값을 재설정
-       // resetAutoIncrement();
         try {
             resetAutoIncrement();
         } catch (Exception e) {
             logger.error("resetAutoIncrement 실행 중 오류 발생: {}", e.getMessage());
             throw e;
         }
-
-
-
     }
 
-    // PlannerService.java
     @Transactional
     public void completePlanner(int plannerId, String userId) {
         logger.debug("Planner 완료 처리 시작. Planner ID: {}, 사용자 ID: {}", plannerId, userId);
@@ -181,9 +164,6 @@ public class PlannerService {
         return planners;
     }
 
-
-
-
     private void resetAutoIncrement() {
         try {
             transactionTemplate.executeWithoutResult(status -> {
@@ -209,5 +189,4 @@ public class PlannerService {
             throw new RuntimeException("AUTO_INCREMENT 재설정 실패", e);
         }
     }
-
 }

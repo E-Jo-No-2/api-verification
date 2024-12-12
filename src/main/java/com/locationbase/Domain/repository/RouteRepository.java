@@ -1,4 +1,4 @@
-package com.locationbase.Domain.repository;
+package com.locationbase.domain.repository;
 
 import com.locationbase.entity.RouteEntity;
 import com.locationbase.entity.PlacesEntity;

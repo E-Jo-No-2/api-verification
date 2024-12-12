@@ -3,7 +3,7 @@ package com.locationbase.dto;
 import lombok.Data;
 
 @Data
-public class Planner_SpotDTO {
+public class PlannerSpotDTO {
     private int plannerSpotId;
     private int planner;
     private String spotName;

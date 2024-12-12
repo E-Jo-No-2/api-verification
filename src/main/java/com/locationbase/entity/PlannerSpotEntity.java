@@ -34,8 +34,8 @@ public class PlannerSpotEntity {
     private PlacesEntity place;
 
     @Column(name = "latitude", nullable = false)
-    private String latitude;  // 타입 변경: double -> String
+    private String latitude;
 
     @Column(name = "longitude", nullable = false)
-    private String longitude; // 타입 변경: double -> String
+    private String longitude;
 }

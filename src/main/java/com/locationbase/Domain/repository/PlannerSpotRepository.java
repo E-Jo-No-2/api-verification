@@ -1,4 +1,4 @@
-package com.locationbase.Domain.repository;
+package com.locationbase.domain.repository;
 
 import com.locationbase.entity.PlannerSpotEntity; // Ensure this imports the correct entity class
 import org.springframework.data.jpa.repository.JpaRepository;

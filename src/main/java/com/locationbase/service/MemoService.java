@@ -1,7 +1,7 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.MemoRepository;
-import com.locationbase.Domain.repository.PlannerRepository;
+import com.locationbase.domain.repository.MemoRepository;
+import com.locationbase.domain.repository.PlannerRepository;
 import com.locationbase.entity.MemoEntity;
 import com.locationbase.entity.PlannerEntity;
 import org.slf4j.Logger;

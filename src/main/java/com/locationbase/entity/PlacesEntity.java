@@ -24,8 +24,8 @@ public class PlacesEntity {
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
-    private PlannerEntity planner; // planner 테이블과의 외래 키 설정
-
+    // PlannerEntity와의 연관관계 제거
+    // @ManyToOne(cascade = CascadeType.PERSIST)
+    // @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
+    // private PlannerEntity planner;
 }
