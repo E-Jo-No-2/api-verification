@@ -32,7 +32,7 @@ public class PlacesController {
     private final PlannerService plannerService;
     private final PlannerSpotService plannerSpotService;
     private Integer lastSelectedPlaceId = null;
-    private Integer plannerId = 3; // 플래너 ID를 1로 설정
+    //private Integer plannerId = 3; // 플래너 ID를 1로 설정
 
     @Autowired
     public PlacesController(PlacesService placesService, RouteService routeService, PlannerService plannerService, PlannerSpotService plannerSpotService) {
