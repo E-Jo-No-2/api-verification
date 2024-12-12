@@ -1,3 +1,5 @@
+
+
 package com.locationbase.controller;
 
 import com.locationbase.entity.PlannerEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/planner")
@@ -25,20 +28,31 @@ public class PlannerController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> savePlanner(@RequestParam(required = true) String userId) {
+    public ResponseEntity<?> savePlanner(@RequestBody Map<String, String> payload) {
+        String userId = payload.get("userId");
+        String date = payload.get("date");
+
         try {
-            // userId가 유효한지 확인
+            // userId와 date 유효성 확인
             if (userId == null || userId.isEmpty()) {
                 logger.error("userId가 유효하지 않습니다.");
                 return ResponseEntity.badRequest().body("userId는 필수 값입니다.");
             }
+            if (date == null || date.isEmpty()) {
+                logger.error("date가 유효하지 않습니다.");
+                return ResponseEntity.badRequest().body("date는 필수 값입니다.");
+            }
 
-            // planner 저장 요청(user테이블에 있는 userId를 불러와 planner에 저장)
-            int generatedPlannerId = plannerService.savePlanner(userId);
-            logger.info("userId: " + userId + ", generated plannerId: " + generatedPlannerId);
+
+            // date를 LocalDate로 변환
+            LocalDate plannerDate = LocalDate.parse(date);
+
+            // Planner 저장
+            int generatedPlannerId = plannerService.savePlanner(userId, plannerDate);
+            logger.info("userId: {}, generated plannerId: {}, date: {}", userId, generatedPlannerId, plannerDate);
 
             // JSON 응답 반환
-            return ResponseEntity.ok().body("{\"plannerId\": " + generatedPlannerId + "}");
+            return ResponseEntity.ok().body("{\"plannerId\": " + generatedPlannerId + ", \"date\": \"" + plannerDate + "\"}");
         } catch (RuntimeException e) {
             logger.error("플래너 저장 중 오류 발생: {}", e.getMessage());
             return ResponseEntity.status(500).body("{\"error\": \"플래너 저장 실패: " + e.getMessage() + "\"}");
@@ -92,3 +106,4 @@ public class PlannerController {
         }
     }
 }
+

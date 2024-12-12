@@ -1,6 +1,6 @@
 package com.locationbase.controller;
 
-import com.locationbase.dto.LandmarkDTO;
+import com.locationbase.dto.LandMarkDTO;
 import com.locationbase.service.TourApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class TourApiController {
     }
 
     @GetMapping("/nearby")
-    public Map<String, List<LandmarkDTO>> getNearbyLandmarks(
+    public Map<String, List<LandMarkDTO>> getNearbyLandmarks(
             @RequestParam(name = "longitude") String longitude,
             @RequestParam(name = "latitude") String latitude
     ) {
@@ -29,7 +29,7 @@ public class TourApiController {
         logger.info("경도: {}, 위도: {}", longitude, latitude);
 
         try {
-            Map<String, List<LandmarkDTO>> landmarks = tourApiService.getNearbySpotsByTheme(longitude, latitude);
+            Map<String, List<LandMarkDTO>> landmarks = tourApiService.getNearbySpotsByTheme(longitude, latitude);
             logger.info("응답 데이터에 포함된 테마 수: {}", landmarks.size());
             landmarks.forEach((theme, spots) ->
                     logger.info("테마: {}, 관광지 개수: {}", theme, spots.size())

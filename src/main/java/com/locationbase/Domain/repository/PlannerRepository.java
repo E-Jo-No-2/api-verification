@@ -14,6 +14,8 @@ public interface PlannerRepository extends JpaRepository<PlannerEntity, Integer>
 
 
     List<PlannerEntity> findByUserId(UserEntity user);
+
+    boolean existsByUserIdAndDate(UserEntity user, LocalDate date);
 }
 
 

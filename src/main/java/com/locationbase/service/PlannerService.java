@@ -7,8 +7,6 @@ import com.locationbase.entity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,30 +39,30 @@ public class PlannerService {
     }
 
     // planner 저장
-    public int savePlanner(String userId) {
-        logger.debug("Planner 저장 시작. 사용자 ID: {}", userId);
+    public int savePlanner(String userId, LocalDate date) {
+        logger.debug("Planner 저장 시작. 사용자 ID: {}, 날짜: {}", userId, date);
 
         // 사용자 ID로 UserEntity 조회
-        Optional<Object> userOpt = userRepository.findByUserId(userId);
-        if (userOpt.isEmpty()) {
-            throw new RuntimeException("사용자를 찾을 수 없습니다. 사용자 ID: " + userId);
+        UserEntity user = (UserEntity) userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. 사용자 ID: " + userId));
+
+        // 중복 확인
+        boolean exists = plannerRepository.existsByUserIdAndDate(user, date);
+        if (exists) {
+            throw new RuntimeException("이미 해당 날짜에 플래너가 존재합니다. 사용자 ID: " + userId + ", 날짜: " + date);
         }
-        UserEntity user = (UserEntity) userOpt.get();
 
-        logger.debug("사용자 확인 완료: {}", user);
-
-        // 현재 날짜를 사용하여 PlannerEntity 생성
-        LocalDate currentDate = LocalDate.now();
-        logger.debug("현재 날짜: {}", currentDate);
-
+        // PlannerEntity 생성 및 저장
         PlannerEntity planner = new PlannerEntity();
-        planner.setUserId(user);  // UserEntity 설정
-        planner.setDate(currentDate);  // 날짜 설정
+        planner.setUserId(user);
+        planner.setDate(date);
 
-        plannerRepository.save(planner);  // 저장
-        logger.debug("Planner 저장 성공. 사용자 ID: {}", userId);
-        return planner.getPlannerId();  // 생성된 plannerId 반환
+        plannerRepository.save(planner);
+        logger.debug("Planner 저장 성공. 사용자 ID: {}, 날짜: {}", userId, date);
+        return planner.getPlannerId();
     }
+
+
 
 
     // planner 업데이트

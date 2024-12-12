@@ -3,7 +3,7 @@ package com.locationbase.dto;
 import lombok.Data;
 
 @Data
-public class LandmarkDTO {
+public class LandMarkDTO {
     private int landmarkId;      // 랜드마크의 고유 ID (Primary Key)
     private String landmarkName; // 랜드마크의 이름
     private String longitude;    // 랜드마크의 경도

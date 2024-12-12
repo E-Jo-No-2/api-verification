@@ -106,7 +106,7 @@ public class TourApiService {
 
                 // 관광지 데이터 파싱
                 LandMarkDTO spot = new LandMarkDTO();
-                spot.setLandmark_name(item.optString("title"));
+                spot.setLandmarkName(item.optString("title"));
                 spot.setLongitude(item.optString("mapx"));
                 spot.setLatitude(item.optString("mapy"));
                 spot.setCat1(item.optString("cat1"));
