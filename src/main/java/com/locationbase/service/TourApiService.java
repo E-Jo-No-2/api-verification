@@ -2,7 +2,7 @@ package com.locationbase.service;
 
 import com.locationbase.dto.LandMarkDTO;
 import com.locationbase.client.TourApiClient;
-import com.locationbase.domain.repository.PlannerSpotRepository;
+import com.locationbase.Domain.repository.PlannerSpotRepository;
 import com.locationbase.entity.PlannerEntity;
 import com.locationbase.entity.PlannerSpotEntity;
 import org.json.JSONArray;

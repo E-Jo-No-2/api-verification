@@ -28,4 +28,7 @@ public class PlacesEntity {
     // @ManyToOne(cascade = CascadeType.PERSIST)
     // @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = true)
     // private PlannerEntity planner;
+    // getter와 setter
+
+
 }

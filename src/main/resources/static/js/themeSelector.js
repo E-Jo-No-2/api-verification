@@ -508,3 +508,59 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("완료 버튼(completeTourBtn)을 찾을 수 없습니다!");
     }
 });
+
+
+
+// Function to load the tour list for a specific plannerId
+function loadTourList(plannerId) {
+    const uri = `/api/places/tourlist?plannerId=${plannerId}`; // API endpoint for loading the tour list
+    console.log("투어 리스트 불러오기 요청: plannerId =", plannerId);
+
+    // Send GET request to fetch the tour list from the server
+    fetch(uri)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`투어 리스트 불러오기 실패: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("투어 리스트 불러오기 성공:", data);
+            // Assuming data is an array of tour spots
+            const tourList = document.getElementById("tourList");
+            tourList.innerHTML = ''; // Clear existing list
+
+            // Loop through the data and render each item in the list
+            data.forEach((item, index) => {
+                const listItem = document.createElement("li");
+                listItem.className = "tour-item";
+                listItem.textContent = `${index + 1}. ${item.name}`;
+
+                // Add delete button to each item
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "삭제";
+                deleteBtn.className = "delete-btn";
+                deleteBtn.onclick = () => deletePlace(item.id, listItem);
+
+                // Append the button to the list item
+                listItem.appendChild(deleteBtn);
+                tourList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error("투어 리스트 불러오기 실패:", error.message);
+            alert("투어 리스트를 불러오지 못했습니다.");
+        });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Get plannerId from the URL (or use the global variable if available)
+    const urlParams = new URLSearchParams(window.location.search);
+    const plannerId = urlParams.get('plannerId');
+    if (plannerId) {
+        loadTourList(plannerId); // Call the function to load the tour list
+    } else {
+        console.error("plannerId가 URL에서 설정되지 않았습니다!");
+    }
+});
+
