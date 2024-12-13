@@ -121,7 +121,7 @@ body {
     display: flex;
     justify-content: space-between;
 }
-#backBtnBelow, #completeBtn {
+#backBtnBelow, #completeTourBtn {
     padding: 10px;
     width: 48%;
     border: none;
@@ -136,11 +136,12 @@ body {
 #backBtnBelow:hover {
     background-color: #cc0000; /* 어두운 빨간색 */
 }
-#completeBtn {
+#completeTourBtn {
     background-color: #007bff;
     color: #fff;
 }
-#completeBtn:hover {
+
+#completeTourBtn:hover {
     background-color: #0056b3;
 }
 .dropdown-container {

@@ -383,8 +383,25 @@ backButton.addEventListener('click', function() {
 // 완료 버튼
 function completeTour() {
     console.log("완료 버튼 클릭됨.");
-    alert("플래너 작성 완료를 하시겠습니까?");
+    // 서버 호출 후 페이지 이동
+    fetch('/thema/save-theme', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ theme: 'selectedTheme' }) // 선택된 테마 정보 전달
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+            }
+            console.log("테마 저장 성공! Map 페이지로 이동합니다.");
+            window.location.href = "/map"; // Map 페이지로 리다이렉트
+        })
+        .catch(error => {
+            console.error("완료 요청 중 오류 발생:", error);
+            alert("완료 요청 처리 중 오류가 발생했습니다.");
+        });
 }
+
 
 // URL에서 plannerId 가져오기
 if (!plannerId) {
