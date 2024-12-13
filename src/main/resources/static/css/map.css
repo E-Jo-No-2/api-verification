@@ -12,14 +12,6 @@ body {
     min-height: 100vh;
 }
 
-/* Header */
-h1 {
-    font-size: 28px;
-    color: #333;
-    margin: 20px 0;
-    text-align: center;
-}
-
 /* Options Buttons */
 .options-buttons {
     display: flex;
@@ -49,16 +41,32 @@ h1 {
 /* Form Container */
 #form-container {
     background: rgba(255, 255, 255, 0.9);
-    padding: 20px;
+    padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
     width: 80%;
-    max-width: 500px;
-    text-align: left;
+    max-width: 400px; /* 줄어든 박스의 너비 */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60px;  /* 줄어든 박스의 높이 */
 }
 
-#form-container label {
+.centered-text {
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+    margin-top: 60px; /* 글자 위에 여백 추가 */
+    margin-bottom: 30px; /* 글자 아래 여백 추가 */
+    line-height: normal;
+}
+
+#form-container label,
+#form-container input,
+#form-container button {
     font-size: 16px;
     color: #333;
     margin-bottom: 10px;
@@ -67,7 +75,6 @@ h1 {
 #form-container input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
@@ -127,4 +134,9 @@ h1 {
     font-size: 14px;
     margin: 5px 0;
     color: #333;
+}
+
+/* Hidden Elements */
+.hidden-element {
+    display: none;
 }

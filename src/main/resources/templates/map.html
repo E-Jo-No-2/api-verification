@@ -8,26 +8,26 @@
     <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zf3b8gnmu2" defer></script>
 </head>
 <body>
-<h1>경로 찾기</h1>
 
-<div id="options-buttons" class="options-buttons">
+<div id="form-container" class="form-container">
+    <h1 class="centered-text">경로 찾기</h1>
+    <form id="routeForm">
+        <label for="start" class="hidden-element">출발지:</label>
+        <input type="text" id="start" class="hidden-element" placeholder="출발지 (경도,위도)" required>
+        <br>
+        <label for="goal" class="hidden-element">목적지:</label>
+        <input type="text" id="goal" class="hidden-element" placeholder="목적지 (경도,위도)" required>
+        <br>
+        <button type="submit" class="hidden-element">경로 찾기</button>
+    </form>
+</div>
+
+<div id="options-buttons" class="options-buttons hidden-element">
     <button data-option="trafast">실시간 빠른 길</button>
     <button data-option="tracomfort">실시간 편한 길</button>
     <button data-option="traoptimal">실시간 최적</button>
     <button data-option="traavoidtoll">무료 우선</button>
     <button data-option="traavoidcaronly">자동차 전용 도로 회피 우선</button>
-</div>
-
-<div id="form-container" style="display: inline-block; width: 50%;">
-    <form id="routeForm">
-        <label for="start">출발지:</label>
-        <input type="text" id="start" placeholder="출발지 (경도,위도)" required>
-        <br>
-        <label for="goal">목적지:</label>
-        <input type="text" id="goal" placeholder="목적지 (경도,위도)" required>
-        <br>
-        <button type="submit">경로 찾기</button>
-    </form>
 </div>
 
 <div id="map" style="width: 100%; height: 500px; margin-top: 20px;"></div>
