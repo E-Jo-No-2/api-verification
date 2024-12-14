@@ -36,9 +36,4 @@ public class PlacesService {
     public Optional<PlacesEntity> getPlaceByNameAndCoordinates(String name, String lat, String lng) {
         return placesRepository.findByNameAndLatAndLng(name, lat, lng);
     }
-
-
-    public List<PlacesEntity> getPlacesByPlannerId(Integer plannerId) {
-        return placesRepository.findByPlanner_PlannerId(plannerId);
-    }
 }

@@ -508,3 +508,4 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("완료 버튼(completeTourBtn)을 찾을 수 없습니다!");
     }
 });
+

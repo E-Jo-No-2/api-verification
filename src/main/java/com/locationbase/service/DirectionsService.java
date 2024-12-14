@@ -1,6 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.domain.repository.RouteRepository;
+import com.locationbase.Domain.repository.RouteRepository;
 import com.locationbase.entity.PlacesEntity;
 import com.locationbase.entity.RouteEntity;
 import org.json.JSONArray;

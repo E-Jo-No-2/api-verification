@@ -40,6 +40,5 @@ public class PlannerEntity {
         this.completed = completed;
     }
 
-    @OneToMany(mappedBy = "planner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PlacesEntity> places;
+
 }
