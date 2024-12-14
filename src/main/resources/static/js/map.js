@@ -184,3 +184,15 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => alert("메모 저장 실패: " + error));
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    // 기존 코드...
+
+    // '처음으로' 버튼 클릭 이벤트 추가
+    const backToHomeBtn = document.getElementById("backToHome");
+    backToHomeBtn.addEventListener("click", function () {
+        if (confirm("처음으로 돌아가시겠습니까?")) {
+            window.location.href = "/"; // 처음으로 이동할 경로
+        }
+    });
+});
