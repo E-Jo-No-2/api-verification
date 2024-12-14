@@ -1,6 +1,7 @@
 package com.locationbase.service;
 
 import com.locationbase.domain.repository.RouteRepository;
+import com.locationbase.entity.PlacesEntity;
 import com.locationbase.entity.RouteEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,9 +36,52 @@ public class DirectionsService {
             routeMap.put("end_point", route.getEndPoint());
             routeData.add(routeMap);
         }
+        // Debug log for routeData
+        System.out.println("Route Data 1 : " + routeData);
 
         return routeData;
     }
+
+    public Map<String, String> extractRoutePoints(List<Map<String, Object>> routeData) {
+        if (routeData.isEmpty()) {
+            throw new IllegalArgumentException("Route data is empty");
+        }
+
+        // 시작 지점 (첫 번째 start_point)
+        Map<String, Object> firstRoute = routeData.get(0);
+        PlacesEntity startPoint = (PlacesEntity) firstRoute.get("start_point");
+        String start = startPoint.getLat() + "," + startPoint.getLng();
+
+        // 끝 지점 (마지막 end_point)
+        Map<String, Object> lastRoute = routeData.get(routeData.size() - 1);
+        PlacesEntity endPoint = (PlacesEntity) lastRoute.get("end_point");
+        String goal = endPoint.getLat() + "," + endPoint.getLng();
+
+        // 중간 경유지 (end_point 중복 제거)
+        Set<String> waypointsSet = new LinkedHashSet<>();
+        for (Map<String, Object> route : routeData) {
+            PlacesEntity waypoint = (PlacesEntity) route.get("end_point");
+            waypointsSet.add(waypoint.getLat() + "," + waypoint.getLng());
+        }
+        // 마지막 end_point는 경유지에서 제거
+        waypointsSet.remove(goal);
+        String waypoints = String.join("|", waypointsSet);
+
+        // 디버그 로그
+        System.out.println("Extracted Route Data:");
+        System.out.println("Start: " + start);
+        System.out.println("Goal: " + goal);
+        System.out.println("Waypoints: " + waypoints);
+
+        // 결과 반환
+        Map<String, String> routePoints = new HashMap<>();
+        routePoints.put("start", start);
+        routePoints.put("goal", goal);
+        routePoints.put("waypoints", waypoints);
+
+        return routePoints;
+    }
+
 
     public Map<String, Object> getRouteWithAllOptions(String start, String goal, List<String> waypoints) {
         Map<String, Object> routeOptions = new HashMap<>();
@@ -79,6 +123,7 @@ public class DirectionsService {
         return routeOptions;
     }
 
+
     public Map<String, Object> getTrafficCongestionData(Map<String, Object> routeOptions) {
         Map<String, Object> trafficData = new HashMap<>();
 
@@ -113,7 +158,7 @@ public class DirectionsService {
 
         try {
             String encodedPoints = URLEncoder.encode(String.join("|", routePoints), StandardCharsets.UTF_8);
-            String requestUrl = String.format("%s?start=%s", apiUrl, encodedPoints);
+            String requestUrl = String.format("%s?start=%s", apiUrl, encodedPoints); //uri
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
