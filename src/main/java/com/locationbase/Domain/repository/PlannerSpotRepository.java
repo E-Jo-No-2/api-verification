@@ -15,7 +15,5 @@ public interface PlannerSpotRepository extends JpaRepository<PlannerSpotEntity, 
     // 플래너 ID에 따른 최대 방문 순서 조회
     @Query("SELECT MAX(ps.visitOrder) FROM PlannerSpotEntity ps WHERE ps.planner.plannerId = :plannerId")
     Optional<Integer> findMaxVisitOrderByPlannerId(int plannerId);
-
-    @Query("SELECT p FROM PlannerSpotEntity p WHERE p.planner.plannerId = :plannerId")
-    List<PlannerSpotEntity> findByPlannerId(@Param("plannerId") int plannerId);
+    List<PlannerSpotEntity> findByPlanner_PlannerIdOrderByVisitOrderAsc(@Param("plannerId") Integer plannerId);
 }

@@ -149,18 +149,24 @@ function updatePlannerCard(plannerId, date) {
 function viewPlanner(plannerId) {
     const plannerCard = document.querySelector(`.planner-card[data-id="${plannerId}"]`);
     if (!plannerCard) {
-        console.error("플래너 카드를 찾을 수 없습니다:", plannerId);
+        console.error("해당 플래너 카드를 찾을 수 없습니다.");
         return;
     }
 
     const latitude = plannerCard.dataset.latitude;
     const longitude = plannerCard.dataset.longitude;
-    const userId = 'testuser'; // 실제 사용자 ID로 교체 필요
 
-    const url = `http://localhost:8091/themaselect?latitude=${latitude}&longitude=${longitude}&plannerId=${plannerId}&userId=${userId}`;
-    console.log(`플래너 보기: ${url}`);
-    window.location.href = url; // 해당 URL로 이동
+    if (!latitude || !longitude) {
+        console.error("위도와 경도 정보가 없습니다.");
+        return;
+    }
+
+    const userId = "testuser"; // 실제 사용자 ID로 교체 필요
+    const url = `/map?latitude=${latitude}&longitude=${longitude}&plannerId=${plannerId}&userId=${userId}`;
+    console.log(`플래너 ${plannerId}로 이동: ${url}`);
+    window.location.href = url;
 }
+
 
 
 // 플래너 카드 삭제
