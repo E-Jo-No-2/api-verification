@@ -1,3 +1,4 @@
+
 package com.locationbase.controller;
 
 import com.locationbase.entity.PlacesEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,6 +35,7 @@ public class PlannerSpotController {
      */
     @PostMapping("/save")
     public ResponseEntity<String> savePlannerSpot(@RequestBody Map<String, Object> requestData) {
+        logger.info("PlannerSpot 저장 요청 수신: 요청 데이터={}", requestData);
         try {
             // 요청 데이터에서 필드 추출
             String spotName = (String) requestData.get("spot_name");
@@ -66,10 +69,24 @@ public class PlannerSpotController {
             // PlannerSpot 테이블 저장
             plannerSpotService.savePlannerSpot(plannerSpot);
 
+            logger.info("PlannerSpot 저장 성공: {}");
             return ResponseEntity.ok("플래너 스팟이 성공적으로 저장되었습니다.");
         } catch (Exception e) {
             logger.error("플래너 스팟 저장 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("플래너 스팟 저장에 실패하였습니다.");
+        }
+
+    }
+    @GetMapping("/list/{plannerId}")
+    public ResponseEntity<?> getPlannerSpotsByPlannerId(@PathVariable("plannerId") Integer plannerId) {
+        logger.info("PlannerSpot 조회 요청 수신: plannerId={}", plannerId);
+        try {
+            List<PlannerSpotEntity> plannerSpots = plannerSpotService.getPlannerSpotsByPlannerId(plannerId);
+            logger.info("PlannerSpot 조회 성공: plannerId={}, 조회된 스팟 수={}", plannerId, plannerSpots.size());
+            return ResponseEntity.ok(plannerSpots);
+        } catch (Exception e) {
+            logger.error("PlannerSpot 조회 실패: plannerId={}", plannerId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("플래너 스팟 데이터를 로드하지 못했습니다.");
         }
     }
 }

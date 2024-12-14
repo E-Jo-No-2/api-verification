@@ -105,6 +105,28 @@ body {
     margin-bottom: 20px;
 }
 
+/* Button Container */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    background: #ff0000; /* 빨간색으로 변경 */
+    color: white;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px; /* 버튼 아래 여백 추가 */
+}
+
+.button-container button:hover {
+    background-color: #cc0000;
+}
+
 /* Route Display */
 #routeDisplay {
     background: rgba(255, 255, 255, 0.9);
