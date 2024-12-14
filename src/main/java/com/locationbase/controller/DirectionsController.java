@@ -39,7 +39,8 @@ public class DirectionsController {
     public ResponseEntity<?> calculateRoute(
             @RequestParam("start") String start,
             @RequestParam("goal") String goal,
-            @RequestParam(value = "waypoints", required = false, defaultValue = "") String waypoints) {
+            @RequestParam(value = "waypoints", required = false, defaultValue = "") String waypoints,
+            @RequestParam("plannerId") int plannerId) { // plannerId 파라미터 추가
 
         // 입력 값 검증
         if (start.isBlank() || goal.isBlank()) {
@@ -53,15 +54,28 @@ public class DirectionsController {
             // DirectionsService 호출
             Map<String, Object> routeOptions = directionsService.getRouteWithAllOptions(start, goal, waypointsList);
 
+            // RouteService에서 plannerId에 해당하는 경로 데이터를 가져오기
+            List<Map<String, Object>> routes = directionsService.getRoutesByPlannerId(plannerId);
+
+            // 경로 포인트 추출
+            Map<String, String> routePoints = directionsService.extractRoutePoints(routes);
+
+            // DirectionsService 호출
+            Map<String, Object> allRouteOptions = directionsService.getRouteWithAllOptions(
+                    routePoints.get("start"),
+                    routePoints.get("goal"),
+                    List.of(routePoints.get("waypoints").split("\\|"))
+            );
+
             // 경로 데이터를 로깅
             System.out.println("Route Data: " + routeOptions); // 로그 추가
 
             // 혼잡도 정보 추가
-            Map<String, Object> trafficCongestionData = directionsService.getTrafficCongestionData(routeOptions);
-            routeOptions.put("trafficCongestion", trafficCongestionData);
+            Map<String, Object> trafficCongestionData = directionsService.getTrafficCongestionData(allRouteOptions);
+            allRouteOptions.put("trafficCongestion", trafficCongestionData);
 
             // 성공적인 응답 반환
-            return ResponseEntity.ok(routeOptions);
+            return ResponseEntity.ok(allRouteOptions);
 
         } catch (Exception e) {
             // 오류 발생 시 클라이언트에 에러 메시지 반환
