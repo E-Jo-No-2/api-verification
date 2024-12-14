@@ -27,7 +27,7 @@ public class DirectionsService {
     private RouteRepository routeRepository;
 
     public List<Map<String, Object>> getRoutesByPlannerId(int plannerId) {
-        List<RouteEntity> routes = routeRepository.findByPlanner_PlannerId(plannerId); // 메서드 이름 수정
+        List<RouteEntity> routes = routeRepository.findByPlanner_PlannerId(plannerId);
         List<Map<String, Object>> routeData = new ArrayList<>();
 
         for (RouteEntity route : routes) {
@@ -37,7 +37,7 @@ public class DirectionsService {
             routeData.add(routeMap);
         }
         // Debug log for routeData
-        System.out.println("Route Data 1 : " + routeData);
+        System.out.println("Route Data: " + routeData);
 
         return routeData;
     }
@@ -50,22 +50,23 @@ public class DirectionsService {
         // 시작 지점 (첫 번째 start_point)
         Map<String, Object> firstRoute = routeData.get(0);
         PlacesEntity startPoint = (PlacesEntity) firstRoute.get("start_point");
-        String start = startPoint.getLat() + "," + startPoint.getLng();
+        String start = startPoint.getLng() + "," + startPoint.getLat(); // 경도, 위도 순서
 
         // 끝 지점 (마지막 end_point)
         Map<String, Object> lastRoute = routeData.get(routeData.size() - 1);
         PlacesEntity endPoint = (PlacesEntity) lastRoute.get("end_point");
-        String goal = endPoint.getLat() + "," + endPoint.getLng();
+        String goal = endPoint.getLng() + "," + endPoint.getLat(); // 경도, 위도 순서
 
-        // 중간 경유지 (end_point 중복 제거)
-        Set<String> waypointsSet = new LinkedHashSet<>();
-        for (Map<String, Object> route : routeData) {
-            PlacesEntity waypoint = (PlacesEntity) route.get("end_point");
-            waypointsSet.add(waypoint.getLat() + "," + waypoint.getLng());
+        // 중간 경유지 (start_point와 goal을 제외한 나머지)
+        List<String> waypointsList = new ArrayList<>();
+        for (int i = 0; i < routeData.size(); i++) {
+            if (i == 0) continue; // 첫 번째는 start_point이므로 제외
+            if (i == routeData.size() - 1) continue; // 마지막은 end_point이므로 제외
+
+            PlacesEntity waypoint = (PlacesEntity) routeData.get(i).get("end_point");
+            waypointsList.add(waypoint.getLng() + "," + waypoint.getLat()); // 경도, 위도 순서
         }
-        // 마지막 end_point는 경유지에서 제거
-        waypointsSet.remove(goal);
-        String waypoints = String.join("|", waypointsSet);
+        String waypoints = String.join("|", waypointsList);
 
         // 디버그 로그
         System.out.println("Extracted Route Data:");
@@ -82,7 +83,6 @@ public class DirectionsService {
         return routePoints;
     }
 
-
     public Map<String, Object> getRouteWithAllOptions(String start, String goal, List<String> waypoints) {
         Map<String, Object> routeOptions = new HashMap<>();
         String apiUrl = "https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving";
@@ -90,10 +90,10 @@ public class DirectionsService {
         String[] options = {"trafast", "tracomfort", "traoptimal", "traavoidtoll", "traavoidcaronly"};
         for (String option : options) {
             try {
-                String encodedStart = URLEncoder.encode(start, StandardCharsets.UTF_8);
-                String encodedGoal = URLEncoder.encode(goal, StandardCharsets.UTF_8);
-                String encodedWaypoints = waypoints.isEmpty() ? "" :
-                        URLEncoder.encode(String.join("|", waypoints), StandardCharsets.UTF_8);
+                // URL 인코딩을 한 번만 적용
+                String encodedStart = start; // 인코딩 제거
+                String encodedGoal = goal; // 인코딩 제거
+                String encodedWaypoints = waypoints.isEmpty() ? "" : String.join("|", waypoints); // 인코딩 제거
 
                 String requestUrl = String.format("%s?start=%s&goal=%s%s&option=%s",
                         apiUrl, encodedStart, encodedGoal,
@@ -122,7 +122,6 @@ public class DirectionsService {
 
         return routeOptions;
     }
-
 
     public Map<String, Object> getTrafficCongestionData(Map<String, Object> routeOptions) {
         Map<String, Object> trafficData = new HashMap<>();

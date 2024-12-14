@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch('/calculate-route', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ start, goal, option: selectedOption })
+            body: new URLSearchParams({ start, goal, option: selectedOption, plannerId }) // plannerId 추가
         })
             .then(response => response.json())
             .then(routeData => {
@@ -210,4 +210,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get('plannerId');
     }
+});
+
+// 처음으로 돌아가는 버튼 클릭 이벤트 추가
+document.getElementById('backToHome').addEventListener('click', function() {
+    window.location.href = '/';
 });
