@@ -1,6 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.Domain.repository.PlacesRepository;
+import com.locationbase.domain.repository.PlacesRepository;
 import com.locationbase.entity.PlacesEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
