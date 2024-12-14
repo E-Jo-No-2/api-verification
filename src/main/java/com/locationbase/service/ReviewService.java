@@ -1,6 +1,6 @@
 package com.locationbase.service;
 
-import com.locationbase.domain.repository.ReviewRepository;
+import com.locationbase.Domain.repository.ReviewRepository;
 import com.locationbase.dto.RatingDTO;
 import com.locationbase.dto.ReviewDTO;
 import com.locationbase.entity.ReviewEntity;

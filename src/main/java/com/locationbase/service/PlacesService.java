@@ -1,10 +1,11 @@
 package com.locationbase.service;
 
-import com.locationbase.domain.repository.PlacesRepository;
+import com.locationbase.Domain.repository.PlacesRepository;
 import com.locationbase.entity.PlacesEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,8 +36,4 @@ public class PlacesService {
     public Optional<PlacesEntity> getPlaceByNameAndCoordinates(String name, String lat, String lng) {
         return placesRepository.findByNameAndLatAndLng(name, lat, lng);
     }
-
-
-
-
 }

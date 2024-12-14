@@ -252,7 +252,37 @@ function selectLocation(name, lng, lat) {
 // 길찾기 처리 함수
 function findRoute(lng, lat) {
     console.log("길찾기 중:", lng, lat);
-    alert(`길찾기를 위한 경도: ${lng}, 위도: ${lat}를 호출합니다.`);
+
+    // 서버로 전달할 데이터
+    const routeData = {
+        start: `${lng},${lat}`, // 출발지 위도, 경도
+        goal: "127.028,37.495", // 임의의 목적지 (수정 가능)
+        waypoints: "", // 경유지
+        plannerId: 123 // 예시 플래너 ID
+    };
+
+    // POST 요청으로 데이터 전송
+    fetch('/calculate-route', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(routeData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP 오류: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("서버 응답 데이터:", data);
+            alert("경로 계산이 완료되었습니다!");
+        })
+        .catch(error => {
+            console.error("경로 계산 실패:", error);
+            alert("경로 계산 중 오류가 발생했습니다.");
+        });
 }
 
 // 관광지 리스트에 추가 함수
@@ -508,3 +538,5 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("완료 버튼(completeTourBtn)을 찾을 수 없습니다!");
     }
 });
+
+

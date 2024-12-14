@@ -19,15 +19,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 const plannerCard = document.createElement('div');
                 plannerCard.classList.add('planner-card');
                 plannerCard.dataset.id = planner.plannerId;
+                plannerCard.dataset.latitude = planner.latitude; // 위도 데이터 저장
+                plannerCard.dataset.longitude = planner.longitude; // 경도 데이터 저장
 
                 plannerCard.innerHTML = `
-                    <h3>Tour ${planner.plannerId}</h3>
+                    <h3>Tour ${planner.plannerId}</h3> 
                     <p>Date: ${planner.date}</p>
                     <button onclick="viewPlanner(${planner.plannerId})">Planner 보기</button>
                     <button onclick="deletePlannerCard(${planner.plannerId})">Planner 삭제</button>
                 `;
 
                 plannerCardContainer.appendChild(plannerCard);
+
             });
         })
         .catch((error) => {
@@ -141,11 +144,30 @@ function updatePlannerCard(plannerId, date) {
     document.querySelector('#plannerCardContainer').appendChild(plannerCard);
 }
 
+
 // 플래너 보기 버튼
 function viewPlanner(plannerId) {
-    alert(`플래너 ${plannerId}을(를) 엽니다.`);
-    window.location.href = `/planner/view?plannerId=${plannerId}`;
+    const plannerCard = document.querySelector(`.planner-card[data-id="${plannerId}"]`);
+    if (!plannerCard) {
+        console.error("해당 플래너 카드를 찾을 수 없습니다.");
+        return;
+    }
+
+    const latitude = plannerCard.dataset.latitude;
+    const longitude = plannerCard.dataset.longitude;
+
+    if (!latitude || !longitude) {
+        console.error("위도와 경도 정보가 없습니다.");
+        return;
+    }
+
+    const userId = "testuser"; // 실제 사용자 ID로 교체 필요
+    const url = `/map?latitude=${latitude}&longitude=${longitude}&plannerId=${plannerId}&userId=${userId}`;
+    console.log(`플래너 ${plannerId}로 이동: ${url}`);
+    window.location.href = url;
 }
+
+
 
 // 플래너 카드 삭제
 function deletePlannerCard(plannerId) {

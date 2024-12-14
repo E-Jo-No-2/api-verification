@@ -2,7 +2,7 @@
 // Controller 클래스
 package com.locationbase.controller;
 
-import com.locationbase.domain.repository.PlacesRepository;
+import com.locationbase.Domain.repository.PlacesRepository;
 import com.locationbase.dto.RatingDTO;
 import com.locationbase.entity.PlacesEntity;
 import com.locationbase.service.ReviewService;

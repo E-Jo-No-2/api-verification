@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -38,4 +39,7 @@ public class PlannerEntity {
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
+
+    @OneToMany(mappedBy = "planner", cascade = CascadeType.ALL)
+    private List<PlacesEntity> places;
 }
