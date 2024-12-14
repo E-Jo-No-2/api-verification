@@ -30,5 +30,8 @@ public class PlacesEntity {
     // private PlannerEntity planner;
     // getter와 setter
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "planner_id", referencedColumnName = "planner_id", nullable = false)
+    private PlannerEntity planner;
 
 }

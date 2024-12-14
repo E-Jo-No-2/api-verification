@@ -14,11 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -124,4 +122,21 @@ public class PlacesController {
                     .body("{\"message\":\"알 수 없는 오류가 발생했습니다.\"}");
         }
     }
+
+    @GetMapping("/tourlist")
+    public ResponseEntity<?> getTourList(@RequestParam Integer plannerId) {
+        try {
+            // 플래너 ID로 장소 목록 조회
+            List<PlacesEntity> places = placesService.getPlacesByPlannerId(plannerId);
+            if (places.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"등록된 장소가 없습니다.\"}");
+            }
+            return ResponseEntity.ok(places);
+        } catch (Exception e) {
+            logger.error("투어 리스트 불러오기 중 오류 발생: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\":\"투어 리스트를 불러오는 중 오류가 발생했습니다.\"}");
+        }
+    }
+
 }

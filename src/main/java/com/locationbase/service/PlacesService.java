@@ -5,6 +5,7 @@ import com.locationbase.entity.PlacesEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +38,7 @@ public class PlacesService {
     }
 
 
-
-
+    public List<PlacesEntity> getPlacesByPlannerId(Integer plannerId) {
+        return placesRepository.findByPlanner_PlannerId(plannerId);
+    }
 }
