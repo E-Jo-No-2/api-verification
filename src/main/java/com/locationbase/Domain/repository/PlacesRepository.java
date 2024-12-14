@@ -16,6 +16,5 @@ public interface PlacesRepository extends JpaRepository<PlacesEntity, Integer> {
 
     Optional<PlacesEntity> findByNameAndLatAndLng(String name, String lat, String lng);
 
-    //추가
-    List<PlacesEntity> findByPlanner_PlannerId(Integer plannerId);
+  
 }

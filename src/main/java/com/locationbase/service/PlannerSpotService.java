@@ -4,6 +4,8 @@ import com.locationbase.Domain.repository.PlannerSpotRepository;
 import com.locationbase.entity.PlannerSpotEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,4 +27,9 @@ public class PlannerSpotService {
         Optional<Integer> maxVisitOrder = plannerSpotRepository.findMaxVisitOrderByPlannerId(plannerId);
         return maxVisitOrder.orElse(0); // 값이 없을 경우 0을 반환
     }
+
+    public List<PlannerSpotEntity> findPlannerSpotsByPlannerId(int plannerId) {
+        return plannerSpotRepository.findByPlannerId(plannerId);
+    }
+
 }

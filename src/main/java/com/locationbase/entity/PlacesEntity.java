@@ -30,4 +30,8 @@ public class PlacesEntity {
     // private PlannerEntity planner;
     // getter와 setter
 
+    @ManyToOne
+    @JoinColumn(name = "planner_id", referencedColumnName = "planner_id")
+    private PlannerEntity planner;
+
 }

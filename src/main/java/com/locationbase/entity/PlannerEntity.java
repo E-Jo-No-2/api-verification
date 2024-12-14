@@ -40,5 +40,6 @@ public class PlannerEntity {
         this.completed = completed;
     }
 
-
+    @OneToMany(mappedBy = "planner", cascade = CascadeType.ALL)
+    private List<PlacesEntity> places;
 }

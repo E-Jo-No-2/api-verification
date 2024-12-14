@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -72,4 +73,22 @@ public class PlannerSpotController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("플래너 스팟 저장에 실패하였습니다.");
         }
     }
+
+    /**
+     * 특정 플래너 ID에 해당하는 모든 PlannerSpot 데이터를 반환합니다.
+     * @param plannerId 플래너 ID
+     * @return PlannerSpot 데이터 리스트
+     */
+    @GetMapping("/list")
+    public ResponseEntity<?> getPlannerSpots(@RequestParam("planner_id") Integer plannerId) {
+        try {
+            // 플래너 ID에 해당하는 데이터 가져오기
+            List<PlannerSpotEntity> spots = plannerSpotService.findPlannerSpotsByPlannerId(plannerId);
+            return ResponseEntity.ok(spots);
+        } catch (Exception e) {
+            logger.error("플래너 스팟 조회 실패", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("데이터를 가져오는 중 오류가 발생했습니다.");
+        }
+    }
+
 }
