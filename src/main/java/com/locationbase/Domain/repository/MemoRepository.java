@@ -1,4 +1,4 @@
-package com.locationbase.Domain.repository;
+package com.locationbase.domain.repository;
 
 import com.locationbase.entity.MemoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
