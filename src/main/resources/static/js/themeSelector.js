@@ -200,15 +200,16 @@ function addMarkers(filteredLocations) {
 
 
 // 장소 선택 처리 함수
-function selectLocation(name, lng, lat) {
-    console.log("[입력] 마커 클릭됨: 이름 =", name, "경도 =", lng, "위도 =", lat);
-    addToTourList(name);
+function selectLocation(name, lng, lat, placeId) {
+    console.log("[입력] 마커 클릭됨: 이름 =", name, "경도 =", lng, "위도 =", lat, "ID =", placeId);
+    addToTourList(name, placeId);
 
     // 서버로 데이터 전송
     const routeData = {
         lat: lat, // 위도
         lng: lng, // 경도
-        name: name // 장소 이름
+        name: name, // 장소 이름
+        placeId: placeId // 장소 ID
     };
 
     console.log("[출력] 서버로 데이터 전송 중:", routeData);
@@ -286,8 +287,8 @@ function findRoute(lng, lat) {
 }
 
 // 관광지 리스트에 추가 함수
-function addToTourList(locationName) {
-    console.log("관광지 리스트에 추가 중:", locationName);
+function addToTourList(locationName, placeId) {
+    console.log("관광지 리스트에 추가 중:", locationName, "ID:", placeId);
     const tourList = document.getElementById("tourList");
 
     const existingItem = Array.from(tourList.children).find(
@@ -299,6 +300,8 @@ function addToTourList(locationName) {
     }
 
     const listItem = document.createElement("li");
+    listItem.dataset.placeId = placeId; // 장소 ID를 데이터 속성으로 저장
+
     const textSpan = document.createElement("span");
     textSpan.textContent = `${tourList.children.length + 1}. ${locationName}`;
     textSpan.className = "tour-item";
@@ -318,9 +321,11 @@ function addToTourList(locationName) {
     deleteBtn.textContent = "삭제";
     deleteBtn.className = "delete-btn";
     deleteBtn.onclick = () => {
-        const placeId = parseInt(prompt("삭제할 장소의 ID를 입력하세요:"));
+        const placeId = listItem.dataset.placeId; // 저장된 장소 ID를 가져옴
         if (placeId) {
             deletePlace(placeId, listItem);
+        } else {
+            console.error("삭제하려는 장소의 ID를 찾을 수 없습니다.");
         }
     };
 
