@@ -127,12 +127,12 @@ function addMarkers(filteredLocations) {
                 title: location.location
             });
 
-            // InfoWindow 초기 내용
+// InfoWindow 초기 내용
             const infoWindow = new naver.maps.InfoWindow({
                 content: `
                     <div style="padding:10px;min-width:250px;line-height:1.5;">
                         <h4 style="margin:0;">${location.location}</h4>
-                        <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" />
+                        <img src="${location.image}" alt="Image" style="width:100%;height:auto;margin:10px 0;" onerror="this.onerror=null;this.src='/images/unnamed.jpg';" />
                         <p><b>거리:</b> ${location.distance || '알 수 없음'}m</p>
                         <div id="rating-${location.location}" style="margin-top:10px;">
                             <p>평점 데이터를 불러오는 중...</p>
