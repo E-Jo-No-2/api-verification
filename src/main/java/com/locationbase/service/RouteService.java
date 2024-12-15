@@ -73,7 +73,7 @@ public class RouteService {
 
         // PlannerSpotEntity 생성 및 저장
         PlannerSpotEntity plannerSpot = new PlannerSpotEntity();
-        plannerSpot.setSpotName("New Spot");  // Spot 이름 설정
+        plannerSpot.setSpotName(endPlace.getName());  // Spot 이름을 endPlace의 name으로 설정
         plannerSpot.setLatitude(endPlace.getLat());
         plannerSpot.setLongitude(endPlace.getLng());
         plannerSpot.setPlanner(planner);
