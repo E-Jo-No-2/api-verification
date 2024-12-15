@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return urlParams.get('plannerId');
     }
 });
-
+//변경
 document.addEventListener("DOMContentLoaded", function () {
     // 기존 코드...
 
